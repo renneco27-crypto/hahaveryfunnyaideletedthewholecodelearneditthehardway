@@ -662,23 +662,21 @@ const ModuleAReportingPanel = () => {
     if (!schoolMetadata.reportingYear.trim()) errors.reportingYear = 'Required';
     if (!schoolMetadata.address.trim()) errors.address = 'Required';
     
-    if (!currentCategoryData.incidentDate) errors.incidentDate = 'Required';
-    if (!currentCategoryData.incidentPlace.trim()) errors.incidentPlace = 'Required';
-    
-    currentCategoryData.affectedStudents.forEach((student, idx) => {
-      if (!student.name.trim()) errors[`student${idx}Name`] = 'Required';
-      if (!student.age) errors[`student${idx}Age`] = 'Required';
-    });
+    if (activeModule === 'A') {
+      if (!currentCategoryData.incidentDate) errors.incidentDate = 'Required';
+      if (!currentCategoryData.incidentPlace.trim()) errors.incidentPlace = 'Required';
+      
+      currentCategoryData.affectedStudents.forEach((student, idx) => {
+        if (!student.name.trim()) errors[`student${idx}Name`] = 'Required';
+        if (!student.age) errors[`student${idx}Age`] = 'Required';
+      });
 
-    currentCategoryData.initiatingParty.forEach((party, idx) => {
-      if (!party.name.trim()) errors[`party${idx}Name`] = 'Required';
-    });
+      currentCategoryData.initiatingParty.forEach((party, idx) => {
+        if (!party.name.trim()) errors[`party${idx}Name`] = 'Required';
+      });
 
-    if (!currentCategoryData.actionsTaken.trim()) errors.actionsTaken = 'Required';
-    if (!preparedBy.name.trim()) errors.preparedName = 'Required';
-    if (!preparedBy.date) errors.preparedDate = 'Required';
-    if (!validatedBy.name.trim()) errors.validatedName = 'Required';
-    if (!validatedBy.date) errors.validatedDate = 'Required';
+      if (!currentCategoryData.actionsTaken.trim()) errors.actionsTaken = 'Required';
+    }
 
     if (activeModule === 'B') {
       if (!moduleBData.incidentDate) errors.bIncidentDate = 'Required';
@@ -695,42 +693,47 @@ const ModuleAReportingPanel = () => {
     }
 
     if (activeModule === 'C') {
-      Object.entries(moduleCData).forEach(([catId, cat]) => {
-        if (!cat.dateIdentified) errors['c' + catId + 'Date'] = 'Required';
-        if (!cat.location.trim()) errors['c' + catId + 'Loc'] = 'Required';
-        cat.individuals.forEach((ind, idx) => {
-          if (!ind.name.trim()) errors['c' + catId + 'Ind' + idx + 'Name'] = 'Required';
-          if (!ind.age) errors['c' + catId + 'Ind' + idx + 'Age'] = 'Required';
-        });
-        if (!cat.intervention.trim()) errors['c' + catId + 'Int'] = 'Required';
+      const catId = activeCRiskCategory;
+      const cat = currentCData;
+      if (!cat.dateIdentified) errors['c' + catId + 'Date'] = 'Required';
+      if (!cat.location.trim()) errors['c' + catId + 'Loc'] = 'Required';
+      cat.individuals.forEach((ind, idx) => {
+        if (!ind.name.trim()) errors['c' + catId + 'Ind' + idx + 'Name'] = 'Required';
+        if (!ind.age) errors['c' + catId + 'Ind' + idx + 'Age'] = 'Required';
       });
+      if (!cat.intervention.trim()) errors['c' + catId + 'Int'] = 'Required';
     }
 
     if (activeModule === 'D') {
-      Object.entries(moduleDData).forEach(([catId, cat]) => {
-        if (!cat.offenseDate) errors['d' + catId + 'Date'] = 'Required';
-        if (!cat.location.trim()) errors['d' + catId + 'Loc'] = 'Required';
-        cat.subjects.forEach((sub, idx) => {
-          if (!sub.identificationRef.trim()) errors['d' + catId + 'Sub' + idx + 'Ref'] = 'Required';
-        });
-        if (!cat.narrative.trim()) errors['d' + catId + 'Narr'] = 'Required';
+      const catId = activeDCategory;
+      const cat = currentDData;
+      if (!cat.offenseDate) errors['d' + catId + 'Date'] = 'Required';
+      if (!cat.location.trim()) errors['d' + catId + 'Loc'] = 'Required';
+      cat.subjects.forEach((sub, idx) => {
+        if (!sub.identificationRef.trim()) errors['d' + catId + 'Sub' + idx + 'Ref'] = 'Required';
       });
+      if (!cat.narrative.trim()) errors['d' + catId + 'Narr'] = 'Required';
     }
 
     if (activeModule === 'E') {
-      Object.entries(moduleEData).forEach(([catId, cat]) => {
-        if (!cat.incidentDate) errors['e' + catId + 'Date'] = 'Required';
-        if (!cat.incidentPlace.trim()) errors['e' + catId + 'Place'] = 'Required';
-        cat.victims.forEach((vic, idx) => {
-          if (!vic.name.trim()) errors['e' + catId + 'Vic' + idx + 'Name'] = 'Required';
-          if (!vic.age) errors['e' + catId + 'Vic' + idx + 'Age'] = 'Required';
-        });
-        cat.respondents.forEach((resp, idx) => {
-          if (!resp.name.trim()) errors['e' + catId + 'Resp' + idx + 'Name'] = 'Required';
-        });
-        if (!cat.actionsTaken.trim()) errors['e' + catId + 'Act'] = 'Required';
+      const catId = activeECategory;
+      const cat = currentEData;
+      if (!cat.incidentDate) errors['e' + catId + 'Date'] = 'Required';
+      if (!cat.incidentPlace.trim()) errors['e' + catId + 'Place'] = 'Required';
+      cat.victims.forEach((vic, idx) => {
+        if (!vic.name.trim()) errors['e' + catId + 'Vic' + idx + 'Name'] = 'Required';
+        if (!vic.age) errors['e' + catId + 'Vic' + idx + 'Age'] = 'Required';
       });
+      cat.respondents.forEach((resp, idx) => {
+        if (!resp.name.trim()) errors['e' + catId + 'Resp' + idx + 'Name'] = 'Required';
+      });
+      if (!cat.actionsTaken.trim()) errors['e' + catId + 'Act'] = 'Required';
     }
+
+    if (!preparedBy.name.trim()) errors.preparedName = 'Required';
+    if (!preparedBy.date) errors.preparedDate = 'Required';
+    if (!validatedBy.name.trim()) errors.validatedName = 'Required';
+    if (!validatedBy.date) errors.validatedDate = 'Required';
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
