@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -19,55 +19,69 @@ button,input,select,textarea { font:inherit; }
 .page { max-width:1280px; margin:0 auto; padding:24px 18px 120px; }
 .topbar { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
 .brand { display:flex; align-items:center; gap:12px; }
-.brand-mark { width:44px; height:44px; border-radius:50%; background:#d6e3ff; color:#1261a3; display:grid; place-items:center; font-weight:800; }
+.brand-mark { width:44px; height:44px; border-radius:50%; background:#d6e3ff; color:#1261a3; display:grid; place-items:center; font-weight:800; font-size:14px; }
 .confidential-pill { border:1.5px solid #ffb5b5; color:#ffd8d8; background:#002046; padding:6px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; }
 .sticky-summary { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.95); border:1px solid #c4c6cf; border-radius:16px; padding:14px 16px; box-shadow:0 10px 24px rgba(0,32,70,.06); backdrop-filter:blur(8px); margin-bottom:16px; }
-.summary-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; align-items:center; }
+.summary-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; align-items:center; }
 .summary-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
 .summary-value { font-size:13px; font-weight:700; color:#002046; }
 .toolbar { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; }
 .mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
-.mode-btn { padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; }
+.mode-btn { padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; }
+.mode-btn:hover { background:#f0f4ff; }
 .mode-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
-.card { background:#ffffff; border:1px solid #c4c6cf; border-radius:16px; padding:18px; box-shadow:0 10px 24px rgba(0,32,70,.06); }
+.card { background:#ffffff; border:1px solid #c4c6cf; border-radius:16px; padding:18px; box-shadow:0 10px 24px rgba(0,32,70,.06); margin-bottom:16px; }
 .section-title { font-family:'Atkinson Hyperlegible Next',sans-serif; font-size:18px; font-weight:800; color:#002046; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.section-title-sm { font-family:'Atkinson Hyperlegible Next',sans-serif; font-size:16px; font-weight:800; color:#002046; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
 .panel-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.panel-grid-1 { display:grid; grid-template-columns:1fr; gap:12px; }
 .field-label { display:flex; align-items:center; gap:4px; margin-bottom:6px; font-size:12px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
 .required { color:#ba1a1a; margin-left:2px; }
-.field-input,.field-select,.field-textarea { width:100%; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; color:#121c28; }
+.field-input,.field-select,.field-textarea { width:100%; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; color:#121c28; font-size:14px; }
 .field-input:focus,.field-select:focus,.field-textarea:focus { outline:none; border-color:#1261a3; box-shadow:0 0 0 3px rgba(18,97,163,.12); }
-.field-textarea { min-height:84px; resize:vertical; }
+.field-textarea { min-height:100px; resize:vertical; }
 .tip-wrap { position:relative; display:inline-flex; align-items:center; gap:4px; }
 .tip-icon { cursor:help; color:#1261a3; font-size:14px; }
 .tip-box { display:none; position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); width:280px; background:#142c51; color:white; padding:10px 12px; border-radius:8px; font-size:12px; line-height:1.5; z-index:30; box-shadow:0 10px 24px rgba(0,0,0,.16); }
 .tip-box:after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:#142c51; }
 .tip-wrap:hover .tip-box,.tip-wrap:focus-within .tip-box { display:block; }
 .chip-list { display:flex; flex-wrap:wrap; gap:10px; }
-.checkbox-chip { display:flex; align-items:flex-start; gap:8px; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; min-width:180px; }
-.checkbox-chip input { margin-top:2px; accent-color:#1261a3; }
+.checkbox-chip { display:flex; align-items:flex-start; gap:8px; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; min-width:160px; cursor:pointer; transition:all .2s; }
+.checkbox-chip:hover { border-color:#1261a3; background:#f0f4ff; }
+.checkbox-chip input { margin-top:2px; accent-color:#1261a3; cursor:pointer; }
 .row-card { border:1px solid #c4c6cf; border-radius:12px; padding:14px; background:#fbfdff; position:relative; margin-bottom:12px; }
-.remove-btn { position:absolute; top:10px; right:10px; border:none; background:transparent; color:#44474e; cursor:pointer; }
-.add-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; margin-top:8px; border:1px dashed #1261a3; border-radius:999px; color:#1261a3; background:transparent; cursor:pointer; font-weight:700; }
+.remove-btn { position:absolute; top:10px; right:10px; border:none; background:transparent; color:#ba1a1a; cursor:pointer; font-size:20px; padding:4px; transition:all .2s; }
+.remove-btn:hover { color:#002046; transform:scale(1.1); }
+.add-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; margin-top:8px; border:1px dashed #1261a3; border-radius:999px; color:#1261a3; background:transparent; cursor:pointer; font-weight:700; transition:all .2s; }
+.add-btn:hover { background:#f0f4ff; border-color:#002046; }
 .category-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
-.category-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; }
+.category-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; }
+.category-btn:hover { border-color:#1261a3; }
 .category-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
 .counter-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:12px; }
 .counter-pill { border:1px solid #c4c6cf; border-radius:12px; padding:12px 10px; background:#ffffff; text-align:center; }
-.counter-num { font-size:24px; font-weight:800; color:#002046; }
+.counter-num { font-size:28px; font-weight:800; color:#1261a3; }
 .counter-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
-.sticky-footer { position:sticky; bottom:0; z-index:20; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-top:1px solid #c4c6cf; padding:12px 0; margin-top:16px; display:flex; justify-content:flex-end; gap:10px; }
+.sticky-footer { position:sticky; bottom:0; z-index:20; background:rgba(255,255,255,.98); backdrop-filter:blur(8px); border-top:1px solid #c4c6cf; padding:14px 18px; margin-left:-18px; margin-right:-18px; margin-bottom:-24px; display:flex; justify-content:flex-end; gap:10px; }
 .primary-btn { background:#1261a3; color:#ffffff; }
 .secondary-btn { background:#ffffff; color:#1261a3; border:1px solid #1261a3; }
-.primary-btn,.secondary-btn { border:none; border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer; }
-.success-card { background:linear-gradient(135deg,#f1fbf4,#ffffff); border:1px solid #cbe9d4; border-radius:16px; padding:18px; margin-top:16px; }
+.primary-btn,.secondary-btn { border:none; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer; transition:all .2s; }
+.primary-btn:hover { background:#0a4a8a; }
+.secondary-btn:hover { background:#f0f4ff; }
+.success-card { background:linear-gradient(135deg,#f1fbf4 0%,#ffffff 100%); border:1px solid #4caf50; border-radius:16px; padding:18px; margin-top:16px; }
+.success-text { color:#1a6e3c; font-weight:700; }
 .hint-note { font-size:12px; color:#44474e; margin-top:4px; }
 .compact { font-size:12px; color:#44474e; }
 .field-error { border-color:#ba1a1a !important; background:#fff5f5 !important; }
-.error-text { color:#ba1a1a; font-size:11px; font-weight:700; margin-top:4px; display:flex; align-items:center; gap:4px; }
+.error-text { color:#ba1a1a; font-size:11px; font-weight:700; margin-top:4px; }
 .error-banner { background:#fff5f5; border:1px solid #ffcdd2; border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; gap:8px; color:#ba1a1a; font-weight:700; font-size:13px; }
+.radio-group { display:flex; gap:12px; flex-wrap:wrap; }
+.radio-option { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:10px; background:#fbfdff; cursor:pointer; transition:all .2s; }
+.radio-option:hover { border-color:#1261a3; }
+.radio-option input[type="radio"] { cursor:pointer; accent-color:#1261a3; }
 @keyframes slideInUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
 .slide-in { animation:slideInUp .6s ease-out forwards; opacity:0; }
-@media (max-width:900px) { .summary-grid,.panel-grid,.counter-row { grid-template-columns:1fr; } }
+@media (max-width:900px) { .panel-grid, .counter-row { grid-template-columns:1fr; } .summary-grid { grid-template-columns:repeat(2, 1fr); } }
 </style>
 <script>
 tailwind.config = {
@@ -128,18 +142,26 @@ tailwind.config = {
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <aside class="w-64 flex flex-col p-sm bg-surface-container-low border-r border-outline-variant sticky top-16 h-[calc(100vh-64px)]">
+<div class="flex flex-col gap-xs mb-lg px-md">
+<div class="flex items-center gap-sm mt-md">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
+</div>
+<div><p class="font-label-md text-label-md text-on-surface font-bold">Ormoc City Division LRP</p><p class="font-caption text-caption text-on-surface-variant">Empowering Integrity, Protecting Futures</p></div>
+</div>
+</div>
 <nav class="flex flex-col gap-base">
-<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="#">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="{{DATA:SCREEN:SCREEN_4}}">
 <span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-md text-label-md">Annex A</span>
+<span class="font-label-md text-label-md">Overview</span>
 </a>
 <a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
 <span class="material-symbols-outlined">description</span>
-<span class="font-label-md text-label-md">Reports</span>
+<span class="font-label-md text-label-md">Submissions</span>
 </a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="#">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="{{DATA:SCREEN:SCREEN_2}}">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-label-md text-label-md">Admin</span>
+<span class="font-label-md text-label-md">Access Management</span>
 </a>
 </nav>
 </aside>
@@ -157,3 +179,1660 @@ tailwind.config = {
 </footer>
 <script type="text/babel">
       const { useMemo, useState } = React;
+
+
+const ModuleAReportingPanel = () => {
+  const [formState, setFormState] = useState('editing');
+  const [activeCategory, setActiveCategory] = useState('A-1');
+  
+  const [schoolMetadata, setSchoolMetadata] = useState({
+    schoolName: '',
+    schoolId: '',
+    reportingYear: '',
+    address: '',
+    classification: 'Public',
+    level: 'Elementary'
+  });
+
+  const [categoryData, setCategoryData] = useState({
+    'A-1': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
+    'A-2': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
+    'A-3': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
+    'A-4': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
+    'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' }
+  });
+
+  const [preparedBy, setPreparedBy] = useState({ name: '', designation: '', date: '' });
+  const [validatedBy, setValidatedBy] = useState({ name: '', designation: '', date: '' });
+  const [validationErrors, setValidationErrors] = useState({});
+
+  const [activeModule, setActiveModule] = useState('A');
+  const [activeCRiskCategory, setActiveCRiskCategory] = useState('C-1');
+  const moduleCCategories = [
+    { id: 'C-1', label: 'Category C-1' },
+    { id: 'C-2', label: 'Category C-2' },
+    { id: 'C-3', label: 'Category C-3' },
+    { id: 'C-4', label: 'Category C-4' },
+    { id: 'C-5', label: 'Category C-5' },
+    { id: 'C-6', label: 'Category C-6' },
+    { id: 'C-7', label: 'Category C-7' },
+    { id: 'C-8', label: 'Category C-8' }
+  ];
+  const riskFactorOptions = [
+    { id: 'R-1', label: 'Risk Factor R-1' },
+    { id: 'R-2', label: 'Risk Factor R-2' },
+    { id: 'R-3', label: 'Risk Factor R-3' },
+    { id: 'R-4', label: 'Risk Factor R-4' }
+  ];
+  const familyContextOptions = [
+    { id: 'F-1', label: 'Context F-1' },
+    { id: 'F-2', label: 'Context F-2' },
+    { id: 'F-3', label: 'Context F-3' },
+    { id: 'F-4', label: 'Context F-4' }
+  ];
+  const cEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
+  const cStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
+  const makeCIndividual = () => ({ name: '', age: '', gender: 'M', disability: 'No', familyContexts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' });
+  const makeCCategoryData = () => ({ dateIdentified: '', location: '', riskFactors: [], individuals: [makeCIndividual()], intervention: '', status: 'Status 1: Resolved' });
+
+  const [moduleCData, setModuleCData] = useState(() => {
+    const init = {};
+    moduleCCategories.forEach(cat => { init[cat.id] = makeCCategoryData(); });
+    return init;
+  });
+
+  const moduleDCategories = [
+    { id: 'D-1', label: 'Category D-1' },
+    { id: 'D-2', label: 'Category D-2' },
+    { id: 'D-3', label: 'Category D-3' },
+    { id: 'D-4', label: 'Category D-4' },
+    { id: 'D-5', label: 'Category D-5' },
+    { id: 'D-6', label: 'Category D-6' }
+  ];
+  const violationOptions = [
+    { id: 'V-1', label: 'Violation V-1' },
+    { id: 'V-2', label: 'Violation V-2' },
+    { id: 'V-3', label: 'Violation V-3' },
+    { id: 'V-4', label: 'Violation V-4' },
+    { id: 'V-5', label: 'Violation V-5' },
+    { id: 'V-6', label: 'Violation V-6' }
+  ];
+  const programOptions = [
+    { id: 'P-1', label: 'Program P-1' },
+    { id: 'P-2', label: 'Program P-2' },
+    { id: 'P-3', label: 'Program P-3' },
+    { id: 'P-4', label: 'Program P-4' }
+  ];
+  const dEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
+  const dStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
+  const makeDSubject = () => ({ identificationRef: '', age: '', gender: 'M', disability: 'No' });
+  const makeDCategoryData = () => ({ offenseDate: '', location: '', violations: [], subjects: [makeDSubject()], programs: [], narrative: '', enrollmentStatus: '', performanceBefore: '', performanceAfter: '', status: 'Status 1: Resolved' });
+
+  const [moduleDData, setModuleDData] = useState(() => {
+    const init = {};
+    moduleDCategories.forEach(cat => { init[cat.id] = makeDCategoryData(); });
+    return init;
+  });
+
+  const moduleECategories = [
+    { id: 'E-1', label: 'Category E-1' },
+    { id: 'E-2', label: 'Category E-2' },
+    { id: 'E-3', label: 'Category E-3' },
+    { id: 'E-4', label: 'Category E-4' },
+    { id: 'E-5', label: 'Category E-5' },
+    { id: 'E-6', label: 'Category E-6' },
+    { id: 'E-7', label: 'Category E-7' },
+    { id: 'E-8', label: 'Category E-8' },
+    { id: 'E-9', label: 'Category E-9' }
+  ];
+  const eConcernOptions = [
+    { id: 'EC-1', label: 'Concern C-1' },
+    { id: 'EC-2', label: 'Concern C-2' },
+    { id: 'EC-3', label: 'Concern C-3' },
+    { id: 'EC-4', label: 'Concern C-4' },
+    { id: 'EC-5', label: 'Concern C-5' },
+    { id: 'EC-6', label: 'Concern C-6' },
+    { id: 'EC-7', label: 'Concern C-7' },
+    { id: 'EC-8', label: 'Concern C-8' },
+    { id: 'EC-9', label: 'Concern C-9' }
+  ];
+  const eStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
+  const makeEVictim = () => ({ name: '', age: '', gender: 'M', disability: 'No' });
+  const makeERespondent = () => ({ name: '', designation: '', age: '', gender: 'M' });
+  const makeECategoryData = () => ({ incidentDate: '', incidentPlace: '', concerns: [], victims: [makeEVictim()], respondents: [makeERespondent()], actionsTaken: '', status: 'Status 1: Resolved' });
+
+  const [moduleEData, setModuleEData] = useState(() => {
+    const init = {};
+    moduleECategories.forEach(cat => { init[cat.id] = makeECategoryData(); });
+    return init;
+  });
+
+  const [moduleBData, setModuleBData] = useState({
+    incidentDate: '',
+    incidentPlace: '',
+    incidentNature: [],
+    affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }],
+    respondents: [{ name: '', affiliation: '', age: '', gender: 'M' }],
+    actionsTaken: '',
+    status: 'Resolved'
+  });
+
+  const currentCategoryData = categoryData[activeCategory];
+
+  const categoryOptions = [
+    { id: 'A-1', label: 'Category A-1: Physical Abuse' },
+    { id: 'A-2', label: 'Category A-2: Psychological Abuse' },
+    { id: 'A-3', label: 'Category A-3: Sexual Abuse' },
+    { id: 'A-4', label: 'Category A-4: Neglect' },
+    { id: 'A-5', label: 'Category A-5: Other Concerns' }
+  ];
+
+  const motiveOptions = [
+    { id: 'M-1', label: 'Motive M-1' },
+    { id: 'M-2', label: 'Motive M-2' }
+  ];
+
+  const impactFlags = ['Impact E-1', 'Impact E-2', 'Impact E-3', 'Impact E-4', 'Impact E-5', 'Impact E-6'];
+  const enrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred'];
+  const performanceOptions = ['Advanced', 'Proficient', 'Developing', 'Beginning'];
+  const statusOptions = ['Resolved', 'Ongoing Intervention', 'Referred to Government Agencies', 'Referred to NGO'];
+  const genderOptions = ['M', 'F', 'LGBTQIA+'];
+
+  const moduleBCategories = [
+    { id: 'B-1', label: 'Category B-1: Bullying/Harassment' },
+    { id: 'B-2', label: 'Category B-2: Violence/Assault' },
+    { id: 'B-3', label: 'Category B-3: Threat/Intimidation' },
+    { id: 'B-4', label: 'Category B-4: Discrimination' },
+    { id: 'B-5', label: 'Category B-5: Other Behavioral Concern' }
+  ];
+  const natureOptions = [
+    { id: 'N-1', label: 'Nature N-1: Physical' },
+    { id: 'N-2', label: 'Nature N-2: Verbal' },
+    { id: 'N-3', label: 'Nature N-3: Cyberbullying' }
+  ];
+  const affiliationOptions = ['School Personnel', 'Teacher', 'Non-Teaching Staff', 'Student', 'Parent/Guardian', 'Outside Community Member'];
+  const currentCData = moduleCData[activeCRiskCategory];
+  const [activeDCategory, setActiveDCategory] = useState('D-1');
+  const currentDData = moduleDData[activeDCategory];
+  const [activeECategory, setActiveECategory] = useState('E-1');
+  const currentEData = moduleEData[activeECategory];
+
+  const counters = useMemo(() => {
+    const counts = { resolved: 0, ongoing: 0, external: 0, ngo: 0 };
+    if (activeModule === 'A') {
+      Object.values(categoryData).forEach(cat => {
+        if (cat.status === 'Resolved') counts.resolved += 1;
+        if (cat.status === 'Ongoing Intervention') counts.ongoing += 1;
+        if (cat.status === 'Referred to Government Agencies') counts.external += 1;
+        if (cat.status === 'Referred to NGO') counts.ngo += 1;
+      });
+    } else if (activeModule === 'B') {
+      if (moduleBData.status === 'Resolved') counts.resolved += 1;
+      if (moduleBData.status === 'Ongoing Intervention') counts.ongoing += 1;
+      if (moduleBData.status === 'Referred to Government Agencies') counts.external += 1;
+      if (moduleBData.status === 'Referred to NGO') counts.ngo += 1;
+    } else if (activeModule === 'C') {
+      Object.values(moduleCData).forEach(cat => {
+        if (cat.status === 'Status 1: Resolved') counts.resolved += 1;
+        if (cat.status === 'Status 2: On-going intervention') counts.ongoing += 1;
+        if (cat.status === 'Status 3: Referred to Government Agencies') counts.external += 1;
+        if (cat.status === 'Status 4: Referred to Non-Government Organizations') counts.ngo += 1;
+      });
+    } else if (activeModule === 'D') {
+      Object.values(moduleDData).forEach(cat => {
+        if (cat.status === 'Status 1: Resolved') counts.resolved += 1;
+        if (cat.status === 'Status 2: On-going intervention') counts.ongoing += 1;
+        if (cat.status === 'Status 3: Referred to Government Agencies') counts.external += 1;
+        if (cat.status === 'Status 4: Referred to Non-Government Organizations') counts.ngo += 1;
+      });
+    } else if (activeModule === 'E') {
+      Object.values(moduleEData).forEach(cat => {
+        if (cat.status === 'Status 1: Resolved') counts.resolved += 1;
+        if (cat.status === 'Status 2: On-going intervention') counts.ongoing += 1;
+        if (cat.status === 'Status 3: Referred to Government Agencies') counts.external += 1;
+        if (cat.status === 'Status 4: Referred to Non-Government Organizations') counts.ngo += 1;
+      });
+    }
+    return counts;
+  }, [categoryData, moduleBData, moduleCData, moduleDData, moduleEData, activeModule]);
+
+  const updateCategoryField = (field, value) => {
+    setCategoryData(prev => ({
+      ...prev,
+      [activeCategory]: { ...prev[activeCategory], [field]: value }
+    }));
+  };
+
+  const toggleMotive = (motiveId) => {
+    const current = currentCategoryData.motives;
+    updateCategoryField('motives', current.includes(motiveId) ? current.filter(m => m !== motiveId) : [...current, motiveId]);
+  };
+
+  const updateAffectedStudent = (index, field, value) => {
+    const updated = [...currentCategoryData.affectedStudents];
+    updated[index] = { ...updated[index], [field]: value };
+    updateCategoryField('affectedStudents', updated);
+  };
+
+  const toggleImpact = (index, impact) => {
+    const updated = [...currentCategoryData.affectedStudents];
+    const current = updated[index].impacts || [];
+    updated[index].impacts = current.includes(impact) ? current.filter(i => i !== impact) : [...current, impact];
+    updateCategoryField('affectedStudents', updated);
+  };
+
+  const addAffectedStudent = () => {
+    updateCategoryField('affectedStudents', [...currentCategoryData.affectedStudents, { name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }]);
+  };
+
+  const removeAffectedStudent = (index) => {
+    updateCategoryField('affectedStudents', currentCategoryData.affectedStudents.filter((_, i) => i !== index));
+  };
+
+  const updateInitiatingParty = (index, field, value) => {
+    const updated = [...currentCategoryData.initiatingParty];
+    updated[index] = { ...updated[index], [field]: value };
+    updateCategoryField('initiatingParty', updated);
+  };
+
+  const addInitiatingParty = () => {
+    updateCategoryField('initiatingParty', [...currentCategoryData.initiatingParty, { name: '', age: '', gender: 'M' }]);
+  };
+
+  const removeInitiatingParty = (index) => {
+    updateCategoryField('initiatingParty', currentCategoryData.initiatingParty.filter((_, i) => i !== index));
+  };
+
+  const updateModuleBField = (field, value) => {
+    setModuleBData(prev => ({ ...prev, [field]: value }));
+  };
+  const toggleModuleBNature = (natureId) => {
+    const current = moduleBData.incidentNature;
+    updateModuleBField('incidentNature', current.includes(natureId) ? current.filter(n => n !== natureId) : [...current, natureId]);
+  };
+  const updateModuleBStudent = (index, field, value) => {
+    const updated = [...moduleBData.affectedStudents];
+    updated[index] = { ...updated[index], [field]: value };
+    updateModuleBField('affectedStudents', updated);
+  };
+  const toggleModuleBStudentImpact = (index, impact) => {
+    const updated = [...moduleBData.affectedStudents];
+    const current = updated[index].impacts || [];
+    updated[index].impacts = current.includes(impact) ? current.filter(i => i !== impact) : [...current, impact];
+    updateModuleBField('affectedStudents', updated);
+  };
+  const addModuleBStudent = () => {
+    updateModuleBField('affectedStudents', [...moduleBData.affectedStudents, { name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }]);
+  };
+  const removeModuleBStudent = (index) => {
+    updateModuleBField('affectedStudents', moduleBData.affectedStudents.filter((_, i) => i !== index));
+  };
+  const updateModuleBRespondent = (index, field, value) => {
+    const updated = [...moduleBData.respondents];
+    updated[index] = { ...updated[index], [field]: value };
+    updateModuleBField('respondents', updated);
+  };
+  const addModuleBRespondent = () => {
+    updateModuleBField('respondents', [...moduleBData.respondents, { name: '', affiliation: '', age: '', gender: 'M' }]);
+  };
+  const removeModuleBRespondent = (index) => {
+    updateModuleBField('respondents', moduleBData.respondents.filter((_, i) => i !== index));
+  };
+
+  const updateCField = (field, value) => {
+    setModuleCData(prev => ({ ...prev, [activeCRiskCategory]: { ...prev[activeCRiskCategory], [field]: value } }));
+  };
+  const toggleCRiskFactor = (rid) => {
+    const current = currentCData.riskFactors;
+    updateCField('riskFactors', current.includes(rid) ? current.filter(r => r !== rid) : [...current, rid]);
+  };
+  const updateCIndividual = (index, field, value) => {
+    const updated = [...currentCData.individuals];
+    updated[index] = { ...updated[index], [field]: value };
+    updateCField('individuals', updated);
+  };
+  const toggleCFamilyContext = (index, fid) => {
+    const updated = [...currentCData.individuals];
+    const current = updated[index].familyContexts || [];
+    updated[index].familyContexts = current.includes(fid) ? current.filter(f => f !== fid) : [...current, fid];
+    updateCField('individuals', updated);
+  };
+  const addCIndividual = () => {
+    updateCField('individuals', [...currentCData.individuals, makeCIndividual()]);
+  };
+  const removeCIndividual = (index) => {
+    updateCField('individuals', currentCData.individuals.filter((_, i) => i !== index));
+  };
+
+  const updateDField = (field, value) => {
+    setModuleDData(prev => ({ ...prev, [activeDCategory]: { ...prev[activeDCategory], [field]: value } }));
+  };
+  const toggleDViolation = (vid) => {
+    const current = currentDData.violations;
+    updateDField('violations', current.includes(vid) ? current.filter(v => v !== vid) : [...current, vid]);
+  };
+  const toggleDProgram = (pid) => {
+    const current = currentDData.programs;
+    updateDField('programs', current.includes(pid) ? current.filter(p => p !== pid) : [...current, pid]);
+  };
+  const updateDSubject = (index, field, value) => {
+    const updated = [...currentDData.subjects];
+    updated[index] = { ...updated[index], [field]: value };
+    updateDField('subjects', updated);
+  };
+  const addDSubject = () => {
+    updateDField('subjects', [...currentDData.subjects, makeDSubject()]);
+  };
+  const removeDSubject = (index) => {
+    updateDField('subjects', currentDData.subjects.filter((_, i) => i !== index));
+  };
+
+  const updateEField = (field, value) => {
+    setModuleEData(prev => ({ ...prev, [activeECategory]: { ...prev[activeECategory], [field]: value } }));
+  };
+  const toggleEConcern = (cid) => {
+    const current = currentEData.concerns;
+    updateEField('concerns', current.includes(cid) ? current.filter(c => c !== cid) : [...current, cid]);
+  };
+  const updateEVictim = (index, field, value) => {
+    const updated = [...currentEData.victims];
+    updated[index] = { ...updated[index], [field]: value };
+    updateEField('victims', updated);
+  };
+  const addEVictim = () => {
+    updateEField('victims', [...currentEData.victims, makeEVictim()]);
+  };
+  const removeEVictim = (index) => {
+    updateEField('victims', currentEData.victims.filter((_, i) => i !== index));
+  };
+  const updateERespondent = (index, field, value) => {
+    const updated = [...currentEData.respondents];
+    updated[index] = { ...updated[index], [field]: value };
+    updateEField('respondents', updated);
+  };
+  const addERespondent = () => {
+    updateEField('respondents', [...currentEData.respondents, makeERespondent()]);
+  };
+  const removeERespondent = (index) => {
+    updateEField('respondents', currentEData.respondents.filter((_, i) => i !== index));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!schoolMetadata.schoolName.trim()) errors.schoolName = 'Required';
+    if (!schoolMetadata.schoolId.trim()) errors.schoolId = 'Required';
+    if (!schoolMetadata.reportingYear.trim()) errors.reportingYear = 'Required';
+    if (!schoolMetadata.address.trim()) errors.address = 'Required';
+    
+    if (!currentCategoryData.incidentDate) errors.incidentDate = 'Required';
+    if (!currentCategoryData.incidentPlace.trim()) errors.incidentPlace = 'Required';
+    
+    currentCategoryData.affectedStudents.forEach((student, idx) => {
+      if (!student.name.trim()) errors[`student${idx}Name`] = 'Required';
+      if (!student.age) errors[`student${idx}Age`] = 'Required';
+    });
+
+    currentCategoryData.initiatingParty.forEach((party, idx) => {
+      if (!party.name.trim()) errors[`party${idx}Name`] = 'Required';
+    });
+
+    if (!currentCategoryData.actionsTaken.trim()) errors.actionsTaken = 'Required';
+    if (!preparedBy.name.trim()) errors.preparedName = 'Required';
+    if (!preparedBy.date) errors.preparedDate = 'Required';
+    if (!validatedBy.name.trim()) errors.validatedName = 'Required';
+    if (!validatedBy.date) errors.validatedDate = 'Required';
+
+    if (activeModule === 'B') {
+      if (!moduleBData.incidentDate) errors.bIncidentDate = 'Required';
+      if (!moduleBData.incidentPlace.trim()) errors.bIncidentPlace = 'Required';
+      moduleBData.affectedStudents.forEach((student, idx) => {
+        if (!student.name.trim()) errors['bStudent' + idx + 'Name'] = 'Required';
+        if (!student.age) errors['bStudent' + idx + 'Age'] = 'Required';
+      });
+      moduleBData.respondents.forEach((resp, idx) => {
+        if (!resp.name.trim()) errors['bRespond' + idx + 'Name'] = 'Required';
+        if (!resp.affiliation) errors['bRespond' + idx + 'Aff'] = 'Required';
+      });
+      if (!moduleBData.actionsTaken.trim()) errors.bActionsTaken = 'Required';
+    }
+
+    if (activeModule === 'C') {
+      Object.entries(moduleCData).forEach(([catId, cat]) => {
+        if (!cat.dateIdentified) errors['c' + catId + 'Date'] = 'Required';
+        if (!cat.location.trim()) errors['c' + catId + 'Loc'] = 'Required';
+        cat.individuals.forEach((ind, idx) => {
+          if (!ind.name.trim()) errors['c' + catId + 'Ind' + idx + 'Name'] = 'Required';
+          if (!ind.age) errors['c' + catId + 'Ind' + idx + 'Age'] = 'Required';
+        });
+        if (!cat.intervention.trim()) errors['c' + catId + 'Int'] = 'Required';
+      });
+    }
+
+    if (activeModule === 'D') {
+      Object.entries(moduleDData).forEach(([catId, cat]) => {
+        if (!cat.offenseDate) errors['d' + catId + 'Date'] = 'Required';
+        if (!cat.location.trim()) errors['d' + catId + 'Loc'] = 'Required';
+        cat.subjects.forEach((sub, idx) => {
+          if (!sub.identificationRef.trim()) errors['d' + catId + 'Sub' + idx + 'Ref'] = 'Required';
+        });
+        if (!cat.narrative.trim()) errors['d' + catId + 'Narr'] = 'Required';
+      });
+    }
+
+    if (activeModule === 'E') {
+      Object.entries(moduleEData).forEach(([catId, cat]) => {
+        if (!cat.incidentDate) errors['e' + catId + 'Date'] = 'Required';
+        if (!cat.incidentPlace.trim()) errors['e' + catId + 'Place'] = 'Required';
+        cat.victims.forEach((vic, idx) => {
+          if (!vic.name.trim()) errors['e' + catId + 'Vic' + idx + 'Name'] = 'Required';
+          if (!vic.age) errors['e' + catId + 'Vic' + idx + 'Age'] = 'Required';
+        });
+        cat.respondents.forEach((resp, idx) => {
+          if (!resp.name.trim()) errors['e' + catId + 'Resp' + idx + 'Name'] = 'Required';
+        });
+        if (!cat.actionsTaken.trim()) errors['e' + catId + 'Act'] = 'Required';
+      });
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      setFormState('submitted');
+    }
+  };
+
+  return (
+    <div className="page">
+      <div className="topbar">
+        <div className="brand">
+          <div className="brand-mark">LR</div>
+          <div>
+            <div style={{ fontSize: '12px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.14em' }}>Student Safety Reporting</div>
+            <div style={{ fontSize: '20px', fontWeight: '800', color: '#002046' }}>Module {activeModule} {activeModule === 'A' ? '— Incident Report' : activeModule === 'B' ? '— Behavioral Report' : activeModule === 'C' ? '— Risk Registry' : activeModule === 'D' ? '— School-Based Incident Report' : '— School-Based Incident Report'}</div>
+          </div>
+        </div>
+        <div className="confidential-pill">CONFIDENTIAL</div>
+      </div>
+
+      <div className="toolbar">
+        <div className="mode-switch">
+          <button className={`mode-btn ${activeModule === 'A' ? 'active' : ''}`} onClick={() => setActiveModule('A')}>Module A</button>
+          <button className={`mode-btn ${activeModule === 'B' ? 'active' : ''}`} onClick={() => setActiveModule('B')}>Module B</button>
+          <button className={`mode-btn ${activeModule === 'C' ? 'active' : ''}`} onClick={() => setActiveModule('C')}>Module C</button>
+          <button className={`mode-btn ${activeModule === 'D' ? 'active' : ''}`} onClick={() => setActiveModule('D')}>Module D</button>
+          <button className={`mode-btn ${activeModule === 'E' ? 'active' : ''}`} onClick={() => setActiveModule('E')}>Module E</button>
+        </div>
+        <div className="compact" style={{fontSize:'12px',color:'#44474e'}}>Switch between reporting modules</div>
+      </div>
+
+      <div className="sticky-summary">
+        <div className="summary-grid">
+          <div>
+            <div className="summary-label">School Name</div>
+            <div className="summary-value" style={{ fontSize: '14px' }}>{schoolMetadata.schoolName || 'Pending'}</div>
+          </div>
+          <div>
+            <div className="summary-label">School ID</div>
+            <div className="summary-value">{schoolMetadata.schoolId || 'Pending'}</div>
+          </div>
+          <div>
+            <div className="summary-label">Reporting Year</div>
+            <div className="summary-value">{schoolMetadata.reportingYear || 'Pending'}</div>
+          </div>
+          <div>
+            <div className="summary-label">Classification</div>
+            <div className="summary-value">{schoolMetadata.classification}</div>
+          </div>
+          <div>
+            <div className="summary-label">Level</div>
+            <div className="summary-value">{schoolMetadata.level}</div>
+          </div>
+          <div>
+            <div className="summary-label">Address</div>
+            <div className="summary-value">{schoolMetadata.address || 'Pending'}</div>
+          </div>
+        </div>
+      </div>
+
+      {formState === 'submitted' && (
+        <div className="success-card">
+          <div className="success-text" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '6px' }}>✓ Submission Complete</div>
+          <div style={{ fontSize: '22px', fontWeight: '800', color: '#002046', marginBottom: '8px' }}>Reference: LRP-2026-0810</div>
+          <div style={{ fontSize: '13px', color: '#44474e' }}>Report submitted successfully and stored for review.</div>
+        </div>
+      )}
+
+      {Object.keys(validationErrors).length > 0 && (
+        <div className="error-banner">
+          <span>⚠️</span> Please fix {Object.keys(validationErrors).length} error(s) before submitting.
+        </div>
+      )}
+
+      {activeModule === 'A' && (
+        <>
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">School Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Santiago Elementary" />
+                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
+              </div>
+              <div>
+                <label className="field-label">School ID <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-302501" />
+                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
+              </div>
+              <div>
+                <label className="field-label">Reporting Year <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
+              </div>
+              <div>
+                <label className="field-label">Address <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="City, Province" />
+                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
+              </div>
+              <div>
+                <label className="field-label">Classification <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Public', 'Private'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Level <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
+                      <span style={{ fontSize: '12px' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📋</span> Incident Categories
+            </div>
+            <div className="category-pills">
+              {categoryOptions.map(cat => (
+                <button key={cat.id} className={`category-btn ${activeCategory === cat.id ? 'active' : ''}`} onClick={() => setActiveCategory(cat.id)}>
+                  {cat.id}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{categoryOptions.find(c => c.id === activeCategory)?.label}</div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📅</span> Incident Details
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Date of Incident <span className="required">*</span></label>
+                <input type="date" className={`field-input ${validationErrors.incidentDate ? 'field-error' : ''}`} value={currentCategoryData.incidentDate} onChange={e => updateCategoryField('incidentDate', e.target.value)} />
+                {validationErrors.incidentDate && <div className="error-text">{validationErrors.incidentDate}</div>}
+              </div>
+              <div>
+                <label className="field-label">Place of Incident <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.incidentPlace ? 'field-error' : ''}`} value={currentCategoryData.incidentPlace} onChange={e => updateCategoryField('incidentPlace', e.target.value)} placeholder="e.g., Classroom, Hallway" />
+                {validationErrors.incidentPlace && <div className="error-text">{validationErrors.incidentPlace}</div>}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '16px' }}>
+              <label className="field-label">Motive Tags</label>
+              <div className="chip-list">
+                {motiveOptions.map(motive => (
+                  <label key={motive.id} className="checkbox-chip">
+                    <input type="checkbox" checked={currentCategoryData.motives.includes(motive.id)} onChange={() => toggleMotive(motive.id)} />
+                    <span>{motive.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👤</span> Affected Student(s)
+            </div>
+            {currentCategoryData.affectedStudents.map((student, idx) => (
+              <div key={idx} className="row-card">
+                <button className="remove-btn" type="button" onClick={() => removeAffectedStudent(idx)} title="Remove">✕</button>
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Name <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors[`student${idx}Name`] ? 'field-error' : ''}`} value={student.name} onChange={e => updateAffectedStudent(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                  </div>
+                  <div>
+                    <label className="field-label">Age <span className="required">*</span></label>
+                    <input type="number" className={`field-input ${validationErrors[`student${idx}Age`] ? 'field-error' : ''}`} value={student.age} onChange={e => updateAffectedStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <select className="field-select" value={student.gender} onChange={e => updateAffectedStudent(idx, 'gender', e.target.value)}>
+                      {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Learner with Disability</label>
+                    <select className="field-select" value={student.disability} onChange={e => updateAffectedStudent(idx, 'disability', e.target.value)}>
+                      {['Yes', 'No'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '12px' }}>
+                  <label className="field-label">Recorded Impact Flags</label>
+                  <div className="chip-list">
+                    {impactFlags.map(impact => (
+                      <label key={impact} className="checkbox-chip">
+                        <input type="checkbox" checked={student.impacts?.includes(impact)} onChange={() => toggleImpact(idx, impact)} />
+                        <span>{impact}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="panel-grid" style={{ marginTop: '12px' }}>
+                  <div>
+                    <label className="field-label">Enrollment Status After</label>
+                    <select className="field-select" value={student.enrollmentStatus} onChange={e => updateAffectedStudent(idx, 'enrollmentStatus', e.target.value)}>
+                      <option value="">Select</option>
+                      {enrollmentOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Performance Before</label>
+                    <select className="field-select" value={student.performanceBefore} onChange={e => updateAffectedStudent(idx, 'performanceBefore', e.target.value)}>
+                      <option value="">Select</option>
+                      {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Performance After</label>
+                    <select className="field-select" value={student.performanceAfter} onChange={e => updateAffectedStudent(idx, 'performanceAfter', e.target.value)}>
+                      <option value="">Select</option>
+                      {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addAffectedStudent}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Student
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👥</span> Initiating Party
+            </div>
+            {currentCategoryData.initiatingParty.map((party, idx) => (
+              <div key={idx} className="row-card">
+                <button className="remove-btn" type="button" onClick={() => removeInitiatingParty(idx)} title="Remove">✕</button>
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Name <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors[`party${idx}Name`] ? 'field-error' : ''}`} value={party.name} onChange={e => updateInitiatingParty(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                  </div>
+                  <div>
+                    <label className="field-label">Age</label>
+                    <input type="number" value={party.age} onChange={e => updateInitiatingParty(idx, 'age', e.target.value)} placeholder="e.g., 38" className="field-input" />
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <select className="field-select" value={party.gender} onChange={e => updateInitiatingParty(idx, 'gender', e.target.value)}>
+                      {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addInitiatingParty}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Party
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>✅</span> Actions & Status
+            </div>
+            <div className="panel-grid-1">
+              <div>
+                <label className="field-label">Actions Taken <span className="required">*</span></label>
+                <textarea className={`field-textarea ${validationErrors.actionsTaken ? 'field-error' : ''}`} value={currentCategoryData.actionsTaken} onChange={e => updateCategoryField('actionsTaken', e.target.value)} placeholder="Describe resolution steps taken..." />
+                {validationErrors.actionsTaken && <div className="error-text">{validationErrors.actionsTaken}</div>}
+              </div>
+              <div>
+                <label className="field-label">Case Status <span className="required">*</span></label>
+                <select className="field-select" value={currentCategoryData.status} onChange={e => updateCategoryField('status', e.target.value)}>
+                  {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeModule === 'B' && (
+        <>
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">School Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Santiago Elementary" />
+                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
+              </div>
+              <div>
+                <label className="field-label">School ID <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-302501" />
+                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
+              </div>
+              <div>
+                <label className="field-label">Reporting Year <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
+              </div>
+              <div>
+                <label className="field-label">Address <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="City, Province" />
+                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
+              </div>
+              <div>
+                <label className="field-label">Classification <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Public', 'Private'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Level <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
+                      <span style={{ fontSize: '12px' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📋</span> Behavior Categories
+            </div>
+            <div className="category-pills">
+              {moduleBCategories.map(cat => (
+                <button key={cat.id} className={`category-btn`} onClick={() => {}}>
+                  {cat.id}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>Behavioral concern categories under Module B</div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📅</span> Incident Details
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Date of Incident <span className="required">*</span></label>
+                <input type="date" className={`field-input ${validationErrors.bIncidentDate ? 'field-error' : ''}`} value={moduleBData.incidentDate} onChange={e => updateModuleBField('incidentDate', e.target.value)} />
+                {validationErrors.bIncidentDate && <div className="error-text">{validationErrors.bIncidentDate}</div>}
+              </div>
+              <div>
+                <label className="field-label">Place of Incident <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.bIncidentPlace ? 'field-error' : ''}`} value={moduleBData.incidentPlace} onChange={e => updateModuleBField('incidentPlace', e.target.value)} placeholder="e.g., Classroom, Hallway" />
+                {validationErrors.bIncidentPlace && <div className="error-text">{validationErrors.bIncidentPlace}</div>}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '16px' }}>
+              <label className="field-label">Nature of Incident</label>
+              <div className="chip-list">
+                {natureOptions.map(n => (
+                  <label key={n.id} className="checkbox-chip">
+                    <input type="checkbox" checked={moduleBData.incidentNature.includes(n.id)} onChange={() => toggleModuleBNature(n.id)} />
+                    <span>{n.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👤</span> Affected Student(s)
+            </div>
+            {moduleBData.affectedStudents.map((student, idx) => (
+              <div key={idx} className="row-card">
+                <button className="remove-btn" type="button" onClick={() => removeModuleBStudent(idx)} title="Remove">✕</button>
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Name <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['bStudent' + idx + 'Name'] ? 'field-error' : ''}`} value={student.name} onChange={e => updateModuleBStudent(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                  </div>
+                  <div>
+                    <label className="field-label">Age <span className="required">*</span></label>
+                    <input type="number" className={`field-input ${validationErrors['bStudent' + idx + 'Age'] ? 'field-error' : ''}`} value={student.age} onChange={e => updateModuleBStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <select className="field-select" value={student.gender} onChange={e => updateModuleBStudent(idx, 'gender', e.target.value)}>
+                      {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Learner with Disability</label>
+                    <select className="field-select" value={student.disability} onChange={e => updateModuleBStudent(idx, 'disability', e.target.value)}>
+                      {['Yes', 'No'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '12px' }}>
+                  <label className="field-label">Recorded Impact Flags</label>
+                  <div className="chip-list">
+                    {impactFlags.map(impact => (
+                      <label key={impact} className="checkbox-chip">
+                        <input type="checkbox" checked={student.impacts?.includes(impact)} onChange={() => toggleModuleBStudentImpact(idx, impact)} />
+                        <span>{impact}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="panel-grid" style={{ marginTop: '12px' }}>
+                  <div>
+                    <label className="field-label">Enrollment Status After</label>
+                    <select className="field-select" value={student.enrollmentStatus} onChange={e => updateModuleBStudent(idx, 'enrollmentStatus', e.target.value)}>
+                      <option value="">Select</option>
+                      {enrollmentOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Performance Before</label>
+                    <select className="field-select" value={student.performanceBefore} onChange={e => updateModuleBStudent(idx, 'performanceBefore', e.target.value)}>
+                      <option value="">Select</option>
+                      {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Performance After</label>
+                    <select className="field-select" value={student.performanceAfter} onChange={e => updateModuleBStudent(idx, 'performanceAfter', e.target.value)}>
+                      <option value="">Select</option>
+                      {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addModuleBStudent}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Student
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👥</span> Respondents
+            </div>
+            {moduleBData.respondents.map((resp, idx) => (
+              <div key={idx} className="row-card">
+                <button className="remove-btn" type="button" onClick={() => removeModuleBRespondent(idx)} title="Remove">✕</button>
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Name <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['bRespond' + idx + 'Name'] ? 'field-error' : ''}`} value={resp.name} onChange={e => updateModuleBRespondent(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                  </div>
+                  <div>
+                    <label className="field-label">Affiliation <span className="required">*</span></label>
+                    <select className="field-select" value={resp.affiliation} onChange={e => updateModuleBRespondent(idx, 'affiliation', e.target.value)}>
+                      <option value="">Select</option>
+                      {affiliationOptions.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Age</label>
+                    <input type="number" value={resp.age} onChange={e => updateModuleBRespondent(idx, 'age', e.target.value)} placeholder="e.g., 30" className="field-input" />
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <select className="field-select" value={resp.gender} onChange={e => updateModuleBRespondent(idx, 'gender', e.target.value)}>
+                      {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addModuleBRespondent}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Respondent
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>✅</span> Actions & Status
+            </div>
+            <div className="panel-grid-1">
+              <div>
+                <label className="field-label">Actions Taken <span className="required">*</span></label>
+                <textarea className={`field-textarea ${validationErrors.bActionsTaken ? 'field-error' : ''}`} value={moduleBData.actionsTaken} onChange={e => updateModuleBField('actionsTaken', e.target.value)} placeholder="Describe resolution steps taken..." />
+                {validationErrors.bActionsTaken && <div className="error-text">{validationErrors.bActionsTaken}</div>}
+              </div>
+              <div>
+                <label className="field-label">Case Status <span className="required">*</span></label>
+                <select className="field-select" value={moduleBData.status} onChange={e => updateModuleBField('status', e.target.value)}>
+                  {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeModule === 'C' && (
+        <>
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Center Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Central Elementary School" />
+                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
+              </div>
+              <div>
+                <label className="field-label">Center ID <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-10293" />
+                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
+              </div>
+              <div>
+                <label className="field-label">Reporting Year <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
+              </div>
+              <div>
+                <label className="field-label">Address <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="Full street address" />
+                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
+              </div>
+              <div>
+                <label className="field-label">Classification <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Public', 'Private'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="c-classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Level <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="c-level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
+                      <span style={{ fontSize: '12px' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📋</span> Risk Classification Categories
+            </div>
+            <div className="category-pills">
+              {moduleCCategories.map(cat => (
+                <button key={cat.id} className={`category-btn ${activeCRiskCategory === cat.id ? 'active' : ''}`} onClick={() => setActiveCRiskCategory(cat.id)}>
+                  {cat.id}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleCCategories.find(c => c.id === activeCRiskCategory)?.label}</div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📅</span> Risk Record — <strong>{activeCRiskCategory}</strong>
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Date Identified <span className="required">*</span></label>
+                <input type="date" className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Date'] ? 'field-error' : ''}`} value={currentCData.dateIdentified} onChange={e => updateCField('dateIdentified', e.target.value)} />
+                {validationErrors['c' + activeCRiskCategory + 'Date'] && <div className="error-text">{validationErrors['c' + activeCRiskCategory + 'Date']}</div>}
+              </div>
+              <div>
+                <label className="field-label">Location / Environment <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Loc'] ? 'field-error' : ''}`} value={currentCData.location} onChange={e => updateCField('location', e.target.value)} placeholder="e.g., Community Environment / Near School Grounds" />
+                {validationErrors['c' + activeCRiskCategory + 'Loc'] && <div className="error-text">{validationErrors['c' + activeCRiskCategory + 'Loc']}</div>}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '16px' }}>
+              <label className="field-label">Contributing Risk Factors</label>
+              <div className="chip-list">
+                {riskFactorOptions.map(rf => (
+                  <label key={rf.id} className="checkbox-chip">
+                    <input type="checkbox" checked={currentCData.riskFactors.includes(rf.id)} onChange={() => toggleCRiskFactor(rf.id)} />
+                    <span>{rf.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👤</span> Individual at Risk
+            </div>
+            {currentCData.individuals.map((ind, idx) => (
+              <div key={idx} className="row-card">
+                {currentCData.individuals.length > 1 && <button className="remove-btn" type="button" onClick={() => removeCIndividual(idx)} title="Remove">✕</button>}
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Name <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Ind' + idx + 'Name'] ? 'field-error' : ''}`} value={ind.name} onChange={e => updateCIndividual(idx, 'name', e.target.value)} placeholder="Last, First, M.I." />
+                  </div>
+                  <div>
+                    <label className="field-label">Age <span className="required">*</span></label>
+                    <input type="number" className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Ind' + idx + 'Age'] ? 'field-error' : ''}`} value={ind.age} onChange={e => updateCIndividual(idx, 'age', e.target.value)} placeholder="e.g., 11" />
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <div className="radio-group">
+                      {['M', 'F', 'LGBTQIA+'].map(g => (
+                        <label key={g} className="radio-option">
+                          <input type="radio" name={'c-gender-' + idx} value={g} checked={ind.gender === g} onChange={e => updateCIndividual(idx, 'gender', e.target.value)} />
+                          <span>{g}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="field-label">Learner with Disability</label>
+                    <div className="chip-list" style={{ marginTop: '4px' }}>
+                      {['Yes', 'No'].map(opt => (
+                        <label key={opt} className={`radio-option ${ind.disability === opt ? 'active' : ''}`} style={{ padding: '6px 12px', cursor: 'pointer' }}>
+                          <input type="radio" name={'c-disability-' + idx} value={opt} checked={ind.disability === opt} onChange={e => updateCIndividual(idx, 'disability', e.target.value)} />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label className="field-label">Family Background Context</label>
+                    <div className="chip-list">
+                      {familyContextOptions.map(fc => (
+                        <label key={fc.id} className="checkbox-chip">
+                          <input type="checkbox" checked={(ind.familyContexts || []).includes(fc.id)} onChange={() => toggleCFamilyContext(idx, fc.id)} />
+                          <span>{fc.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="field-label">Enrollment Status After Intervention</label>
+                    <select className="field-select" value={ind.enrollmentStatus} onChange={e => updateCIndividual(idx, 'enrollmentStatus', e.target.value)}>
+                      <option value="">Select</option>
+                      {cEnrollmentOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Performance Before Intervention</label>
+                    <select className="field-select" value={ind.performanceBefore} onChange={e => updateCIndividual(idx, 'performanceBefore', e.target.value)}>
+                      <option value="">Select</option>
+                      {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Performance After Intervention</label>
+                    <select className="field-select" value={ind.performanceAfter} onChange={e => updateCIndividual(idx, 'performanceAfter', e.target.value)}>
+                      <option value="">Select</option>
+                      {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addCIndividual}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Row
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>🛡️</span> Protective & Diversion Intervention
+            </div>
+            <div className="panel-grid-1">
+              <div>
+                <label className="field-label">Immediate Intervention Applied <span className="required">*</span></label>
+                <textarea className={`field-textarea ${validationErrors['c' + activeCRiskCategory + 'Int'] ? 'field-error' : ''}`} value={currentCData.intervention} onChange={e => updateCField('intervention', e.target.value)} placeholder="Describe counseling, home visits, or community intervention..." />
+                {validationErrors['c' + activeCRiskCategory + 'Int'] && <div className="error-text">{validationErrors['c' + activeCRiskCategory + 'Int']}</div>}
+              </div>
+              <div>
+                <label className="field-label">Status <span className="required">*</span></label>
+                <select className="field-select" value={currentCData.status} onChange={e => updateCField('status', e.target.value)}>
+                  {cStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeModule === 'D' && (
+        <>
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Center Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Central Elementary School" />
+                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
+              </div>
+              <div>
+                <label className="field-label">Center ID <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-10293" />
+                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
+              </div>
+              <div>
+                <label className="field-label">Reporting Year <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
+              </div>
+              <div>
+                <label className="field-label">Address <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="Full street address" />
+                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
+              </div>
+              <div>
+                <label className="field-label">Classification <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Public', 'Private'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="d-classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Level <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="d-level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
+                      <span style={{ fontSize: '12px' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📋</span> Offense & Incident Classification Categories
+            </div>
+            <div className="category-pills">
+              {moduleDCategories.map(cat => (
+                <button key={cat.id} className={`category-btn ${activeDCategory === cat.id ? 'active' : ''}`} onClick={() => setActiveDCategory(cat.id)}>
+                  {cat.id}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleDCategories.find(c => c.id === activeDCategory)?.label}</div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📅</span> Incident Record — <strong>{activeDCategory}</strong>
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Date of Offense / Incident <span className="required">*</span></label>
+                <input type="date" className={`field-input ${validationErrors['d' + activeDCategory + 'Date'] ? 'field-error' : ''}`} value={currentDData.offenseDate} onChange={e => updateDField('offenseDate', e.target.value)} />
+                {validationErrors['d' + activeDCategory + 'Date'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Date']}</div>}
+              </div>
+              <div>
+                <label className="field-label">Location <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors['d' + activeDCategory + 'Loc'] ? 'field-error' : ''}`} value={currentDData.location} onChange={e => updateDField('location', e.target.value)} placeholder="e.g., Off-Campus / School Perimeter" />
+                {validationErrors['d' + activeDCategory + 'Loc'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Loc']}</div>}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '16px' }}>
+              <label className="field-label">Specific Violation Classification</label>
+              <div className="chip-list">
+                {violationOptions.map(v => (
+                  <label key={v.id} className="checkbox-chip">
+                    <input type="checkbox" checked={currentDData.violations.includes(v.id)} onChange={() => toggleDViolation(v.id)} />
+                    <span>{v.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👤</span> Primary Subject Details
+            </div>
+            {currentDData.subjects.map((sub, idx) => (
+              <div key={idx} className="row-card">
+                {currentDData.subjects.length > 1 && <button className="remove-btn" type="button" onClick={() => removeDSubject(idx)} title="Remove">✕</button>}
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Identification Reference <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref'] ? 'field-error' : ''}`} value={sub.identificationRef} onChange={e => updateDSubject(idx, 'identificationRef', e.target.value)} placeholder="e.g., LRN-10928301293" />
+                    {validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref']}</div>}
+                  </div>
+                  <div>
+                    <label className="field-label">Age <span className="required">*</span></label>
+                    <input type="number" className={`field-input ${validationErrors['d' + activeDCategory + 'Sub' + idx + 'Age'] ? 'field-error' : ''}`} value={sub.age} onChange={e => updateDSubject(idx, 'age', e.target.value)} placeholder="e.g., 15" />
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <div className="radio-group">
+                      {['M', 'F', 'LGBTQIA+'].map(g => (
+                        <label key={g} className="radio-option">
+                          <input type="radio" name={'d-gender-' + idx} value={g} checked={sub.gender === g} onChange={e => updateDSubject(idx, 'gender', e.target.value)} />
+                          <span>{g}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="field-label">Learner with Disability</label>
+                    <div className="chip-list" style={{ marginTop: '4px' }}>
+                      {['Yes', 'No'].map(opt => (
+                        <label key={opt} className={`radio-option ${sub.disability === opt ? 'active' : ''}`} style={{ padding: '6px 12px', cursor: 'pointer' }}>
+                          <input type="radio" name={'d-disability-' + idx} value={opt} checked={sub.disability === opt} onChange={e => updateDSubject(idx, 'disability', e.target.value)} />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addDSubject}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Row
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>🛡️</span> Rehabilitation & Diversion Details
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label className="field-label">Diversion / Intervention Program Type</label>
+              <div className="chip-list">
+                {programOptions.map(p => (
+                  <label key={p.id} className="checkbox-chip">
+                    <input type="checkbox" checked={currentDData.programs.includes(p.id)} onChange={() => toggleDProgram(p.id)} />
+                    <span>{p.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="panel-grid-1">
+              <div>
+                <label className="field-label">Program Narrative Description <span className="required">*</span></label>
+                <textarea className={`field-textarea ${validationErrors['d' + activeDCategory + 'Narr'] ? 'field-error' : ''}`} value={currentDData.narrative} onChange={e => updateDField('narrative', e.target.value)} placeholder="Describe community reintegration or school-initiated rehabilitation plans..." />
+                {validationErrors['d' + activeDCategory + 'Narr'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Narr']}</div>}
+              </div>
+              <div>
+                <label className="field-label">Enrollment Status After Intervention</label>
+                <select className="field-select" value={currentDData.enrollmentStatus} onChange={e => updateDField('enrollmentStatus', e.target.value)}>
+                  <option value="">Select</option>
+                  {dEnrollmentOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+              <div className="panel-grid">
+                <div>
+                  <label className="field-label">Performance Before Intervention</label>
+                  <select className="field-select" value={currentDData.performanceBefore} onChange={e => updateDField('performanceBefore', e.target.value)}>
+                    <option value="">Select</option>
+                    {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="field-label">Performance After Intervention</label>
+                  <select className="field-select" value={currentDData.performanceAfter} onChange={e => updateDField('performanceAfter', e.target.value)}>
+                    <option value="">Select</option>
+                    {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Status <span className="required">*</span></label>
+                <select className="field-select" value={currentDData.status} onChange={e => updateDField('status', e.target.value)}>
+                  {dStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeModule === 'E' && (
+        <>
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Center Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Central Elementary School" />
+                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
+              </div>
+              <div>
+                <label className="field-label">Center ID <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-10293" />
+                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
+              </div>
+              <div>
+                <label className="field-label">Reporting Year <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
+              </div>
+              <div>
+                <label className="field-label">Address <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="Full street address" />
+                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
+              </div>
+              <div>
+                <label className="field-label">Classification <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Public', 'Private'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="e-classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Level <span className="required">*</span></label>
+                <div className="radio-group">
+                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="e-level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
+                      <span style={{ fontSize: '12px' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📋</span> Concern Categories
+            </div>
+            <div className="category-pills">
+              {moduleECategories.map(cat => (
+                <button key={cat.id} className={`category-btn ${activeECategory === cat.id ? 'active' : ''}`} onClick={() => setActiveECategory(cat.id)}>
+                  {cat.id}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleECategories.find(c => c.id === activeECategory)?.label}</div>
+          </div>
+
+          <div className="card">
+            <div className="section-title">
+              <span style={{ fontSize: '20px' }}>📅</span> Incident Details — <strong>{activeECategory}</strong>
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Date of Incident <span className="required">*</span></label>
+                <input type="date" className={`field-input ${validationErrors['e' + activeECategory + 'Date'] ? 'field-error' : ''}`} value={currentEData.incidentDate} onChange={e => updateEField('incidentDate', e.target.value)} />
+                {validationErrors['e' + activeECategory + 'Date'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Date']}</div>}
+              </div>
+              <div>
+                <label className="field-label">Place of Incident <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors['e' + activeECategory + 'Place'] ? 'field-error' : ''}`} value={currentEData.incidentPlace} onChange={e => updateEField('incidentPlace', e.target.value)} placeholder="e.g., Off-Campus, Online Platform" />
+                {validationErrors['e' + activeECategory + 'Place'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Place']}</div>}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '16px' }}>
+              <label className="field-label">Specific Concern Classification</label>
+              <div className="chip-list">
+                {eConcernOptions.map(c => (
+                  <label key={c.id} className="checkbox-chip">
+                    <input type="checkbox" checked={currentEData.concerns.includes(c.id)} onChange={() => toggleEConcern(c.id)} />
+                    <span>{c.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👤</span> Affected Student / Victim Details
+            </div>
+            {currentEData.victims.map((vic, idx) => (
+              <div key={idx} className="row-card">
+                {currentEData.victims.length > 1 && <button className="remove-btn" type="button" onClick={() => removeEVictim(idx)} title="Remove">✕</button>}
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Name <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['e' + activeECategory + 'Vic' + idx + 'Name'] ? 'field-error' : ''}`} value={vic.name} onChange={e => updateEVictim(idx, 'name', e.target.value)} placeholder="Last, First, M.I." />
+                    {validationErrors['e' + activeECategory + 'Vic' + idx + 'Name'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Vic' + idx + 'Name']}</div>}
+                  </div>
+                  <div>
+                    <label className="field-label">Age <span className="required">*</span></label>
+                    <input type="number" className={`field-input ${validationErrors['e' + activeECategory + 'Vic' + idx + 'Age'] ? 'field-error' : ''}`} value={vic.age} onChange={e => updateEVictim(idx, 'age', e.target.value)} placeholder="e.g., 13" />
+                    {validationErrors['e' + activeECategory + 'Vic' + idx + 'Age'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Vic' + idx + 'Age']}</div>}
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <div className="radio-group">
+                      {['M', 'F', 'LGBTQIA+'].map(g => (
+                        <label key={g} className="radio-option">
+                          <input type="radio" name={'e-vic-gender-' + idx} value={g} checked={vic.gender === g} onChange={e => updateEVictim(idx, 'gender', e.target.value)} />
+                          <span>{g}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="field-label">Learner with Disability</label>
+                    <div className="chip-list" style={{ marginTop: '4px' }}>
+                      {['Yes', 'No'].map(opt => (
+                        <label key={opt} className={`radio-option ${vic.disability === opt ? 'active' : ''}`} style={{ padding: '6px 12px', cursor: 'pointer' }}>
+                          <input type="radio" name={'e-vic-disability-' + idx} value={opt} checked={vic.disability === opt} onChange={e => updateEVictim(idx, 'disability', e.target.value)} />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addEVictim}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Row
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>👥</span> Subject / Respondent Details
+            </div>
+            {currentEData.respondents.map((resp, idx) => (
+              <div key={idx} className="row-card">
+                {currentEData.respondents.length > 1 && <button className="remove-btn" type="button" onClick={() => removeERespondent(idx)} title="Remove">✕</button>}
+                <div className="panel-grid">
+                  <div>
+                    <label className="field-label">Name <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['e' + activeECategory + 'Resp' + idx + 'Name'] ? 'field-error' : ''}`} value={resp.name} onChange={e => updateERespondent(idx, 'name', e.target.value)} placeholder="Last, First, M.I." />
+                    {validationErrors['e' + activeECategory + 'Resp' + idx + 'Name'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Resp' + idx + 'Name']}</div>}
+                  </div>
+                  <div>
+                    <label className="field-label">Designation / Relationship</label>
+                    <select className="field-select" value={resp.designation} onChange={e => updateERespondent(idx, 'designation', e.target.value)}>
+                      <option value="">Select</option>
+                      {affiliationOptions.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="field-label">Age</label>
+                    <input type="number" className="field-input" value={resp.age} onChange={e => updateERespondent(idx, 'age', e.target.value)} placeholder="e.g., 28" />
+                  </div>
+                  <div>
+                    <label className="field-label">Gender</label>
+                    <div className="radio-group">
+                      {['M', 'F', 'LGBTQIA+'].map(g => (
+                        <label key={g} className="radio-option">
+                          <input type="radio" name={'e-resp-gender-' + idx} value={g} checked={resp.gender === g} onChange={e => updateERespondent(idx, 'gender', e.target.value)} />
+                          <span>{g}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button className="add-btn" type="button" onClick={addERespondent}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Row
+            </button>
+          </div>
+
+          <div className="card">
+            <div className="section-title-sm">
+              <span style={{ fontSize: '18px' }}>✅</span> Actions Taken & Case Status
+            </div>
+            <div className="panel-grid-1">
+              <div>
+                <label className="field-label">Actions Taken <span className="required">*</span></label>
+                <textarea className={`field-textarea ${validationErrors['e' + activeECategory + 'Act'] ? 'field-error' : ''}`} value={currentEData.actionsTaken} onChange={e => updateEField('actionsTaken', e.target.value)} placeholder="Describe protection measures or agency referrals..." />
+                {validationErrors['e' + activeECategory + 'Act'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Act']}</div>}
+              </div>
+              <div>
+                <label className="field-label">Status <span className="required">*</span></label>
+                <select className="field-select" value={currentEData.status} onChange={e => updateEField('status', e.target.value)}>
+                  {eStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      <div className="card">
+        <div className="section-title">
+          <span style={{ fontSize: '20px' }}>📊</span> Summary Counters
+        </div>
+        <div className="counter-row">
+          <div className="counter-pill">
+            <div className="counter-num">{counters.resolved}</div>
+            <div className="counter-label">Resolved</div>
+          </div>
+          <div className="counter-pill">
+            <div className="counter-num">{counters.ongoing}</div>
+            <div className="counter-label">Ongoing</div>
+          </div>
+          <div className="counter-pill">
+            <div className="counter-num">{counters.external}</div>
+            <div className="counter-label">Gov Agency</div>
+          </div>
+          <div className="counter-pill">
+            <div className="counter-num">{counters.ngo}</div>
+            <div className="counter-label">NGO</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="section-title">
+          <span style={{ fontSize: '20px' }}>✍️</span> Signatures
+        </div>
+        <div className="panel-grid">
+          <div className="row-card">
+            <div style={{ fontSize: '11px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '12px' }}>Prepared By</div>
+            <div className="panel-grid-1">
+              <div>
+                <label className="field-label">Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.preparedName ? 'field-error' : ''}`} value={preparedBy.name} onChange={e => setPreparedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
+              </div>
+              <div>
+                <label className="field-label">Designation</label>
+                <input className="field-input" value={preparedBy.designation} onChange={e => setPreparedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., Guidance Counselor" />
+              </div>
+              <div>
+                <label className="field-label">Date <span className="required">*</span></label>
+                <input type="date" className={`field-input ${validationErrors.preparedDate ? 'field-error' : ''}`} value={preparedBy.date} onChange={e => setPreparedBy(p => ({ ...p, date: e.target.value }))} />
+              </div>
+            </div>
+          </div>
+          <div className="row-card">
+            <div style={{ fontSize: '11px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '12px' }}>Validated By</div>
+            <div className="panel-grid-1">
+              <div>
+                <label className="field-label">Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.validatedName ? 'field-error' : ''}`} value={validatedBy.name} onChange={e => setValidatedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
+              </div>
+              <div>
+                <label className="field-label">Designation</label>
+                <input className="field-input" value={validatedBy.designation} onChange={e => setValidatedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., School Principal" />
+              </div>
+              <div>
+                <label className="field-label">Date <span className="required">*</span></label>
+                <input type="date" className={`field-input ${validationErrors.validatedDate ? 'field-error' : ''}`} value={validatedBy.date} onChange={e => setValidatedBy(p => ({ ...p, date: e.target.value }))} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="sticky-footer">
+        <button className="secondary-btn" type="button">💾 Save Draft</button>
+        <button className="primary-btn" type="button" onClick={handleSubmit}>📤 Submit Report</button>
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<ModuleAReportingPanel />);
+
+</script>
+</body>
+</html>
