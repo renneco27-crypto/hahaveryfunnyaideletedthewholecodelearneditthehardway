@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Annex A — Student Compliance Reporting</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<style>
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+body { margin:0; font-family:'Inter',sans-serif; background:#f8f9ff; color:#121c28; }
+button,input,select,textarea { font:inherit; }
+.page { max-width:1280px; margin:0 auto; padding:24px 18px 120px; }
+.topbar { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
+.brand { display:flex; align-items:center; gap:12px; }
+.brand-mark { width:44px; height:44px; border-radius:50%; background:#d6e3ff; color:#1261a3; display:grid; place-items:center; font-weight:800; }
+.confidential-pill { border:1.5px solid #ffb5b5; color:#ffd8d8; background:#002046; padding:6px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; }
+.sticky-summary { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.95); border:1px solid #c4c6cf; border-radius:16px; padding:14px 16px; box-shadow:0 10px 24px rgba(0,32,70,.06); backdrop-filter:blur(8px); margin-bottom:16px; }
+.summary-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; align-items:center; }
+.summary-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
+.summary-value { font-size:13px; font-weight:700; color:#002046; }
+.toolbar { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; }
+.mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
+.mode-btn { padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; }
+.mode-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
+.card { background:#ffffff; border:1px solid #c4c6cf; border-radius:16px; padding:18px; box-shadow:0 10px 24px rgba(0,32,70,.06); }
+.section-title { font-family:'Atkinson Hyperlegible Next',sans-serif; font-size:18px; font-weight:800; color:#002046; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.panel-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.field-label { display:flex; align-items:center; gap:4px; margin-bottom:6px; font-size:12px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
+.required { color:#ba1a1a; margin-left:2px; }
+.field-input,.field-select,.field-textarea { width:100%; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; color:#121c28; }
+.field-input:focus,.field-select:focus,.field-textarea:focus { outline:none; border-color:#1261a3; box-shadow:0 0 0 3px rgba(18,97,163,.12); }
+.field-textarea { min-height:84px; resize:vertical; }
+.tip-wrap { position:relative; display:inline-flex; align-items:center; gap:4px; }
+.tip-icon { cursor:help; color:#1261a3; font-size:14px; }
+.tip-box { display:none; position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); width:280px; background:#142c51; color:white; padding:10px 12px; border-radius:8px; font-size:12px; line-height:1.5; z-index:30; box-shadow:0 10px 24px rgba(0,0,0,.16); }
+.tip-box:after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:#142c51; }
+.tip-wrap:hover .tip-box,.tip-wrap:focus-within .tip-box { display:block; }
+.chip-list { display:flex; flex-wrap:wrap; gap:10px; }
+.checkbox-chip { display:flex; align-items:flex-start; gap:8px; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; min-width:180px; }
+.checkbox-chip input { margin-top:2px; accent-color:#1261a3; }
+.row-card { border:1px solid #c4c6cf; border-radius:12px; padding:14px; background:#fbfdff; position:relative; margin-bottom:12px; }
+.remove-btn { position:absolute; top:10px; right:10px; border:none; background:transparent; color:#44474e; cursor:pointer; }
+.add-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; margin-top:8px; border:1px dashed #1261a3; border-radius:999px; color:#1261a3; background:transparent; cursor:pointer; font-weight:700; }
+.category-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.category-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; }
+.category-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
+.counter-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:12px; }
+.counter-pill { border:1px solid #c4c6cf; border-radius:12px; padding:12px 10px; background:#ffffff; text-align:center; }
+.counter-num { font-size:24px; font-weight:800; color:#002046; }
+.counter-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
+.sticky-footer { position:sticky; bottom:0; z-index:20; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-top:1px solid #c4c6cf; padding:12px 0; margin-top:16px; display:flex; justify-content:flex-end; gap:10px; }
+.primary-btn { background:#1261a3; color:#ffffff; }
+.secondary-btn { background:#ffffff; color:#1261a3; border:1px solid #1261a3; }
+.primary-btn,.secondary-btn { border:none; border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer; }
+.success-card { background:linear-gradient(135deg,#f1fbf4,#ffffff); border:1px solid #cbe9d4; border-radius:16px; padding:18px; margin-top:16px; }
+.hint-note { font-size:12px; color:#44474e; margin-top:4px; }
+.compact { font-size:12px; color:#44474e; }
+.field-error { border-color:#ba1a1a !important; background:#fff5f5 !important; }
+.error-text { color:#ba1a1a; font-size:11px; font-weight:700; margin-top:4px; display:flex; align-items:center; gap:4px; }
+.error-banner { background:#fff5f5; border:1px solid #ffcdd2; border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; gap:8px; color:#ba1a1a; font-weight:700; font-size:13px; }
+@keyframes slideInUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+.slide-in { animation:slideInUp .6s ease-out forwards; opacity:0; }
+@media (max-width:900px) { .summary-grid,.panel-grid,.counter-row { grid-template-columns:1fr; } }
+</style>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        tertiary: "#1b2225", "on-background": "#121c28", "surface-variant": "#d9e3f4",
+        primary: "#002046", "surface-tint": "#465f88", "on-tertiary-fixed-variant": "#41484c",
+        "tertiary-container": "#30373b", "inverse-primary": "#aec7f7", "secondary-fixed": "#d2e4ff",
+        "on-primary-fixed-variant": "#2e476f", background: "#f8f9ff", "on-surface": "#121c28",
+        "surface-bright": "#f8f9ff", "primary-fixed-dim": "#aec7f7", "error-container": "#ffdad6",
+        "outline-variant": "#c4c6cf", "secondary-fixed-dim": "#a1c9ff", "surface-container-highest": "#d9e3f4",
+        "surface-container-lowest": "#ffffff", error: "#ba1a1a", "on-primary-container": "#87a0cd",
+        "on-tertiary-fixed": "#151d20", surface: "#f8f9ff", "surface-container-high": "#dfe9fa",
+        "inverse-on-surface": "#eaf1ff", "on-tertiary": "#ffffff", "on-tertiary-container": "#99a0a5",
+        "on-error-container": "#93000a", "tertiary-fixed": "#dce3e8", "surface-container-low": "#eef4ff",
+        "tertiary-fixed-dim": "#c0c7cc", "on-primary": "#ffffff", "on-error": "#ffffff",
+        "on-primary-fixed": "#001b3d", outline: "#74777f", "secondary-container": "#7ab7ff",
+        secondary: "#1261a3", "on-secondary-fixed": "#001c37", "surface-container": "#e5eeff",
+        "on-surface-variant": "#44474e", "inverse-surface": "#27313e", "primary-fixed": "#d6e3ff",
+        "on-secondary": "#ffffff", "on-secondary-fixed-variant": "#00487f", "on-secondary-container": "#00477d",
+        "primary-container": "#1b365d", "surface-dim": "#d1dbec"
+      },
+      borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+      spacing: { "container-max": "1280px", gutter: "24px", lg: "40px", xs: "8px", sm: "16px", xl: "64px", md: "24px", base: "4px" },
+      fontFamily: { "headline-lg": ["Atkinson Hyperlegible Next"], display: ["Atkinson Hyperlegible Next"], "body-md": ["Inter"], "label-md": ["Inter"], "headline-md": ["Atkinson Hyperlegible Next"], caption: ["Inter"] },
+      fontSize: { "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }], "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }], display: ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }], "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "600" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }], caption: ["12px", { lineHeight: "16px", fontWeight: "400" }] }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-background text-on-surface">
+<div class="fixed top-0 left-0 w-full h-full z-[-1] overflow-hidden pointer-events-none">
+<img alt="Background" class="w-full h-full object-cover opacity-[0.08] blur-[4px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRPcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
+</div>
+<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">description</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Student Compliance Reporting</p>
+<p class="font-caption text-caption text-on-surface-variant">Annex A — Modules A–E</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md text-label-md">Account</span>
+</button>
+<button class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</button>
+</div>
+</header>
+<div class="flex min-h-[calc(100vh-64px)]">
+<aside class="w-64 flex flex-col p-sm bg-surface-container-low border-r border-outline-variant sticky top-16 h-[calc(100vh-64px)]">
+<nav class="flex flex-col gap-base">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Annex A</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Admin</span>
+</a>
+</nav>
+</aside>
+<main class="flex-1 p-lg max-w-container-max mx-auto overflow-y-auto">
+<div id="root"></div>
+</main>
+</div>
+<footer class="w-full py-md px-lg flex justify-between items-center bg-surface-dim border-t border-outline-variant text-on-surface">
+<p class="font-caption text-caption">© 2026 Mae Cortes All rights reserved.</p>
+<div class="flex gap-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Accessibility Statement</a>
+</div>
+</footer>
+<script type="text/babel">
+      const { useMemo, useState } = React;
