@@ -23,16 +23,9 @@ button,input,select,textarea { font:inherit; }
 .confidential-pill { border:1.5px solid #ffb5b5; color:#ffd8d8; background:#002046; padding:6px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; }
 .sticky-summary { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.95); border:1px solid #c4c6cf; border-radius:16px; padding:14px 16px; box-shadow:0 10px 24px rgba(0,32,70,.06); backdrop-filter:blur(8px); margin-bottom:16px; }
 .summary-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; align-items:center; }
-.summary-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
-.summary-value { font-size:13px; font-weight:700; color:#002046; }
-.toolbar { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; }
-.mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
-.mode-btn { padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; }
 .mode-btn:hover { background:#f0f4ff; }
 .mode-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
 .card { background:#ffffff; border:1px solid #c4c6cf; border-radius:16px; padding:18px; box-shadow:0 10px 24px rgba(0,32,70,.06); margin-bottom:16px; }
-.section-title { font-family:'Atkinson Hyperlegible Next',sans-serif; font-size:18px; font-weight:800; color:#002046; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-.section-title-sm { font-family:'Atkinson Hyperlegible Next',sans-serif; font-size:16px; font-weight:800; color:#002046; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
 .panel-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
 .panel-grid-1 { display:grid; grid-template-columns:1fr; gap:12px; }
 .field-label { display:flex; align-items:center; gap:4px; margin-bottom:6px; font-size:12px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
@@ -82,6 +75,13 @@ button,input,select,textarea { font:inherit; }
 @keyframes slideInUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
 .slide-in { animation:slideInUp .6s ease-out forwards; opacity:0; }
 @media (max-width:900px) { .panel-grid, .counter-row { grid-template-columns:1fr; } .summary-grid { grid-template-columns:repeat(2, 1fr); } }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+::webkit-scrollbar-track { background: transparent; }
+::webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+::webkit-scrollbar-thumb:hover { background: #9ca3af; }
 </style>
 <script>
 tailwind.config = {
@@ -115,7 +115,7 @@ tailwind.config = {
 }
 </script>
 </head>
-<body class="bg-background text-on-surface">
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col">
 <div class="fixed top-0 left-0 w-full h-full z-[-1] overflow-hidden pointer-events-none">
 <img alt="Background" class="w-full h-full object-cover opacity-[0.08] blur-[4px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRPcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
 </div>
@@ -646,53 +646,37 @@ const ModuleAReportingPanel = () => {
 
   return (
     <div className="page">
-      <div className="topbar">
-        <div className="brand">
-          <div className="brand-mark">LR</div>
-          <div>
-            <div style={{ fontSize: '12px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.14em' }}>Student Safety Reporting</div>
-            <div style={{ fontSize: '20px', fontWeight: '800', color: '#002046' }}>Module {activeModule} {activeModule === 'A' ? '— Incident Report' : activeModule === 'B' ? '— Behavioral Report' : activeModule === 'C' ? '— Risk Registry' : activeModule === 'D' ? '— School-Based Incident Report' : '— School-Based Incident Report'}</div>
-          </div>
+      <div className="flex justify-between items-end mb-sm">
+        <div>
+          <span className="text-secondary font-bold font-label-md text-label-md uppercase tracking-wider">Official Compliance Report</span>
+          <div style={{ fontSize: '20px', fontWeight: '800', color: '#002046' }}>Annex A — Module {activeModule} {activeModule === 'A' ? '— Incident Report' : activeModule === 'B' ? '— Behavioral Report' : activeModule === 'C' ? '— Risk Registry' : activeModule === 'D' ? '— School-Based Incident Report' : '— School-Based Incident Report'}</div>
         </div>
-        <div className="confidential-pill">CONFIDENTIAL</div>
+        <div className="flex bg-surface-container-high rounded-full p-1 gap-1">
+          <button className={`px-md py-xs rounded-full font-label-md text-label-md transition-all ${activeModule === 'A' ? 'bg-primary text-on-primary shadow-sm' : 'hover:bg-surface-variant text-on-surface-variant'}`} onClick={() => setActiveModule('A')}>Module A</button>
+          <button className={`px-md py-xs rounded-full font-label-md text-label-md transition-all ${activeModule === 'B' ? 'bg-primary text-on-primary shadow-sm' : 'hover:bg-surface-variant text-on-surface-variant'}`} onClick={() => setActiveModule('B')}>Module B</button>
+          <button className={`px-md py-xs rounded-full font-label-md text-label-md transition-all ${activeModule === 'C' ? 'bg-primary text-on-primary shadow-sm' : 'hover:bg-surface-variant text-on-surface-variant'}`} onClick={() => setActiveModule('C')}>Module C</button>
+          <button className={`px-md py-xs rounded-full font-label-md text-label-md transition-all ${activeModule === 'D' ? 'bg-primary text-on-primary shadow-sm' : 'hover:bg-surface-variant text-on-surface-variant'}`} onClick={() => setActiveModule('D')}>Module D</button>
+          <button className={`px-md py-xs rounded-full font-label-md text-label-md transition-all ${activeModule === 'E' ? 'bg-primary text-on-primary shadow-sm' : 'hover:bg-surface-variant text-on-surface-variant'}`} onClick={() => setActiveModule('E')}>Module E</button>
+        </div>
       </div>
 
-      <div className="toolbar">
-        <div className="mode-switch">
-          <button className={`mode-btn ${activeModule === 'A' ? 'active' : ''}`} onClick={() => setActiveModule('A')}>Module A</button>
-          <button className={`mode-btn ${activeModule === 'B' ? 'active' : ''}`} onClick={() => setActiveModule('B')}>Module B</button>
-          <button className={`mode-btn ${activeModule === 'C' ? 'active' : ''}`} onClick={() => setActiveModule('C')}>Module C</button>
-          <button className={`mode-btn ${activeModule === 'D' ? 'active' : ''}`} onClick={() => setActiveModule('D')}>Module D</button>
-          <button className={`mode-btn ${activeModule === 'E' ? 'active' : ''}`} onClick={() => setActiveModule('E')}>Module E</button>
-        </div>
-        <div className="compact" style={{fontSize:'12px',color:'#44474e'}}>Switch between reporting modules</div>
-      </div>
-
-      <div className="sticky-summary">
-        <div className="summary-grid">
+      <div className="sticky top-0 z-30 bg-surface-container-lowest border border-outline-variant p-md flex items-center justify-between shadow-sm mb-lg">
+        <div className="grid grid-cols-4 gap-lg flex-1">
           <div>
-            <div className="summary-label">School Name</div>
-            <div className="summary-value" style={{ fontSize: '14px' }}>{schoolMetadata.schoolName || 'Pending'}</div>
+            <p className="font-caption text-caption text-on-surface-variant uppercase">School Name</p>
+            <p className="font-label-md text-label-md font-bold text-primary">{schoolMetadata.schoolName || 'Pending'}</p>
           </div>
           <div>
-            <div className="summary-label">School ID</div>
-            <div className="summary-value">{schoolMetadata.schoolId || 'Pending'}</div>
+            <p className="font-caption text-caption text-on-surface-variant uppercase">School ID</p>
+            <p className="font-label-md text-label-md font-bold text-primary">{schoolMetadata.schoolId || 'Pending'}</p>
           </div>
           <div>
-            <div className="summary-label">Reporting Year</div>
-            <div className="summary-value">{schoolMetadata.reportingYear || 'Pending'}</div>
+            <p className="font-caption text-caption text-on-surface-variant uppercase">Reporting Year</p>
+            <p className="font-label-md text-label-md font-bold text-primary">{schoolMetadata.reportingYear || 'Pending'}</p>
           </div>
           <div>
-            <div className="summary-label">Classification</div>
-            <div className="summary-value">{schoolMetadata.classification}</div>
-          </div>
-          <div>
-            <div className="summary-label">Level</div>
-            <div className="summary-value">{schoolMetadata.level}</div>
-          </div>
-          <div>
-            <div className="summary-label">Address</div>
-            <div className="summary-value">{schoolMetadata.address || 'Pending'}</div>
+            <p className="font-caption text-caption text-on-surface-variant uppercase">Submission Status</p>
+            <span className="inline-flex items-center px-xs py-0.5 rounded text-xs font-bold bg-secondary-fixed text-on-secondary-fixed">{formState === 'submitted' ? 'SUBMITTED' : 'DRAFT'}</span>
           </div>
         </div>
       </div>
@@ -713,10 +697,11 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'A' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
-            </div>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">home</span>
+              <h3 className="font-headline-md text-headline-md text-primary">School Metadata
+            </h3>
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
@@ -763,9 +748,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Incident Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">category</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Incident Categories</h3>
             </div>
             <div className="category-pills">
               {categoryOptions.map(cat => (
@@ -777,9 +763,10 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{categoryOptions.find(c => c.id === activeCategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">event_note</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Incident Details</h3>
             </div>
             <div className="panel-grid">
               <div>
@@ -807,9 +794,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Affected Student(s)
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">groups</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Affected Student(s)</h3>
             </div>
             {currentCategoryData.affectedStudents.map((student, idx) => (
               <div key={idx} className="row-card">
@@ -879,9 +867,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👥</span> Initiating Party
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">person_check</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Initiating Party</h3>
             </div>
             {currentCategoryData.initiatingParty.map((party, idx) => (
               <div key={idx} className="row-card">
@@ -909,9 +898,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>✅</span> Actions & Status
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">task_alt</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Actions & Status</h3>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -932,10 +922,11 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'B' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
-            </div>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">home</span>
+              <h3 className="font-headline-md text-headline-md text-primary">School Metadata
+            </h3>
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
@@ -982,9 +973,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Behavior Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">category</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Behavior Categories</h3>
             </div>
             <div className="category-pills">
               {moduleBCategories.map(cat => (
@@ -996,9 +988,10 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>Behavioral concern categories under Module B</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">event_note</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Incident Details</h3>
             </div>
             <div className="panel-grid">
               <div>
@@ -1026,9 +1019,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Affected Student(s)
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">groups</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Affected Student(s)</h3>
             </div>
             {moduleBData.affectedStudents.map((student, idx) => (
               <div key={idx} className="row-card">
@@ -1098,9 +1092,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👥</span> Respondents
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">diversity_3</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Respondents</h3>
             </div>
             {moduleBData.respondents.map((resp, idx) => (
               <div key={idx} className="row-card">
@@ -1135,9 +1130,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>✅</span> Actions & Status
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">task_alt</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Actions & Status</h3>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -1158,10 +1154,11 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'C' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
-            </div>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">home</span>
+              <h3 className="font-headline-md text-headline-md text-primary">School Metadata
+            </h3>
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
@@ -1208,9 +1205,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Risk Classification Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">category</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Risk Classification Categories</h3>
             </div>
             <div className="category-pills">
               {moduleCCategories.map(cat => (
@@ -1222,9 +1220,10 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleCCategories.find(c => c.id === activeCRiskCategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Risk Record — <strong>{activeCRiskCategory}</strong>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">event_note</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Risk Record — <strong>{activeCRiskCategory}</strong></h3>
             </div>
             <div className="panel-grid">
               <div>
@@ -1252,9 +1251,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Individual at Risk
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">person</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Individual at Risk</h3>
             </div>
             {currentCData.individuals.map((ind, idx) => (
               <div key={idx} className="row-card">
@@ -1330,9 +1330,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>🛡️</span> Protective & Diversion Intervention
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">shield</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Protective & Diversion Intervention</h3>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -1353,10 +1354,11 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'D' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
-            </div>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">home</span>
+              <h3 className="font-headline-md text-headline-md text-primary">School Metadata
+            </h3>
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
@@ -1403,9 +1405,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Offense & Incident Classification Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">category</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Offense & Incident Classification Categories</h3>
             </div>
             <div className="category-pills">
               {moduleDCategories.map(cat => (
@@ -1417,9 +1420,10 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleDCategories.find(c => c.id === activeDCategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Record — <strong>{activeDCategory}</strong>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">event_note</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Incident Record — <strong>{activeDCategory}</strong></h3>
             </div>
             <div className="panel-grid">
               <div>
@@ -1447,9 +1451,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Primary Subject Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">person_pin</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Primary Subject Details</h3>
             </div>
             {currentDData.subjects.map((sub, idx) => (
               <div key={idx} className="row-card">
@@ -1494,9 +1499,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>🛡️</span> Rehabilitation & Diversion Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">healing</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Rehabilitation & Diversion Details</h3>
             </div>
             <div style={{ marginBottom: '16px' }}>
               <label className="field-label">Diversion / Intervention Program Type</label>
@@ -1551,10 +1557,11 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'E' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
-            </div>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">home</span>
+              <h3 className="font-headline-md text-headline-md text-primary">School Metadata
+            </h3>
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
@@ -1601,9 +1608,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Concern Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">category</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Concern Categories</h3>
             </div>
             <div className="category-pills">
               {moduleECategories.map(cat => (
@@ -1615,9 +1623,10 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleECategories.find(c => c.id === activeECategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Details — <strong>{activeECategory}</strong>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">event_note</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Incident Details — <strong>{activeECategory}</strong></h3>
             </div>
             <div className="panel-grid">
               <div>
@@ -1645,9 +1654,10 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Affected Student / Victim Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">groups</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Affected Student / Victim Details</h3>
             </div>
             {currentEData.victims.map((vic, idx) => (
               <div key={idx} className="row-card">
@@ -1693,9 +1703,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👥</span> Subject / Respondent Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">diversity_3</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Subject / Respondent Details</h3>
             </div>
             {currentEData.respondents.map((resp, idx) => (
               <div key={idx} className="row-card">
@@ -1736,9 +1747,10 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>✅</span> Actions Taken & Case Status
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+              <span className="material-symbols-outlined text-primary">task_alt</span>
+              <h3 className="font-headline-md text-headline-md text-primary">Actions Taken & Case Status</h3>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -1757,76 +1769,87 @@ const ModuleAReportingPanel = () => {
         </>
       )}
 
-      <div className="card">
-        <div className="section-title">
-          <span style={{ fontSize: '20px' }}>📊</span> Summary Counters
+      <div className="bg-surface-container-low border border-outline-variant p-md">
+        <div className="flex items-center gap-sm mb-md pb-xs border-b-2 border-primary">
+          <span className="material-symbols-outlined text-primary">bar_chart</span>
+          <h3 className="font-headline-md text-headline-md text-primary">Summary Counters</h3>
         </div>
-        <div className="counter-row">
-          <div className="counter-pill">
-            <div className="counter-num">{counters.resolved}</div>
-            <div className="counter-label">Resolved</div>
+        <div className="grid grid-cols-4 gap-md">
+          <div className="text-center">
+            <p className="font-caption text-caption text-on-surface-variant uppercase">Resolved</p>
+            <p className="font-display text-[32px] text-primary">{counters.resolved}</p>
           </div>
-          <div className="counter-pill">
-            <div className="counter-num">{counters.ongoing}</div>
-            <div className="counter-label">Ongoing</div>
+          <div className="text-center border-x border-outline-variant">
+            <p className="font-caption text-caption text-on-surface-variant uppercase">Ongoing</p>
+            <p className="font-display text-[32px] text-primary">{counters.ongoing}</p>
           </div>
-          <div className="counter-pill">
-            <div className="counter-num">{counters.external}</div>
-            <div className="counter-label">Gov Agency</div>
+          <div className="text-center">
+            <p className="font-caption text-caption text-on-surface-variant uppercase">Gov Agency</p>
+            <p className="font-display text-[32px] text-primary">{counters.external}</p>
           </div>
-          <div className="counter-pill">
-            <div className="counter-num">{counters.ngo}</div>
-            <div className="counter-label">NGO</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="section-title">
-          <span style={{ fontSize: '20px' }}>✍️</span> Signatures
-        </div>
-        <div className="panel-grid">
-          <div className="row-card">
-            <div style={{ fontSize: '11px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '12px' }}>Prepared By</div>
-            <div className="panel-grid-1">
-              <div>
-                <label className="field-label">Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.preparedName ? 'field-error' : ''}`} value={preparedBy.name} onChange={e => setPreparedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
-              </div>
-              <div>
-                <label className="field-label">Designation</label>
-                <input className="field-input" value={preparedBy.designation} onChange={e => setPreparedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., Guidance Counselor" />
-              </div>
-              <div>
-                <label className="field-label">Date <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors.preparedDate ? 'field-error' : ''}`} value={preparedBy.date} onChange={e => setPreparedBy(p => ({ ...p, date: e.target.value }))} />
-              </div>
-            </div>
-          </div>
-          <div className="row-card">
-            <div style={{ fontSize: '11px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '12px' }}>Validated By</div>
-            <div className="panel-grid-1">
-              <div>
-                <label className="field-label">Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.validatedName ? 'field-error' : ''}`} value={validatedBy.name} onChange={e => setValidatedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
-              </div>
-              <div>
-                <label className="field-label">Designation</label>
-                <input className="field-input" value={validatedBy.designation} onChange={e => setValidatedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., School Principal" />
-              </div>
-              <div>
-                <label className="field-label">Date <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors.validatedDate ? 'field-error' : ''}`} value={validatedBy.date} onChange={e => setValidatedBy(p => ({ ...p, date: e.target.value }))} />
-              </div>
-            </div>
+          <div className="text-center border-l border-outline-variant">
+            <p className="font-caption text-caption text-on-surface-variant uppercase">NGO</p>
+            <p className="font-display text-[32px] text-primary">{counters.ngo}</p>
           </div>
         </div>
       </div>
 
-      <div className="sticky-footer">
-        <button className="secondary-btn" type="button">💾 Save Draft</button>
-        <button className="primary-btn" type="button" onClick={handleSubmit}>📤 Submit Report</button>
+      <div className="grid grid-cols-2 gap-lg pt-lg">
+        <div className="text-center space-y-lg">
+          <div className="border-b-2 border-on-surface pt-lg pb-xs font-body-lg font-bold">
+            {preparedBy.name || '________________________'}
+          </div>
+          <p className="font-label-md text-label-md text-on-surface-variant uppercase">Prepared By</p>
+          <div className="panel-grid-1 text-left">
+            <div>
+              <label className="field-label">Name <span className="required">*</span></label>
+              <input className={`field-input ${validationErrors.preparedName ? 'field-error' : ''}`} value={preparedBy.name} onChange={e => setPreparedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
+            </div>
+            <div>
+              <label className="field-label">Designation</label>
+              <input className="field-input" value={preparedBy.designation} onChange={e => setPreparedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., Guidance Counselor" />
+            </div>
+            <div>
+              <label className="field-label">Date <span className="required">*</span></label>
+              <input type="date" className={`field-input ${validationErrors.preparedDate ? 'field-error' : ''}`} value={preparedBy.date} onChange={e => setPreparedBy(p => ({ ...p, date: e.target.value }))} />
+            </div>
+          </div>
+        </div>
+        <div className="text-center space-y-lg">
+          <div className="border-b-2 border-on-surface pt-lg pb-xs font-body-lg font-bold italic text-outline">
+            {validatedBy.name || '[Digitally Validated]'}
+          </div>
+          <p className="font-label-md text-label-md text-on-surface-variant uppercase">Validated By</p>
+          <div className="panel-grid-1 text-left">
+            <div>
+              <label className="field-label">Name <span className="required">*</span></label>
+              <input className={`field-input ${validationErrors.validatedName ? 'field-error' : ''}`} value={validatedBy.name} onChange={e => setValidatedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
+            </div>
+            <div>
+              <label className="field-label">Designation</label>
+              <input className="field-input" value={validatedBy.designation} onChange={e => setValidatedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., School Principal" />
+            </div>
+            <div>
+              <label className="field-label">Date <span className="required">*</span></label>
+              <input type="date" className={`field-input ${validationErrors.validatedDate ? 'field-error' : ''}`} value={validatedBy.date} onChange={e => setValidatedBy(p => ({ ...p, date: e.target.value }))} />
+            </div>
+          </div>
+        </div>
       </div>
+
+      <footer className="flex items-center justify-between px-xl py-md bg-surface-container-lowest border-t border-outline-variant">
+        <div className="font-caption text-caption text-on-surface-variant">© 2026 Mae Cortes All rights reserved.</div>
+        <div className="flex items-center gap-sm text-on-surface-variant">
+          <span className="material-symbols-outlined text-green-600" style={{fontSize:'18px'}}>cloud_done</span>
+          <span className="font-caption text-caption">{formState === 'submitted' ? 'Submitted' : 'Draft autosaved'}</span>
+        </div>
+        <div className="flex items-center gap-md">
+          <button className="px-lg py-sm border-2 border-primary text-primary font-label-md text-label-md hover:bg-primary-container hover:text-white transition-all" type="button">Save Draft</button>
+          <button className="px-lg py-sm bg-primary text-on-primary font-label-md text-label-md hover:opacity-90 shadow-lg flex items-center gap-sm" type="button" onClick={handleSubmit}>
+            <span className="material-symbols-outlined" style={{fontSize:'20px'}}>send</span> Submit Report
+          </button>
+        </div>
+      </footer>
     </div>
   );
 };

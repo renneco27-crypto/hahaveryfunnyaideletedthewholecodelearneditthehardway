@@ -1,0 +1,61 @@
+{
+  "module": "C",
+  "title": "Risk Registry (Categories C-1 through C-8)",
+  "metadata": {
+    "schoolName": "Central Elementary School",
+    "schoolId": "SCH-10293",
+    "reportingYear": "2023-2024",
+    "address": "123 Main St, City, Province",
+    "classification": "Public",
+    "level": "Elementary"
+  },
+  "preparedBy": {
+    "name": "Juan Dela Cruz",
+    "designation": "Guidance Counselor",
+    "date": "2026-07-27"
+  },
+  "validatedBy": {
+    "name": "Maria Santos",
+    "designation": "School Principal",
+    "date": "2026-07-28"
+  },
+  "categories": {
+    "C-1": {
+      "label": "Category C-1",
+      "dateIdentified": "2026-07-15",
+      "location": "Community Environment / Near School Grounds",
+      "riskFactors": ["R-1", "R-3"],
+      "individuals": [
+        {
+          "name": "Tan, Wei, C.",
+          "age": 11,
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": ["F-1", "F-4"],
+          "enrollmentStatus": "Maintained Attendance",
+          "performanceBefore": "Proficient",
+          "performanceAfter": "Proficient"
+        }
+      ],
+      "intervention": "Home visit conducted, referred to social welfare.",
+      "status": "Status 2: On-going intervention"
+    },
+    "C-2": {
+      "label": "Category C-2",
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [],
+      "intervention": "",
+      "status": "Status 1: Resolved"
+    },
+    "C-3": { "label": "Category C-3", "dateIdentified": "", "location": "", "riskFactors": [], "individuals": [], "intervention": "", "status": "Status 1: Resolved" },
+    "C-4": { "label": "Category C-4", "dateIdentified": "", "location": "", "riskFactors": [], "individuals": [], "intervention": "", "status": "Status 1: Resolved" },
+    "C-5": { "label": "Category C-5", "dateIdentified": "", "location": "", "riskFactors": [], "individuals": [], "intervention": "", "status": "Status 1: Resolved" },
+    "C-6": { "label": "Category C-6", "dateIdentified": "", "location": "", "riskFactors": [], "individuals": [], "intervention": "", "status": "Status 1: Resolved" },
+    "C-7": { "label": "Category C-7", "dateIdentified": "", "location": "", "riskFactors": [], "individuals": [], "intervention": "", "status": "Status 1: Resolved" },
+    "C-8": { "label": "Category C-8", "dateIdentified": "", "location": "", "riskFactors": [], "individuals": [], "intervention": "", "status": "Status 1: Resolved" }
+  },
+  "submittedAt": "2026-07-27T10:40:00.000Z",
+  "referenceNumber": "LRP-2026-0812"
+}

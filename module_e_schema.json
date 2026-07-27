@@ -1,0 +1,67 @@
+{
+  "module": "E",
+  "title": "School-Based Incident Report (Concern Categories E-1 through E-9)",
+  "metadata": {
+    "schoolName": "Central Elementary School",
+    "schoolId": "SCH-10293",
+    "reportingYear": "2023-2024",
+    "address": "123 Main St, City, Province",
+    "classification": "Public",
+    "level": "Elementary"
+  },
+  "preparedBy": {
+    "name": "Juan Dela Cruz",
+    "designation": "Guidance Counselor",
+    "date": "2026-07-27"
+  },
+  "validatedBy": {
+    "name": "Maria Santos",
+    "designation": "School Principal",
+    "date": "2026-07-28"
+  },
+  "categories": {
+    "E-1": {
+      "label": "Category E-1",
+      "incidentDate": "2026-07-22",
+      "incidentPlace": "Off-Campus, Online Platform",
+      "concerns": ["EC-1", "EC-4", "EC-7"],
+      "victims": [
+        {
+          "name": "Cruz, Ana, R.",
+          "age": 13,
+          "gender": "F",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "Mendoza, Carlo, S.",
+          "designation": "Student",
+          "age": 14,
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "Cyberbullying report filed, devices confiscated for review, parents notified.",
+      "status": "Status 2: On-going intervention"
+    },
+    "E-2": {
+      "label": "Category E-2",
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [],
+      "respondents": [],
+      "actionsTaken": "",
+      "status": "Status 1: Resolved"
+    },
+    "E-3": { "label": "Category E-3", "incidentDate": "", "incidentPlace": "", "concerns": [], "victims": [], "respondents": [], "actionsTaken": "", "status": "Status 1: Resolved" },
+    "E-4": { "label": "Category E-4", "incidentDate": "", "incidentPlace": "", "concerns": [], "victims": [], "respondents": [], "actionsTaken": "", "status": "Status 1: Resolved" },
+    "E-5": { "label": "Category E-5", "incidentDate": "", "incidentPlace": "", "concerns": [], "victims": [], "respondents": [], "actionsTaken": "", "status": "Status 1: Resolved" },
+    "E-6": { "label": "Category E-6", "incidentDate": "", "incidentPlace": "", "concerns": [], "victims": [], "respondents": [], "actionsTaken": "", "status": "Status 1: Resolved" },
+    "E-7": { "label": "Category E-7", "incidentDate": "", "incidentPlace": "", "concerns": [], "victims": [], "respondents": [], "actionsTaken": "", "status": "Status 1: Resolved" },
+    "E-8": { "label": "Category E-8", "incidentDate": "", "incidentPlace": "", "concerns": [], "victims": [], "respondents": [], "actionsTaken": "", "status": "Status 1: Resolved" },
+    "E-9": { "label": "Category E-9", "incidentDate": "", "incidentPlace": "", "concerns": [], "victims": [], "respondents": [], "actionsTaken": "", "status": "Status 1: Resolved" }
+  },
+  "submittedAt": "2026-07-27T10:50:00.000Z",
+  "referenceNumber": "LRP-2026-0814"
+}
