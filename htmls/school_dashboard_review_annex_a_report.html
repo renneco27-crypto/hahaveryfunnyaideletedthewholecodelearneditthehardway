@@ -1,0 +1,417 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Ormoc City Division LRP - School User Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#1b2225",
+                        "on-background": "#121c28",
+                        "surface-variant": "#d9e3f4",
+                        "primary": "#002046",
+                        "surface-tint": "#465f88",
+                        "on-tertiary-fixed-variant": "#41484c",
+                        "tertiary-container": "#30373b",
+                        "inverse-primary": "#aec7f7",
+                        "secondary-fixed": "#d2e4ff",
+                        "on-primary-fixed-variant": "#2e476f",
+                        "background": "#f8f9ff",
+                        "on-surface": "#121c28",
+                        "surface-bright": "#f8f9ff",
+                        "primary-fixed-dim": "#aec7f7",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c4c6cf",
+                        "secondary-fixed-dim": "#a1c9ff",
+                        "surface-container-highest": "#d9e3f4",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#87a0cd",
+                        "on-tertiary-fixed": "#151d20",
+                        "surface": "#f8f9ff",
+                        "surface-container-high": "#dfe9fa",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#99a0a5",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#dce3e8",
+                        "surface-container-low": "#eef4ff",
+                        "tertiary-fixed-dim": "#c0c7cc",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001b3d",
+                        "outline": "#74777f",
+                        "secondary-container": "#7ab7ff",
+                        "secondary": "#1261a3",
+                        "on-secondary-fixed": "#001c37",
+                        "surface-container": "#e5eeff",
+                        "on-surface-variant": "#44474e",
+                        "inverse-surface": "#27313e",
+                        "primary-fixed": "#d6e3ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#00487f",
+                        "on-secondary-container": "#00477d",
+                        "primary-container": "#1b365d",
+                        "surface-dim": "#d1dbec"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Atkinson Hyperlegible Next"],
+                        "headline-md": ["Atkinson Hyperlegible Next"],
+                        "body-md": ["Inter"],
+                        "display": ["Atkinson Hyperlegible Next"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Atkinson Hyperlegible Next"],
+                        "body-lg": ["Inter"],
+                        "caption": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f8f9ff; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fade-in-up 0.5s ease-out forwards; }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+
+        /* FIX 1: prevent content from bleeding under fixed sidebar on exactly lg */
+        /* FIX 2: ensure table scroll container is truly bounded */
+        .table-scroll-wrapper {
+            /* Needed so overflow-x-auto actually constrains the table */
+            min-width: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<!-- FIX 3: prevent body-level horizontal scroll caused by overflowing children -->
+<body class="bg-background text-on-surface font-body-md min-h-screen overflow-x-hidden">
+
+<div aria-hidden="true" class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+<img alt="" class="w-full h-full object-cover opacity-20 blur-[6px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRNcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
+</div>
+
+<!-- TopNavBar — FIX 4: use flex-wrap + gap so items don't overlap on narrow screens -->
+<header class="flex flex-wrap justify-between items-center w-full px-md h-auto min-h-[4rem] py-2 sticky top-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant will-change-transform">
+<div class="flex items-center gap-sm">
+    <div class="flex flex-col">
+        <span class="font-headline-md text-headline-md font-bold text-primary leading-tight">Ormoc City Division LRP</span>
+        <span class="text-xs text-on-surface-variant font-medium">Empowering Integrity, Protecting Futures</span>
+    </div>
+</div>
+<div class="flex items-center gap-sm flex-shrink-0">
+    <button class="flex items-center justify-center gap-xs px-sm h-9 rounded-lg border border-primary text-primary hover:bg-surface-variant transition-all font-label-md whitespace-nowrap">
+        <span class="material-symbols-outlined text-[18px]">account_circle</span>
+        <span class="hidden sm:inline">Account</span>
+    </button>
+    <a href="login_ormoc_city_division_lrp_wired_1.html">
+        <button class="flex items-center justify-center gap-xs px-sm h-9 rounded-lg bg-primary text-on-primary hover:bg-tertiary transition-all shadow-md active:scale-95 font-label-md whitespace-nowrap">
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+            <span class="hidden sm:inline">Logout</span>
+        </button>
+    </a>
+</div>
+</header>
+
+<!-- FIX 5: wrapper uses flex with min-w-0 on children to prevent overflow -->
+<div class="flex min-h-[calc(100vh-4rem)]">
+
+<!-- SideNavBar — unchanged visually, kept fixed+offset -->
+<aside class="hidden lg:flex fixed left-0 top-16 bottom-0 w-64 flex-col p-sm bg-surface-container-low/80 backdrop-blur-sm border-r border-outline-variant z-40">
+    <div class="flex items-center gap-sm p-md mb-lg">
+        <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold flex-shrink-0">SR</div>
+        <div class="min-w-0">
+            <p class="font-label-md text-on-surface truncate">School Rep</p>
+            <p class="text-xs text-on-surface-variant truncate">Regional Office VII</p>
+        </div>
+    </div>
+    <nav class="space-y-xs">
+        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors bg-secondary-container text-on-secondary-container" href="school_dashboard_review_annex_a_report.html">
+            <span class="material-symbols-outlined flex-shrink-0">dashboard</span>
+            Overview
+        </a>
+        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors text-on-surface-variant hover:bg-surface-variant" href="annex_modules_redesigned.html">
+            <span class="material-symbols-outlined flex-shrink-0">description</span>
+            Submissions
+        </a>
+        <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg font-label-md transition-colors" href="school_dashboard_access_management_analytics.html">
+            <span class="material-symbols-outlined flex-shrink-0">admin_panel_settings</span>
+            Access Management
+        </a>
+    </nav>
+</aside>
+
+<!-- FIX 6: main gets min-w-0 so it truly shrinks inside flex; sidebar margin only at lg+ -->
+<main class="flex-1 min-w-0 lg:ml-64 p-md md:p-lg">
+<div class="max-w-container-max mx-auto space-y-lg">
+
+    <!-- Welcome Header -->
+    <section class="mb-lg">
+        <!-- FIX 7: fluid headline size on mobile so it doesn't overflow -->
+        <h1 class="font-headline-lg text-[clamp(20px,4vw,32px)] leading-tight text-primary mb-xs">Annex A: School-Based Report on Incidents of Bullying</h1>
+        <p class="text-on-surface-variant font-body-md max-w-3xl">
+            Consolidated tracking for the Learning Recovery Program (LRP). Ensure all incidents are documented with anonymized identifiers and accurate status updates before official submission.
+        </p>
+    </section>
+
+    <!-- Data Grid Section -->
+    <div class="tab-content block" id="overview-section">
+    <section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+
+        <div class="p-md md:px-lg md:py-md border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-sm">
+            <div class="flex flex-wrap items-center gap-sm">
+                <h2 class="font-headline-md text-headline-md text-on-surface">Incident Log</h2>
+                <span class="bg-secondary-fixed text-on-secondary-fixed px-sm py-0.5 rounded-full text-xs font-bold tracking-wide whitespace-nowrap">4 RECORDS DETECTED</span>
+            </div>
+            <div class="flex items-center gap-sm flex-shrink-0">
+                <button class="flex items-center gap-xs px-sm py-base text-on-surface-variant border border-outline-variant rounded hover:bg-surface-container transition-colors text-xs font-bold whitespace-nowrap">
+                    <span class="material-symbols-outlined text-sm">filter_list</span> FILTER
+                </button>
+                <button class="flex items-center gap-xs px-sm py-base text-on-surface-variant border border-outline-variant rounded hover:bg-surface-container transition-colors text-xs font-bold whitespace-nowrap">
+                    <span class="material-symbols-outlined text-sm">download</span> EXPORT
+                </button>
+            </div>
+        </div>
+
+        <!-- FIX 8: scroll wrapper needs explicit min-w-0 and overflow-x-auto at this level -->
+        <div class="table-scroll-wrapper overflow-x-auto custom-scrollbar flex-1">
+        <table class="w-full border-collapse min-w-[900px]">
+            <thead>
+            <tr class="bg-surface-container-high sticky top-0 z-20">
+                <th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Incident Type</th>
+                <th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Date &amp; Place</th>
+                <th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Victim Details</th>
+                <th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Bully Details</th>
+                <th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Motives / Effect</th>
+                <th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Action Taken</th>
+                <th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Status</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant bg-white">
+            <!-- Row 1 -->
+            <tr class="hover:bg-surface-container-low transition-colors animate-fade-in opacity-0 stagger-1">
+                <td class="px-md py-sm"><span class="bg-error-container text-on-error-container px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">Physical</span></td>
+                <td class="px-md py-sm text-on-surface whitespace-nowrap text-sm">Sep 24, 2024 - Classroom</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">V-***-5521 (M, 14)</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">B-***-1289 (F, 15)</td>
+                <td class="px-md py-sm">
+                    <div class="flex flex-wrap gap-xs">
+                        <span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded text-[10px] font-bold whitespace-nowrap">Physical Harm</span>
+                        <span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded text-[10px] font-bold whitespace-nowrap">Social</span>
+                    </div>
+                </td>
+                <td class="px-md py-sm text-on-surface text-sm" style="max-width:200px;">Parent conference; counselor intervention.</td>
+                <td class="px-md py-sm"><span class="bg-green-100 text-green-800 px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">Resolved</span></td>
+            </tr>
+            <!-- Row 2 -->
+            <tr class="hover:bg-surface-container-low transition-colors animate-fade-in opacity-0 stagger-2">
+                <td class="px-md py-sm"><span class="bg-primary-container text-on-primary-container px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">Cyberbullying</span></td>
+                <td class="px-md py-sm text-on-surface whitespace-nowrap text-sm">Sep 26, 2024 - Online</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">V-***-8822 (F, 13)</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">B-***-4431 (M, 14)</td>
+                <td class="px-md py-sm">
+                    <div class="flex flex-wrap gap-xs">
+                        <span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded text-[10px] font-bold whitespace-nowrap">Emotional Damage</span>
+                    </div>
+                </td>
+                <td class="px-md py-sm text-on-surface text-sm" style="max-width:200px;">Social media report filed; mandatory counseling session.</td>
+                <td class="px-md py-sm"><span class="bg-amber-100 text-amber-800 px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">On-going</span></td>
+            </tr>
+            <!-- Row 3 -->
+            <tr class="hover:bg-surface-container-low transition-colors animate-fade-in opacity-0 stagger-3">
+                <td class="px-md py-sm"><span class="bg-secondary-container text-on-secondary-container px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">Verbal</span></td>
+                <td class="px-md py-sm text-on-surface whitespace-nowrap text-sm">Oct 01, 2024 - Cafeteria</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">V-***-3312 (M, 15)</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">B-***-9921 (M, 16)</td>
+                <td class="px-md py-sm">
+                    <div class="flex flex-wrap gap-xs">
+                        <span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded text-[10px] font-bold whitespace-nowrap">Gender-based</span>
+                    </div>
+                </td>
+                <td class="px-md py-sm text-on-surface text-sm" style="max-width:200px;">Verbal warning; disciplinary record update.</td>
+                <td class="px-md py-sm"><span class="bg-green-100 text-green-800 px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">Resolved</span></td>
+            </tr>
+            <!-- Row 4 -->
+            <tr class="hover:bg-surface-container-low transition-colors animate-fade-in opacity-0 stagger-4">
+                <td class="px-md py-sm"><span class="bg-error-container text-on-error-container px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">Retaliation</span></td>
+                <td class="px-md py-sm text-on-surface whitespace-nowrap text-sm">Oct 05, 2024 - School Gates</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">V-***-7741 (F, 14)</td>
+                <td class="px-md py-sm text-on-surface-variant font-medium text-sm whitespace-nowrap">B-***-2201 (F, 15)</td>
+                <td class="px-md py-sm">
+                    <div class="flex flex-wrap gap-xs">
+                        <span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded text-[10px] font-bold whitespace-nowrap">Physical Harm</span>
+                        <span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded text-[10px] font-bold whitespace-nowrap">Emotional Damage</span>
+                    </div>
+                </td>
+                <td class="px-md py-sm text-on-surface text-sm" style="max-width:200px;">Severe case; external legal referral for escalation.</td>
+                <td class="px-md py-sm"><span class="bg-blue-100 text-blue-800 px-sm py-0.5 rounded font-bold text-[10px] uppercase whitespace-nowrap">Referred to NGO/Gov</span></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+
+        <!-- Footer row — FIX 9: wrap properly on mobile -->
+        <div class="p-md bg-surface-container-low border-t border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
+            <div class="flex items-center gap-xs text-on-surface-variant">
+                <span class="material-symbols-outlined text-sm flex-shrink-0">info</span>
+                <p class="text-caption">Data validated and ready for submission.</p>
+            </div>
+            <div class="relative overflow-hidden rounded-lg w-full sm:w-auto">
+                <button class="w-full sm:w-auto px-xl py-sm bg-primary text-on-primary font-label-md hover:bg-tertiary transition-all shadow-md active:scale-95 z-10 relative flex items-center justify-center gap-sm whitespace-nowrap" id="submit-btn">
+                    <span class="material-symbols-outlined text-[18px]">verified</span>
+                    Approve and Submit Report
+                </button>
+                <div class="absolute left-0 top-0 bottom-0 bg-secondary w-0 transition-all duration-[2000ms] ease-out z-0" id="submit-progress"></div>
+                <div class="absolute inset-0 flex items-center justify-center bg-green-600 text-white font-label-md opacity-0 transition-opacity duration-300 z-20 pointer-events-none" id="submit-success">
+                    <span class="material-symbols-outlined text-[18px] mr-xs">check_circle</span> Submitted Successfully
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Help/Guidance Section -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md mt-lg">
+        <div class="p-md border border-outline-variant rounded-xl bg-surface-container-lowest/90 backdrop-blur-sm">
+            <span class="material-symbols-outlined text-secondary mb-xs">verified_user</span>
+            <h4 class="font-label-md text-on-surface mb-xs">Data Anonymization</h4>
+            <p class="text-caption text-on-surface-variant">All student identifiers are masked. V-*** and B-*** prefixes indicate Victim and Bully respectively.</p>
+        </div>
+        <div class="p-md border border-outline-variant rounded-xl bg-surface-container-lowest/90 backdrop-blur-sm">
+            <span class="material-symbols-outlined text-secondary mb-xs">security</span>
+            <h4 class="font-label-md text-on-surface mb-xs">Privacy Compliance</h4>
+            <p class="text-caption text-on-surface-variant">This report complies with Data Privacy Acts. Access is logged and monitored for authorized personnel only.</p>
+        </div>
+        <div class="p-md border border-outline-variant rounded-xl bg-surface-container-lowest/90 backdrop-blur-sm">
+            <span class="material-symbols-outlined text-secondary mb-xs">history</span>
+            <h4 class="font-label-md text-on-surface mb-xs">Audit Trail</h4>
+            <p class="text-caption text-on-surface-variant">Every submission is timestamped and logged under your credentials for accountability.</p>
+        </div>
+    </section>
+    </div>
+
+    <!-- Submissions Tab Content -->
+    <div class="tab-content hidden" id="submissions-section">
+    <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center min-h-[400px]">
+        <span class="material-symbols-outlined text-primary text-6xl mb-md">history_edu</span>
+        <p class="font-headline-md text-on-surface">Historical Submissions</p>
+        <p class="text-on-surface-variant mt-sm">No previous submissions found in the current school year.</p>
+    </section>
+    </div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="w-full py-md px-lg flex flex-col md:flex-row justify-between items-center bg-surface-dim/95 backdrop-blur-md border-t border-outline-variant gap-md">
+<div class="flex items-center gap-md">
+    <span class="text-caption text-on-surface-variant">© 2026 Mae Cortes All rights reserved.</span>
+</div>
+<div class="flex flex-wrap justify-center gap-lg">
+    <a class="text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+    <a class="text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+    <a class="text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Accessibility</a>
+</div>
+</footer>
+
+<script>
+    const navLinks = document.querySelectorAll('.nav-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    function setActiveTab(targetId) {
+        tabContents.forEach(content => {
+            if (content.id === `${targetId}-section`) {
+                content.classList.remove('hidden');
+                content.classList.add('block');
+            } else {
+                content.classList.remove('block');
+                content.classList.add('hidden');
+            }
+        });
+        navLinks.forEach(link => {
+            if (link.dataset.target === targetId) {
+                if (link.closest('aside')) {
+                    link.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                    link.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant');
+                } else {
+                    link.classList.add('text-primary', 'border-b-2', 'border-primary', 'pb-1');
+                    link.classList.remove('text-on-surface-variant');
+                }
+            } else {
+                if (link.closest('aside')) {
+                    link.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+                    link.classList.add('text-on-surface-variant', 'hover:bg-surface-variant');
+                } else {
+                    link.classList.remove('text-primary', 'border-b-2', 'border-primary', 'pb-1');
+                    link.classList.add('text-on-surface-variant');
+                }
+            }
+        });
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveTab(link.dataset.target);
+        });
+    });
+
+    const submitBtn = document.getElementById('submit-btn');
+    const submitProgress = document.getElementById('submit-progress');
+    const submitSuccess = document.getElementById('submit-success');
+
+    submitBtn.addEventListener('click', () => {
+        submitBtn.classList.add('pointer-events-none');
+        submitBtn.style.color = 'transparent';
+        setTimeout(() => { submitProgress.style.width = '100%'; }, 50);
+        setTimeout(() => {
+            submitSuccess.style.opacity = '1';
+            setTimeout(() => {
+                window.location.href = 'school_dashboard_access_management_analytics.html';
+            }, 1500);
+        }, 2050);
+    });
+</script>
+</body></html>

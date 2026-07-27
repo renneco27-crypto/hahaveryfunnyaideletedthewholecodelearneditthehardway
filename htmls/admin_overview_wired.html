@@ -1,0 +1,339 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Ormoc City Division LRP - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        @keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .slide-in {
+            animation: slideInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .shimmer-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+            animation: shimmer 2.5s infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#1b2225",
+                      "on-background": "#121c28",
+                      "surface-variant": "#d9e3f4",
+                      "primary": "#002046",
+                      "surface-tint": "#465f88",
+                      "on-tertiary-fixed-variant": "#41484c",
+                      "tertiary-container": "#30373b",
+                      "inverse-primary": "#aec7f7",
+                      "secondary-fixed": "#d2e4ff",
+                      "on-primary-fixed-variant": "#2e476f",
+                      "background": "#f8f9ff",
+                      "on-surface": "#121c28",
+                      "surface-bright": "#f8f9ff",
+                      "primary-fixed-dim": "#aec7f7",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c4c6cf",
+                      "secondary-fixed-dim": "#a1c9ff",
+                      "surface-container-highest": "#d9e3f4",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-primary-container": "#87a0cd",
+                      "on-tertiary-fixed": "#151d20",
+                      "surface": "#f8f9ff",
+                      "surface-container-high": "#dfe9fa",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-container": "#99a0a5",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#dce3e8",
+                      "surface-container-low": "#eef4ff",
+                      "tertiary-fixed-dim": "#c0c7cc",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#001b3d",
+                      "outline": "#74777f",
+                      "secondary-container": "#7ab7ff",
+                      "secondary": "#1261a3",
+                      "on-secondary-fixed": "#001c37",
+                      "surface-container": "#e5eeff",
+                      "on-surface-variant": "#44474e",
+                      "inverse-surface": "#27313e",
+                      "primary-fixed": "#d6e3ff",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed-variant": "#00487f",
+                      "on-secondary-container": "#00477d",
+                      "primary-container": "#1b365d",
+                      "surface-dim": "#d1dbec"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "lg": "40px",
+                      "xs": "8px",
+                      "sm": "16px",
+                      "xl": "64px",
+                      "md": "24px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Atkinson Hyperlegible Next"],
+                      "display": ["Atkinson Hyperlegible Next"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-md": ["Atkinson Hyperlegible Next"],
+                      "caption": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<div class="fixed top-0 left-0 w-full h-full z-[-1] overflow-hidden pointer-events-none">
+<img alt="Background" class="w-full h-full object-cover opacity-[0.18] blur-[4px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRPcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
+</div>
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+</div>
+<div class="flex items-center gap-md"><button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="login_ormoc_city_division_lrp_wired_1.html" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
+</header>
+<div class="flex min-h-[calc(100vh-64px)]">
+<!-- SideNavBar -->
+<aside class="w-64 flex flex-col p-sm bg-surface-container-low border-r border-outline-variant sticky top-16 h-[calc(100vh-64px)]">
+<div class="flex flex-col gap-xs mb-lg px-md">
+<div class="flex items-center gap-sm mt-md">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
+</div>
+<div><p class="font-label-md text-label-md text-on-surface font-bold">Ormoc City Division LRP</p><p class="font-caption text-caption text-on-surface-variant">Empowering Integrity, Protecting Futures</p></div>
+</div>
+</div>
+<nav class="flex flex-col gap-base">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="admin_overview_wired.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<!-- Submissions: Active State -->
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="latest_excel_division_consolidated_reports.html">
+<span class="material-symbols-outlined">description</span>
+                    Latest Excel
+                </a>
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="access_management_wired.html">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Access Management</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 p-lg max-w-container-max mx-auto overflow-y-auto">
+<!-- Page Header & Stats -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-xs">Operational Overview</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time status of Ormoc City Division LRP submissions across regional schools.</p>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg flex items-center gap-xs hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">download</span>
+                    Download Consolidated Excel
+                </button>
+</div>
+<!-- Stats Bento Grid -->
+<div class="bento-grid mb-lg">
+<div class="col-span-12 md:col-span-6 lg:col-span-4 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-100">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl">analytics</span>
+<span class="font-caption text-caption text-secondary font-bold">+12% vs last month</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Reports</p>
+<p class="font-display text-display text-primary">1,284</p>
+</div>
+</div>
+
+
+<div class="col-span-12 md:col-span-6 lg:col-span-4 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-400">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl">school</span>
+<span class="font-caption text-caption text-secondary font-bold">Active Institutions</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Schools</p>
+<p class="font-display text-display text-primary">156</p>
+</div>
+</div></div>
+<!-- Table Section -->
+<section class="bg-surface-container-lowest border border-outline-variant">
+<div class="p-md border-b border-outline-variant flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-primary">Recent Submissions</h2>
+<div class="flex gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b-2 border-primary">
+<th class="text-left p-md font-label-md text-label-md text-primary">School Name</th>
+<th class="text-left p-md font-label-md text-label-md text-primary">Date Submitted</th>
+<th class="text-left p-md font-label-md text-label-md text-primary">Status</th>
+
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="p-md font-bold">Saint Mary’s Academy</td>
+<td class="p-md">Oct 24, 2024</td>
+<td class="p-md">
+<span class="px-xs py-1 rounded bg-secondary-container text-on-secondary-container font-bold text-caption uppercase">Submitted</span>
+</td>
+
+</tr>
+<tr class="bg-surface-container-low border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="p-md font-bold">Northwood Technical Institute</td>
+<td class="p-md">Oct 23, 2024</td>
+<td class="p-md">
+<span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span>
+</td>
+
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="p-md font-bold">Oakwood Secondary School</td>
+<td class="p-md">Oct 22, 2024</td>
+<td class="p-md">
+<span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span>
+</td>
+
+</tr>
+<tr class="bg-surface-container-low border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="p-md font-bold">Harbor City High</td>
+<td class="p-md">Oct 21, 2024</td>
+<td class="p-md">
+<span class="px-xs py-1 rounded bg-secondary-container text-on-secondary-container font-bold text-caption uppercase">Submitted</span>
+</td>
+
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="p-md font-bold">Lincoln Preparatory</td>
+<td class="p-md">Oct 20, 2024</td>
+<td class="p-md">
+<span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span>
+</td>
+
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center font-caption text-caption">
+<span class="">Showing 5 of 1,284 submissions</span>
+<div class="flex gap-xs">
+<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors disabled:opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer -->
+<footer class="w-full py-md px-lg flex justify-between items-center bg-surface-dim border-t border-outline-variant text-on-surface">
+<p class="font-caption text-caption">© 2026 Mae Cortes All rights reserved.</p>
+<div class="flex gap-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Accessibility Statement</a>
+</div>
+</footer>
+<!-- Success Toast -->
+<div class="fixed bottom-8 right-8 z-[100] transform translate-y-0 opacity-100 transition-all duration-500 ease-out opacity-0 translate-y-4" id="toast" style="display: none;">
+<div class="bg-primary-container text-on-primary-container px-lg py-sm rounded-lg flex items-center gap-sm shadow-lg border border-outline-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
+<span class="font-label-md text-label-md">Report successfully archived</span>
+<button class="ml-md material-symbols-outlined text-label-md hover:opacity-70" onclick="document.getElementById('toast').style.display='none'">close</button>
+</div>
+</div>
+<script>
+        // Auto-dismiss toast after 5 seconds
+        setTimeout(() => {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => toast.style.display = 'none', 500);
+            }
+        }, 5000);
+    </script>
+
+
+
+
+
+
+
+
+
+
+</body></html>

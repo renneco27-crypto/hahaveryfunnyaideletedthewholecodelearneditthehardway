@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -13,75 +13,173 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 <style>
-.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+/* ── Material Symbols ── */
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+.msf { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+
+/* ── Base ── */
 body { margin:0; font-family:'Inter',sans-serif; background:#f8f9ff; color:#121c28; }
 button,input,select,textarea { font:inherit; }
+
+/* ── Page layout ── */
 .page { max-width:1280px; margin:0 auto; padding:24px 18px 120px; }
-.topbar { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
-.brand { display:flex; align-items:center; gap:12px; }
-.brand-mark { width:44px; height:44px; border-radius:50%; background:#d6e3ff; color:#1261a3; display:grid; place-items:center; font-weight:800; font-size:14px; }
-.confidential-pill { border:1.5px solid #ffb5b5; color:#ffd8d8; background:#002046; padding:6px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; }
-.sticky-summary { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.95); border:1px solid #c4c6cf; border-radius:16px; padding:14px 16px; box-shadow:0 10px 24px rgba(0,32,70,.06); backdrop-filter:blur(8px); margin-bottom:16px; }
-.summary-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; align-items:center; }
-.summary-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
-.summary-value { font-size:13px; font-weight:700; color:#002046; }
-.toolbar { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; }
-.mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
-.mode-btn { padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; }
-.mode-btn:hover { background:#f0f4ff; }
-.mode-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
-.card { background:#ffffff; border:1px solid #c4c6cf; border-radius:16px; padding:18px; box-shadow:0 10px 24px rgba(0,32,70,.06); margin-bottom:16px; }
+
+/* ── Card ── */
+.card {
+  background: #ffffff;
+  border: 1px solid #c4c6cf;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0,32,70,.05);
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+/* ── Card header (new Material-style header pattern) ── */
+.card-header {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 20px;
+  border-bottom:1px solid #eef4ff;
+  background:#f8f9ff;
+}
+.card-header-icon {
+  width:36px; height:36px;
+  border-radius:10px;
+  background:#d2e4ff;
+  color:#002046;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+}
+.card-header-icon .material-symbols-outlined { font-size:20px; }
+.card-header-text { flex:1; }
+.card-header-title {
+  font-family:'Atkinson Hyperlegible Next',sans-serif;
+  font-size:15px; font-weight:800; color:#002046;
+  line-height:1.3;
+}
+.card-header-subtitle {
+  font-size:11px; color:#74777f;
+  text-transform:uppercase; letter-spacing:.07em; font-weight:700;
+  margin-top:1px;
+}
+.card-body { padding:20px; }
+
+/* Legacy section titles (kept for compatibility) */
 .section-title { font-family:'Atkinson Hyperlegible Next',sans-serif; font-size:18px; font-weight:800; color:#002046; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
 .section-title-sm { font-family:'Atkinson Hyperlegible Next',sans-serif; font-size:16px; font-weight:800; color:#002046; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+/* ── Grids ── */
 .panel-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
 .panel-grid-1 { display:grid; grid-template-columns:1fr; gap:12px; }
+
+/* ── Fields ── */
 .field-label { display:flex; align-items:center; gap:4px; margin-bottom:6px; font-size:12px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
 .required { color:#ba1a1a; margin-left:2px; }
-.field-input,.field-select,.field-textarea { width:100%; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; color:#121c28; font-size:14px; }
+.field-input,.field-select,.field-textarea { width:100%; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; color:#121c28; font-size:14px; box-sizing:border-box; }
 .field-input:focus,.field-select:focus,.field-textarea:focus { outline:none; border-color:#1261a3; box-shadow:0 0 0 3px rgba(18,97,163,.12); }
 .field-textarea { min-height:100px; resize:vertical; }
+.field-error { border-color:#ba1a1a !important; background:#fff5f5 !important; }
+.error-text { color:#ba1a1a; font-size:11px; font-weight:700; margin-top:4px; }
+.error-banner { background:#fff5f5; border:1px solid #ffcdd2; border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; gap:8px; color:#ba1a1a; font-weight:700; font-size:13px; }
+
+/* ── Tooltips ── */
 .tip-wrap { position:relative; display:inline-flex; align-items:center; gap:4px; }
 .tip-icon { cursor:help; color:#1261a3; font-size:14px; }
 .tip-box { display:none; position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); width:280px; background:#142c51; color:white; padding:10px 12px; border-radius:8px; font-size:12px; line-height:1.5; z-index:30; box-shadow:0 10px 24px rgba(0,0,0,.16); }
 .tip-box:after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:#142c51; }
 .tip-wrap:hover .tip-box,.tip-wrap:focus-within .tip-box { display:block; }
+
+/* ── Chips ── */
 .chip-list { display:flex; flex-wrap:wrap; gap:10px; }
 .checkbox-chip { display:flex; align-items:flex-start; gap:8px; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; min-width:160px; cursor:pointer; transition:all .2s; }
 .checkbox-chip:hover { border-color:#1261a3; background:#f0f4ff; }
 .checkbox-chip input { margin-top:2px; accent-color:#1261a3; cursor:pointer; }
+
+/* ── Row cards / inline sub-cards ── */
 .row-card { border:1px solid #c4c6cf; border-radius:12px; padding:14px; background:#fbfdff; position:relative; margin-bottom:12px; }
-.remove-btn { position:absolute; top:10px; right:10px; border:none; background:transparent; color:#ba1a1a; cursor:pointer; font-size:20px; padding:4px; transition:all .2s; }
+.remove-btn { position:absolute; top:10px; right:10px; border:none; background:transparent; color:#ba1a1a; cursor:pointer; padding:4px; transition:all .2s; display:flex; align-items:center; }
 .remove-btn:hover { color:#002046; transform:scale(1.1); }
-.add-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; margin-top:8px; border:1px dashed #1261a3; border-radius:999px; color:#1261a3; background:transparent; cursor:pointer; font-weight:700; transition:all .2s; }
+.remove-btn .material-symbols-outlined { font-size:20px; }
+.add-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; margin-top:8px; border:1px dashed #1261a3; border-radius:999px; color:#1261a3; background:transparent; cursor:pointer; font-weight:700; font-size:13px; transition:all .2s; }
 .add-btn:hover { background:#f0f4ff; border-color:#002046; }
+.add-btn .material-symbols-outlined { font-size:18px; }
+
+/* ── Category pills ── */
 .category-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
-.category-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; }
+.category-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; font-size:13px; }
 .category-btn:hover { border-color:#1261a3; }
 .category-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
-.counter-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:12px; }
-.counter-pill { border:1px solid #c4c6cf; border-radius:12px; padding:12px 10px; background:#ffffff; text-align:center; }
-.counter-num { font-size:28px; font-weight:800; color:#1261a3; }
-.counter-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
-.sticky-footer { position:sticky; bottom:0; z-index:20; background:rgba(255,255,255,.98); backdrop-filter:blur(8px); border-top:1px solid #c4c6cf; padding:14px 18px; margin-left:-18px; margin-right:-18px; margin-bottom:-24px; display:flex; justify-content:flex-end; gap:10px; }
-.primary-btn { background:#1261a3; color:#ffffff; }
-.secondary-btn { background:#ffffff; color:#1261a3; border:1px solid #1261a3; }
-.primary-btn,.secondary-btn { border:none; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer; transition:all .2s; }
-.primary-btn:hover { background:#0a4a8a; }
+
+/* ── Counters (redesigned) ── */
+.counter-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:4px; }
+.counter-pill {
+  border:1px solid #c4c6cf;
+  border-radius:14px;
+  padding:16px 12px;
+  background:#ffffff;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.counter-pill::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:3px;
+  background:linear-gradient(90deg, #1261a3, #aec7f7);
+  border-radius:14px 14px 0 0;
+}
+.counter-pill.resolved::before { background:linear-gradient(90deg,#16a34a,#86efac); }
+.counter-pill.ongoing::before { background:linear-gradient(90deg,#d97706,#fcd34d); }
+.counter-pill.external::before { background:linear-gradient(90deg,#1261a3,#93c5fd); }
+.counter-pill.ngo::before { background:linear-gradient(90deg,#7c3aed,#c4b5fd); }
+.counter-icon { font-size:20px; color:#74777f; margin-bottom:4px; }
+.counter-icon .material-symbols-outlined { font-size:22px; }
+.counter-num { font-size:30px; font-weight:800; color:#002046; line-height:1; }
+.counter-label { font-size:11px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; margin-top:6px; font-weight:700; }
+
+/* ── Signature cards ── */
+.sig-header { font-size:11px; font-weight:800; color:#1261a3; text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+.sig-header .material-symbols-outlined { font-size:16px; }
+
+/* ── Sticky footer (redesigned) ── */
+.sticky-footer {
+  position:sticky; bottom:0; z-index:20;
+  background:rgba(255,255,255,.98);
+  backdrop-filter:blur(12px);
+  border-top:1px solid #c4c6cf;
+  padding:12px 20px;
+  margin-left:-18px; margin-right:-18px; margin-bottom:-120px;
+  display:flex; justify-content:flex-end; align-items:center; gap:10px;
+}
+.primary-btn { background:#002046; color:#ffffff; border:none; }
+.secondary-btn { background:#ffffff; color:#1261a3; border:1.5px solid #1261a3; }
+.primary-btn,.secondary-btn { border-radius:10px; padding:10px 18px; font-weight:700; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:6px; font-size:14px; }
+.primary-btn:hover { background:#1261a3; }
 .secondary-btn:hover { background:#f0f4ff; }
+.primary-btn .material-symbols-outlined, .secondary-btn .material-symbols-outlined { font-size:18px; }
+
+/* ── Success ── */
 .success-card { background:linear-gradient(135deg,#f1fbf4 0%,#ffffff 100%); border:1px solid #4caf50; border-radius:16px; padding:18px; margin-top:16px; }
 .success-text { color:#1a6e3c; font-weight:700; }
+
+/* ── Misc ── */
 .hint-note { font-size:12px; color:#44474e; margin-top:4px; }
 .compact { font-size:12px; color:#44474e; }
-.field-error { border-color:#ba1a1a !important; background:#fff5f5 !important; }
-.error-text { color:#ba1a1a; font-size:11px; font-weight:700; margin-top:4px; }
-.error-banner { background:#fff5f5; border:1px solid #ffcdd2; border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; gap:8px; color:#ba1a1a; font-weight:700; font-size:13px; }
 .radio-group { display:flex; gap:12px; flex-wrap:wrap; }
 .radio-option { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:10px; background:#fbfdff; cursor:pointer; transition:all .2s; }
 .radio-option:hover { border-color:#1261a3; }
 .radio-option input[type="radio"] { cursor:pointer; accent-color:#1261a3; }
+
+/* ── Animations ── */
 @keyframes slideInUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-.slide-in { animation:slideInUp .6s ease-out forwards; opacity:0; }
-@media (max-width:900px) { .panel-grid, .counter-row { grid-template-columns:1fr; } .summary-grid { grid-template-columns:repeat(2, 1fr); } }
+.slide-in { animation:slideInUp .5s ease-out forwards; opacity:0; }
+
+/* ── Responsive ── */
+@media (max-width:900px) { .panel-grid, .counter-row { grid-template-columns:1fr; } }
 </style>
 <script>
 tailwind.config = {
@@ -134,7 +232,7 @@ tailwind.config = {
 <span class="material-symbols-outlined">account_circle</span>
 <span class="font-label-md text-label-md">Account</span>
 </button>
-<button class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10">
+<button onclick="location.href='login_ormoc_city_division_lrp_wired_1.html'" class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10">
 <span class="material-symbols-outlined">logout</span>
 <span class="font-label-md text-label-md">Logout</span>
 </button>
@@ -151,15 +249,15 @@ tailwind.config = {
 </div>
 </div>
 <nav class="flex flex-col gap-base">
-<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="{{DATA:SCREEN:SCREEN_4}}">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 text-on-surface-variant hover:bg-surface-variant" href="school_dashboard_review_annex_a_report.html">
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-label-md text-label-md">Overview</span>
 </a>
-<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="annex_modules_redesigned.html">
 <span class="material-symbols-outlined">description</span>
 <span class="font-label-md text-label-md">Submissions</span>
 </a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="{{DATA:SCREEN:SCREEN_2}}">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="school_dashboard_access_management_analytics.html">
 <span class="material-symbols-outlined">admin_panel_settings</span>
 <span class="font-label-md text-label-md">Access Management</span>
 </a>
@@ -564,23 +662,21 @@ const ModuleAReportingPanel = () => {
     if (!schoolMetadata.reportingYear.trim()) errors.reportingYear = 'Required';
     if (!schoolMetadata.address.trim()) errors.address = 'Required';
     
-    if (!currentCategoryData.incidentDate) errors.incidentDate = 'Required';
-    if (!currentCategoryData.incidentPlace.trim()) errors.incidentPlace = 'Required';
-    
-    currentCategoryData.affectedStudents.forEach((student, idx) => {
-      if (!student.name.trim()) errors[`student${idx}Name`] = 'Required';
-      if (!student.age) errors[`student${idx}Age`] = 'Required';
-    });
+    if (activeModule === 'A') {
+      if (!currentCategoryData.incidentDate) errors.incidentDate = 'Required';
+      if (!currentCategoryData.incidentPlace.trim()) errors.incidentPlace = 'Required';
+      
+      currentCategoryData.affectedStudents.forEach((student, idx) => {
+        if (!student.name.trim()) errors[`student${idx}Name`] = 'Required';
+        if (!student.age) errors[`student${idx}Age`] = 'Required';
+      });
 
-    currentCategoryData.initiatingParty.forEach((party, idx) => {
-      if (!party.name.trim()) errors[`party${idx}Name`] = 'Required';
-    });
+      currentCategoryData.initiatingParty.forEach((party, idx) => {
+        if (!party.name.trim()) errors[`party${idx}Name`] = 'Required';
+      });
 
-    if (!currentCategoryData.actionsTaken.trim()) errors.actionsTaken = 'Required';
-    if (!preparedBy.name.trim()) errors.preparedName = 'Required';
-    if (!preparedBy.date) errors.preparedDate = 'Required';
-    if (!validatedBy.name.trim()) errors.validatedName = 'Required';
-    if (!validatedBy.date) errors.validatedDate = 'Required';
+      if (!currentCategoryData.actionsTaken.trim()) errors.actionsTaken = 'Required';
+    }
 
     if (activeModule === 'B') {
       if (!moduleBData.incidentDate) errors.bIncidentDate = 'Required';
@@ -597,42 +693,47 @@ const ModuleAReportingPanel = () => {
     }
 
     if (activeModule === 'C') {
-      Object.entries(moduleCData).forEach(([catId, cat]) => {
-        if (!cat.dateIdentified) errors['c' + catId + 'Date'] = 'Required';
-        if (!cat.location.trim()) errors['c' + catId + 'Loc'] = 'Required';
-        cat.individuals.forEach((ind, idx) => {
-          if (!ind.name.trim()) errors['c' + catId + 'Ind' + idx + 'Name'] = 'Required';
-          if (!ind.age) errors['c' + catId + 'Ind' + idx + 'Age'] = 'Required';
-        });
-        if (!cat.intervention.trim()) errors['c' + catId + 'Int'] = 'Required';
+      const catId = activeCRiskCategory;
+      const cat = currentCData;
+      if (!cat.dateIdentified) errors['c' + catId + 'Date'] = 'Required';
+      if (!cat.location.trim()) errors['c' + catId + 'Loc'] = 'Required';
+      cat.individuals.forEach((ind, idx) => {
+        if (!ind.name.trim()) errors['c' + catId + 'Ind' + idx + 'Name'] = 'Required';
+        if (!ind.age) errors['c' + catId + 'Ind' + idx + 'Age'] = 'Required';
       });
+      if (!cat.intervention.trim()) errors['c' + catId + 'Int'] = 'Required';
     }
 
     if (activeModule === 'D') {
-      Object.entries(moduleDData).forEach(([catId, cat]) => {
-        if (!cat.offenseDate) errors['d' + catId + 'Date'] = 'Required';
-        if (!cat.location.trim()) errors['d' + catId + 'Loc'] = 'Required';
-        cat.subjects.forEach((sub, idx) => {
-          if (!sub.identificationRef.trim()) errors['d' + catId + 'Sub' + idx + 'Ref'] = 'Required';
-        });
-        if (!cat.narrative.trim()) errors['d' + catId + 'Narr'] = 'Required';
+      const catId = activeDCategory;
+      const cat = currentDData;
+      if (!cat.offenseDate) errors['d' + catId + 'Date'] = 'Required';
+      if (!cat.location.trim()) errors['d' + catId + 'Loc'] = 'Required';
+      cat.subjects.forEach((sub, idx) => {
+        if (!sub.identificationRef.trim()) errors['d' + catId + 'Sub' + idx + 'Ref'] = 'Required';
       });
+      if (!cat.narrative.trim()) errors['d' + catId + 'Narr'] = 'Required';
     }
 
     if (activeModule === 'E') {
-      Object.entries(moduleEData).forEach(([catId, cat]) => {
-        if (!cat.incidentDate) errors['e' + catId + 'Date'] = 'Required';
-        if (!cat.incidentPlace.trim()) errors['e' + catId + 'Place'] = 'Required';
-        cat.victims.forEach((vic, idx) => {
-          if (!vic.name.trim()) errors['e' + catId + 'Vic' + idx + 'Name'] = 'Required';
-          if (!vic.age) errors['e' + catId + 'Vic' + idx + 'Age'] = 'Required';
-        });
-        cat.respondents.forEach((resp, idx) => {
-          if (!resp.name.trim()) errors['e' + catId + 'Resp' + idx + 'Name'] = 'Required';
-        });
-        if (!cat.actionsTaken.trim()) errors['e' + catId + 'Act'] = 'Required';
+      const catId = activeECategory;
+      const cat = currentEData;
+      if (!cat.incidentDate) errors['e' + catId + 'Date'] = 'Required';
+      if (!cat.incidentPlace.trim()) errors['e' + catId + 'Place'] = 'Required';
+      cat.victims.forEach((vic, idx) => {
+        if (!vic.name.trim()) errors['e' + catId + 'Vic' + idx + 'Name'] = 'Required';
+        if (!vic.age) errors['e' + catId + 'Vic' + idx + 'Age'] = 'Required';
       });
+      cat.respondents.forEach((resp, idx) => {
+        if (!resp.name.trim()) errors['e' + catId + 'Resp' + idx + 'Name'] = 'Required';
+      });
+      if (!cat.actionsTaken.trim()) errors['e' + catId + 'Act'] = 'Required';
     }
+
+    if (!preparedBy.name.trim()) errors.preparedName = 'Required';
+    if (!preparedBy.date) errors.preparedDate = 'Required';
+    if (!validatedBy.name.trim()) errors.validatedName = 'Required';
+    if (!validatedBy.date) errors.validatedDate = 'Required';
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -641,65 +742,79 @@ const ModuleAReportingPanel = () => {
   const handleSubmit = () => {
     if (validateForm()) {
       setFormState('submitted');
+      setTimeout(() => {
+        window.location.href = 'school_dashboard_access_management_analytics.html';
+      }, 1500);
     }
   };
 
   return (
     <div className="page">
-      <div className="topbar">
-        <div className="brand">
-          <div className="brand-mark">LR</div>
-          <div>
-            <div style={{ fontSize: '12px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.14em' }}>Student Safety Reporting</div>
-            <div style={{ fontSize: '20px', fontWeight: '800', color: '#002046' }}>Module {activeModule} {activeModule === 'A' ? '— Incident Report' : activeModule === 'B' ? '— Behavioral Report' : activeModule === 'C' ? '— Risk Registry' : activeModule === 'D' ? '— School-Based Incident Report' : '— School-Based Incident Report'}</div>
+      <div className="flex justify-between items-start mb-sm" style={{ gap: '16px' }}>
+        <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+          <div style={{ fontSize: '11px', fontWeight: '800', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '14px', color: '#1261a3' }}>verified_user</span>
+            Official Compliance Report
+          </div>
+          <div style={{ fontSize: '20px', fontWeight: '800', color: '#002046', fontFamily: "'Atkinson Hyperlegible Next', sans-serif", wordBreak: 'break-word' }}>
+            Annex A — Module {activeModule}{activeModule === 'A' ? ' — Incident Report' : activeModule === 'B' ? ' — Behavioral Report' : activeModule === 'C' ? ' — Risk Registry' : activeModule === 'D' ? ' — School-Based Incident' : ' — Welfare Concern'}
           </div>
         </div>
-        <div className="confidential-pill">CONFIDENTIAL</div>
-      </div>
-
-      <div className="toolbar">
-        <div className="mode-switch">
-          <button className={`mode-btn ${activeModule === 'A' ? 'active' : ''}`} onClick={() => setActiveModule('A')}>Module A</button>
-          <button className={`mode-btn ${activeModule === 'B' ? 'active' : ''}`} onClick={() => setActiveModule('B')}>Module B</button>
-          <button className={`mode-btn ${activeModule === 'C' ? 'active' : ''}`} onClick={() => setActiveModule('C')}>Module C</button>
-          <button className={`mode-btn ${activeModule === 'D' ? 'active' : ''}`} onClick={() => setActiveModule('D')}>Module D</button>
-          <button className={`mode-btn ${activeModule === 'E' ? 'active' : ''}`} onClick={() => setActiveModule('E')}>Module E</button>
+        <div style={{ display: 'flex', background: '#dfe9fa', borderRadius: '999px', padding: '4px', gap: '4px', flexShrink: 0 }}>
+          {['A','B','C','D','E'].map(mod => (
+            <button
+              key={mod}
+              onClick={() => setActiveModule(mod)}
+              style={{
+                padding: '7px 18px',
+                borderRadius: '999px',
+                border: 'none',
+                fontWeight: '700',
+                fontSize: '13px',
+                cursor: 'pointer',
+                transition: 'all .2s',
+                letterSpacing: '.02em',
+                background: activeModule === mod ? '#002046' : 'transparent',
+                color: activeModule === mod ? '#ffffff' : '#44474e',
+                boxShadow: activeModule === mod ? '0 2px 8px rgba(0,32,70,.18)' : 'none',
+              }}
+            >Module {mod}</button>
+          ))}
         </div>
-        <div className="compact" style={{fontSize:'12px',color:'#44474e'}}>Switch between reporting modules</div>
       </div>
 
-      <div className="sticky-summary">
-        <div className="summary-grid">
+      <div style={{ position: 'sticky', top: 0, zIndex: 30, background: 'rgba(255,255,255,0.97)', border: '1px solid #c4c6cf', borderRadius: '14px', padding: '12px 20px', boxShadow: '0 4px 16px rgba(0,32,70,.08)', backdropFilter: 'blur(10px)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: '24px', flex: 1 }}>
           <div>
-            <div className="summary-label">School Name</div>
-            <div className="summary-value" style={{ fontSize: '14px' }}>{schoolMetadata.schoolName || 'Pending'}</div>
+            <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>school</span> School
+            </p>
+            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.schoolName || <span style={{ color: '#c4c6cf', fontStyle: 'italic' }}>Pending</span>}</p>
           </div>
           <div>
-            <div className="summary-label">School ID</div>
-            <div className="summary-value">{schoolMetadata.schoolId || 'Pending'}</div>
+            <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>tag</span> School ID
+            </p>
+            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.schoolId || <span style={{ color: '#c4c6cf', fontStyle: 'italic' }}>Pending</span>}</p>
           </div>
           <div>
-            <div className="summary-label">Reporting Year</div>
-            <div className="summary-value">{schoolMetadata.reportingYear || 'Pending'}</div>
+            <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>calendar_month</span> Year
+            </p>
+            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.reportingYear || <span style={{ color: '#c4c6cf', fontStyle: 'italic' }}>Pending</span>}</p>
           </div>
           <div>
-            <div className="summary-label">Classification</div>
-            <div className="summary-value">{schoolMetadata.classification}</div>
-          </div>
-          <div>
-            <div className="summary-label">Level</div>
-            <div className="summary-value">{schoolMetadata.level}</div>
-          </div>
-          <div>
-            <div className="summary-label">Address</div>
-            <div className="summary-value">{schoolMetadata.address || 'Pending'}</div>
+            <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>assignment_turned_in</span> Status
+            </p>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '999px', fontSize: '11px', fontWeight: '800', background: formState === 'submitted' ? '#dcfce7' : '#d2e4ff', color: formState === 'submitted' ? '#15803d' : '#00487f', letterSpacing: '.04em' }}>{formState === 'submitted' ? '✓ SUBMITTED' : '● DRAFT'}</span>
           </div>
         </div>
       </div>
 
       {formState === 'submitted' && (
         <div className="success-card">
-          <div className="success-text" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '6px' }}>✓ Submission Complete</div>
+          <div className="success-text" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '6px' }}>Submission Complete</div>
           <div style={{ fontSize: '22px', fontWeight: '800', color: '#002046', marginBottom: '8px' }}>Reference: LRP-2026-0810</div>
           <div style={{ fontSize: '13px', color: '#44474e' }}>Report submitted successfully and stored for review.</div>
         </div>
@@ -707,15 +822,19 @@ const ModuleAReportingPanel = () => {
 
       {Object.keys(validationErrors).length > 0 && (
         <div className="error-banner">
-          <span>⚠️</span> Please fix {Object.keys(validationErrors).length} error(s) before submitting.
+          <span><span className="material-symbols-outlined text-error">warning</span></span> Please fix {Object.keys(validationErrors).length} error(s) before submitting.
         </div>
       )}
 
       {activeModule === 'A' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">School Metadata</div>
+                <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -763,9 +882,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Incident Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Incident Categories</div>
+                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+              </div>
             </div>
             <div className="category-pills">
               {categoryOptions.map(cat => (
@@ -777,9 +900,13 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{categoryOptions.find(c => c.id === activeCategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Incident Details</div>
+                <div className="card-header-subtitle">SECTION DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -807,9 +934,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Affected Student(s)
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Affected Student(s)</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {currentCategoryData.affectedStudents.map((student, idx) => (
               <div key={idx} className="row-card">
@@ -879,9 +1010,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👥</span> Initiating Party
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Initiating Party</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {currentCategoryData.initiatingParty.map((party, idx) => (
               <div key={idx} className="row-card">
@@ -909,9 +1044,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>✅</span> Actions & Status
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Actions & Status</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -932,9 +1071,13 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'B' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">School Metadata</div>
+                <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -982,9 +1125,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Behavior Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Behavior Categories</div>
+                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+              </div>
             </div>
             <div className="category-pills">
               {moduleBCategories.map(cat => (
@@ -996,9 +1143,13 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>Behavioral concern categories under Module B</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Incident Details</div>
+                <div className="card-header-subtitle">SECTION DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -1026,9 +1177,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Affected Student(s)
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Affected Student(s)</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {moduleBData.affectedStudents.map((student, idx) => (
               <div key={idx} className="row-card">
@@ -1098,9 +1253,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👥</span> Respondents
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Respondents</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {moduleBData.respondents.map((resp, idx) => (
               <div key={idx} className="row-card">
@@ -1135,9 +1294,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>✅</span> Actions & Status
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Actions & Status</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -1158,9 +1321,13 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'C' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">School Metadata</div>
+                <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -1208,9 +1375,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Risk Classification Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Risk Classification Categories</div>
+                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+              </div>
             </div>
             <div className="category-pills">
               {moduleCCategories.map(cat => (
@@ -1222,9 +1393,13 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleCCategories.find(c => c.id === activeCRiskCategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Risk Record — <strong>{activeCRiskCategory}</strong>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">event_note</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Risk Record — <strong>{activeCRiskCategory}</strong></div>
+                <div className="card-header-subtitle">LOCATION & TIMELINE DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -1252,9 +1427,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Individual at Risk
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Individual at Risk</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {currentCData.individuals.map((ind, idx) => (
               <div key={idx} className="row-card">
@@ -1330,9 +1509,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>🛡️</span> Protective & Diversion Intervention
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">shield</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Protective & Diversion Intervention</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -1353,9 +1536,13 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'D' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">School Metadata</div>
+                <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -1403,9 +1590,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Offense & Incident Classification Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Offense & Incident Classification Categories</div>
+                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+              </div>
             </div>
             <div className="category-pills">
               {moduleDCategories.map(cat => (
@@ -1417,9 +1608,13 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleDCategories.find(c => c.id === activeDCategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Record — <strong>{activeDCategory}</strong>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">event_note</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Incident Record — <strong>{activeDCategory}</strong></div>
+                <div className="card-header-subtitle">LOCATION & TIMELINE DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -1447,9 +1642,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Primary Subject Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Primary Subject Details</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {currentDData.subjects.map((sub, idx) => (
               <div key={idx} className="row-card">
@@ -1494,9 +1693,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>🛡️</span> Rehabilitation & Diversion Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">shield</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Rehabilitation & Diversion Details</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             <div style={{ marginBottom: '16px' }}>
               <label className="field-label">Diversion / Intervention Program Type</label>
@@ -1551,9 +1754,13 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'E' && (
         <>
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>🏫</span> School Metadata
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">School Metadata</div>
+                <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -1601,9 +1808,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📋</span> Concern Categories
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Concern Categories</div>
+                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+              </div>
             </div>
             <div className="category-pills">
               {moduleECategories.map(cat => (
@@ -1615,9 +1826,13 @@ const ModuleAReportingPanel = () => {
             <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleECategories.find(c => c.id === activeECategory)?.label}</div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <span style={{ fontSize: '20px' }}>📅</span> Incident Details — <strong>{activeECategory}</strong>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">event_note</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Incident Details — <strong>{activeECategory}</strong></div>
+                <div className="card-header-subtitle">LOCATION & TIMELINE DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid">
               <div>
@@ -1645,9 +1860,13 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👤</span> Affected Student / Victim Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Affected Student / Victim Details</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {currentEData.victims.map((vic, idx) => (
               <div key={idx} className="row-card">
@@ -1693,9 +1912,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>👥</span> Subject / Respondent Details
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Subject / Respondent Details</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             {currentEData.respondents.map((resp, idx) => (
               <div key={idx} className="row-card">
@@ -1736,9 +1959,13 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="card">
-            <div className="section-title-sm">
-              <span style={{ fontSize: '18px' }}>✅</span> Actions Taken & Case Status
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Actions Taken & Case Status</div>
+                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+              </div>
             </div>
             <div className="panel-grid-1">
               <div>
@@ -1757,37 +1984,51 @@ const ModuleAReportingPanel = () => {
         </>
       )}
 
-      <div className="card">
-        <div className="section-title">
-          <span style={{ fontSize: '20px' }}>📊</span> Summary Counters
+      <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+        <div className="card-header mb-md">
+          <div className="card-header-icon"><span className="material-symbols-outlined">analytics</span></div>
+          <div className="card-header-text">
+            <div className="card-header-title">Summary Counters</div>
+            <div className="card-header-subtitle">METRICS & CONSOLIDATED COUNTERS</div>
+          </div>
         </div>
         <div className="counter-row">
-          <div className="counter-pill">
+          <div className="counter-pill resolved">
+            <div className="counter-icon"><span className="material-symbols-outlined">check_circle</span></div>
             <div className="counter-num">{counters.resolved}</div>
             <div className="counter-label">Resolved</div>
           </div>
-          <div className="counter-pill">
+          <div className="counter-pill ongoing">
+            <div className="counter-icon"><span className="material-symbols-outlined">pending_actions</span></div>
             <div className="counter-num">{counters.ongoing}</div>
             <div className="counter-label">Ongoing</div>
           </div>
-          <div className="counter-pill">
+          <div className="counter-pill external">
+            <div className="counter-icon"><span className="material-symbols-outlined">account_balance</span></div>
             <div className="counter-num">{counters.external}</div>
             <div className="counter-label">Gov Agency</div>
           </div>
-          <div className="counter-pill">
+          <div className="counter-pill ngo">
+            <div className="counter-icon"><span className="material-symbols-outlined">corporate_fare</span></div>
             <div className="counter-num">{counters.ngo}</div>
             <div className="counter-label">NGO</div>
           </div>
         </div>
       </div>
 
-      <div className="card">
-        <div className="section-title">
-          <span style={{ fontSize: '20px' }}>✍️</span> Signatures
+      <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+        <div className="card-header mb-md">
+          <div className="card-header-icon"><span className="material-symbols-outlined">draw</span></div>
+          <div className="card-header-text">
+            <div className="card-header-title">Signatures & Approvals</div>
+            <div className="card-header-subtitle">VERIFICATION & SIGN-OFF</div>
+          </div>
         </div>
         <div className="panel-grid">
           <div className="row-card">
-            <div style={{ fontSize: '11px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '12px' }}>Prepared By</div>
+            <div className="sig-header">
+              <span className="material-symbols-outlined">edit_note</span> Prepared By
+            </div>
             <div className="panel-grid-1">
               <div>
                 <label className="field-label">Name <span className="required">*</span></label>
@@ -1804,7 +2045,9 @@ const ModuleAReportingPanel = () => {
             </div>
           </div>
           <div className="row-card">
-            <div style={{ fontSize: '11px', fontWeight: '800', color: '#1261a3', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '12px' }}>Validated By</div>
+            <div className="sig-header">
+              <span className="material-symbols-outlined">verified</span> Validated By
+            </div>
             <div className="panel-grid-1">
               <div>
                 <label className="field-label">Name <span className="required">*</span></label>
@@ -1824,8 +2067,12 @@ const ModuleAReportingPanel = () => {
       </div>
 
       <div className="sticky-footer">
-        <button className="secondary-btn" type="button">💾 Save Draft</button>
-        <button className="primary-btn" type="button" onClick={handleSubmit}>📤 Submit Report</button>
+        <button className="secondary-btn" type="button" onClick={() => window.location.href = 'school_dashboard_review_annex_a_report.html'}>
+          <span className="material-symbols-outlined">save</span> Save Draft
+        </button>
+        <button className="primary-btn" type="button" onClick={handleSubmit}>
+          <span className="material-symbols-outlined">send</span> Submit Report
+        </button>
       </div>
     </div>
   );

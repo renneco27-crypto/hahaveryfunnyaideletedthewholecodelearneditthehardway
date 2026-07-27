@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Login | Ormoc City Division LRP</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Shared Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#1b2225",
+                    "on-background": "#121c28",
+                    "surface-variant": "#d9e3f4",
+                    "primary": "#002046",
+                    "surface-tint": "#465f88",
+                    "on-tertiary-fixed-variant": "#41484c",
+                    "tertiary-container": "#30373b",
+                    "inverse-primary": "#aec7f7",
+                    "secondary-fixed": "#d2e4ff",
+                    "on-primary-fixed-variant": "#2e476f",
+                    "background": "#f8f9ff",
+                    "on-surface": "#121c28",
+                    "surface-bright": "#f8f9ff",
+                    "primary-fixed-dim": "#aec7f7",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#c4c6cf",
+                    "secondary-fixed-dim": "#a1c9ff",
+                    "surface-container-highest": "#d9e3f4",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#87a0cd",
+                    "on-tertiary-fixed": "#151d20",
+                    "surface": "#f8f9ff",
+                    "surface-container-high": "#dfe9fa",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#99a0a5",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#dce3e8",
+                    "surface-container-low": "#eef4ff",
+                    "tertiary-fixed-dim": "#c0c7cc",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#001b3d",
+                    "outline": "#74777f",
+                    "secondary-container": "#7ab7ff",
+                    "secondary": "#1261a3",
+                    "on-secondary-fixed": "#001c37",
+                    "surface-container": "#e5eeff",
+                    "on-surface-variant": "#44474e",
+                    "inverse-surface": "#27313e",
+                    "primary-fixed": "#d6e3ff",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#00487f",
+                    "on-secondary-container": "#00477d",
+                    "primary-container": "#1b365d",
+                    "surface-dim": "#d1dbec"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "lg": "40px",
+                    "xs": "8px",
+                    "sm": "16px",
+                    "xl": "64px",
+                    "md": "24px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Atkinson Hyperlegible Next"],
+                    "headline-lg-mobile": ["Atkinson Hyperlegible Next"],
+                    "body-md": ["Inter"],
+                    "display": ["Atkinson Hyperlegible Next"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Atkinson Hyperlegible Next"],
+                    "caption": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .login-mesh {
+            background-color: #f8f9ff;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(214, 227, 255, 0.5) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(122, 183, 255, 0.2) 0px, transparent 50%);
+        }
+        .seal-glow {
+            filter: drop-shadow(0 0 15px rgba(0, 32, 70, 0.1));
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="login-mesh min-h-screen flex flex-col font-body-md text-on-surface selection:bg-secondary-container selection:text-on-secondary-container relative">
+<!-- Background Image Layer -->
+<div aria-hidden="true" class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+<img alt="" class="w-full h-full object-cover opacity-20 blur-[6px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd7tOlfT_NIAh4VleHjwWX-T4TLav1kwOXfVfUToSeEIvpVaVY5rsye7SZzAuvG6cx2tJzrqu2rT9bKd6hGm8IGCVIoH6qdnAcTCKBmMtzbYKSn_4bK3vWg-h3YmO79psw-lxjkQn4JCTdFfpMtwIcS2WXLbbqhUMeT5tseHxOTSfZ_z0eC-PwIqVWk9_kPYItGsnvwj-hx_eHLOeHqlZlH6xyItep6qqgO6-mbJzPmYnVKDixYosThNtbIktUdR7flHEnUuWVKiWB">
+</div>
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center p-md">
+<div class="max-w-md w-full">
+<!-- Government Branding Section -->
+<div class="flex flex-col items-center mb-lg">
+<!-- Government Seal Placeholder -->
+<div class="mb-md seal-glow">
+<img class="w-24 h-24 object-contain rounded-full bg-white p-base" data-alt="A formal, circular official government seal emblem presented in a high-contrast navy blue and silver aesthetic. The design is minimalist and professional, featuring a stylized eagle or coat of arms icon in the center. The background is a clean white, and the lighting is even and soft, emphasizing authority and stability suitable for a national civic platform. The overall look is corporate, traditional, and trustworthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbIvR-NwZO6UdQCcZ5TS9h5HBcdkCubpNCrBSr7FImi-KtnAaHD9LSYx74og7JYDUPPvBiHZQQbGl9u8nrFg5qSvqhl89rXHFa5iwXv3hkPGuHubEQ1klUz0pfWMIWVp3gPXLYrauY4xxdtLAz4yikDKYvpX6ktJ3q9pEgrf9PmLcC5hlGPdhdZLZfmB1aOxZJZU2BwOtO-du1ZdY6xBxtyaNU0gBO1P7h1KgOMydT4LWr6w8nzWoglJjCU9AyRBBk6zgq4AdwPNZFM_Q">
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary text-center tracking-tight">Ormoc City Division LRP</h1><p class="font-body-md text-body-md text-on-surface-variant text-center mt-xs">Empowering Integrity, Protecting Futures</p>
+</div>
+<!-- Login Card -->
+<div class="bg-white border border-outline-variant p-lg rounded-lg shadow-sm animate-fade-in">
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">
+                        Sign In
+                    </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Authorized personnel only. Please use your government-issued credentials.
+                    </p>
+</div>
+<!-- Email Login Form -->
+<div class="mb-md flex flex-col gap-sm">
+<input class="w-full px-md py-sm border border-outline rounded-lg font-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-on-surface" id="emailInput" placeholder="Enter your email" type="email">
+<button class="w-full bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" onclick="handleEmailLogin()">
+    Sign In
+</button>
+</div>
+<div class="relative flex items-center mb-md">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="flex-shrink-0 mx-sm text-on-surface-variant font-caption text-caption uppercase">or</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<!-- Google Auth Button -->
+<button class="w-full flex items-center justify-center gap-sm bg-white border border-outline px-md py-sm rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors duration-200 active:bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" onclick="handleGoogleLogin()" style="transform: translateY(0px); box-shadow: none;">
+<svg class="w-5 h-5" viewBox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                    Sign in with Google
+                </button>
+<!-- Restriction Notice -->
+<div class="mt-lg p-sm bg-surface-container-low border-l-4 border-primary rounded">
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="lock_person"></span>
+<p class="font-caption text-caption text-on-surface-variant leading-relaxed">
+                            Access is strictly restricted to authorized school and admin domains. Use your institutional account to sign in.
+                        </p>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant flex flex-col gap-sm">
+<a class="font-label-md text-label-md text-primary hover:underline flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="help"></span>
+                        Having trouble signing in?
+                    </a>
+</div>
+</div>
+<!-- Additional Links -->
+<div class="mt-md flex justify-center gap-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Security Standards</a>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-md px-lg flex justify-between items-center bg-surface-dim border-t border-outline-variant">
+<div class="flex flex-col md:flex-row items-center gap-sm">
+<span class="font-caption text-caption text-on-surface-variant">© 2026 Mae Cortes All rights reserved.</span>
+</div>
+<div class="hidden md:flex items-center gap-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Accessibility Statement</a>
+</div>
+</footer>
+<script>
+        // Micro-interaction for the Google button hover
+        const authBtns = document.querySelectorAll('button');
+        authBtns.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.transform = 'translateY(-1px)';
+                btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translateY(0)';
+                btn.style.boxShadow = 'none';
+            });
+        });
+
+        function handleEmailLogin() {
+            const email = document.getElementById('emailInput').value.trim().toLowerCase();
+            if (email) {
+                window.location.href = 'admin_overview_wired.html';
+            } else {
+                alert('Please enter your email address.');
+            }
+        }
+
+        function handleGoogleLogin() {
+            window.location.href = 'school_dashboard_review_annex_a_report.html';
+        }
+    </script>
+
+
+</body></html>

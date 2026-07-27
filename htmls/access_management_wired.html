@@ -1,0 +1,312 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Access Management - Ormoc City Division LRP</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#1b2225",
+                        "on-background": "#121c28",
+                        "surface-variant": "#d9e3f4",
+                        "primary": "#002046",
+                        "surface-tint": "#465f88",
+                        "on-tertiary-fixed-variant": "#41484c",
+                        "tertiary-container": "#30373b",
+                        "inverse-primary": "#aec7f7",
+                        "secondary-fixed": "#d2e4ff",
+                        "on-primary-fixed-variant": "#2e476f",
+                        "background": "#f8f9ff",
+                        "on-surface": "#121c28",
+                        "surface-bright": "#f8f9ff",
+                        "primary-fixed-dim": "#aec7f7",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c4c6cf",
+                        "secondary-fixed-dim": "#a1c9ff",
+                        "surface-container-highest": "#d9e3f4",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#87a0cd",
+                        "on-tertiary-fixed": "#151d20",
+                        "surface": "#f8f9ff",
+                        "surface-container-high": "#dfe9fa",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#99a0a5",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#dce3e8",
+                        "surface-container-low": "#eef4ff",
+                        "tertiary-fixed-dim": "#c0c7cc",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001b3d",
+                        "outline": "#74777f",
+                        "secondary-container": "#7ab7ff",
+                        "secondary": "#1261a3",
+                        "on-secondary-fixed": "#001c37",
+                        "surface-container": "#e5eeff",
+                        "on-surface-variant": "#44474e",
+                        "inverse-surface": "#27313e",
+                        "primary-fixed": "#d6e3ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#00487f",
+                        "on-secondary-container": "#00477d",
+                        "primary-container": "#1b365d",
+                        "surface-dim": "#d1dbec"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Atkinson Hyperlegible Next"],
+                        "headline-md": ["Atkinson Hyperlegible Next"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "caption": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+        .table-zebra tr:nth-child(even) { background-color: #F9FAFB; }
+        .tooltip-trigger:hover + .tooltip { opacity: 1; visibility: visible; }
+        
+        @keyframes rowFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        tbody tr {
+            animation: rowFadeIn 0.4s ease-out forwards;
+            opacity: 0;
+        }
+        tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        tbody tr:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="text-on-surface">
+<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+<img alt="Background" class="w-full h-full object-cover opacity-18 blur-[6px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRPcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
+</div>
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-sm"><div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-primary">Ormoc City Division LRP</span>
+<span class="font-caption text-caption text-on-surface-variant -mt-1">Empowering Integrity, Protecting Futures</span>
+</div></div>
+<div class="flex items-center gap-md"><button class="flex items-center justify-center gap-xs px-md h-10 min-w-[120px] text-on-surface-variant cursor-pointer active:opacity-80 transition-all hover:text-primary rounded-lg border border-outline-variant hover:border-primary hover:bg-surface-variant font-label-md text-label-md">
+    <span class="material-symbols-outlined">account_circle</span>
+    <span class="font-label-md text-label-md">Account</span>
+</button>
+<button class="flex items-center justify-center gap-xs px-md h-10 min-w-[120px] bg-primary text-on-primary cursor-pointer active:opacity-80 transition-all hover:bg-primary-container rounded-lg font-label-md text-label-md" onclick="window.location.href='login_ormoc_city_division_lrp_wired_1.html'">
+    <span class="material-symbols-outlined">logout</span>
+    <span class="font-label-md text-label-md">Logout</span>
+</button></div>
+</header>
+<div class="flex min-h-[calc(100vh-64px)]">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 flex flex-col p-sm bg-surface-container-low/90 backdrop-blur-md border-r border-outline-variant">
+<div class="flex flex-col gap-xs mb-lg px-md">
+<div class="flex items-center gap-sm">
+<img class="w-10 h-10 rounded-full border border-outline" data-alt="A professional corporate headshot of a government administrator in a clean, minimalist studio environment with soft neutral lighting and a blurred professional background, representing high authority and reliability for the Ormoc City Division LRP platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAr-zNhP0MemZpxdbNlyb2wmQ2FG-ojLfRPrhXSHOAYVkmBLd0Fq7MTqMYWU7iKwEQgmlb_o3H8bE20-qz3KeHOjfH65tJm-aKmfAIg1T6AgjzvR6bzuoa4CPWGnIYTSKyEdihv4V-NJnXNk7svqYoshiMuzf5PuNvm8jXCH_r5aSdbp5rNJAc5Nx54Jy36GGCs6ixN19M5_iTtKRNNpmuYfO7qQj3g8xbeIr8a4Nrm31HmIkBY64giG8k4UhTHAYSzWXQTjhUBf_-">
+<div>
+<p class="font-label-md text-label-md text-primary">Admin Dashboard</p>
+<p class="font-caption text-caption text-on-surface-variant">Management Portal</p>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-base">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="admin_overview_wired.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="latest_excel_division_consolidated_reports.html">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Latest Excel</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg transition-all duration-200" href="access_management_wired.html">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Access Management</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 p-lg max-w-container-max mx-auto">
+<!-- Table Container -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant rounded-lg overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse table-zebra">
+<thead>
+<tr class="border-b-2 border-primary">
+<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">User Email</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">Institution</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">Device ID</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">Request Date</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface">
+<!-- Row 1 -->
+<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
+<td class="px-md py-md">j.doe@state.gov.uk</td>
+<td class="px-md py-md">Department of Transit</td>
+<td class="px-md py-md font-mono text-sm">CIV-882-XQ</td>
+<td class="px-md py-md">Oct 24, 2024</td>
+<td class="px-md py-md text-right space-x-2">
+<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
+<div class="inline-block relative">
+<button class="tooltip-trigger px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
+<div class="tooltip invisible opacity-0 absolute bottom-full right-0 mb-2 w-48 p-2 bg-on-background text-white text-xs rounded shadow-lg transition-all z-10">
+                                        Permanently denies this user's ability to sync with institutional nodes.
+                                        <div class="absolute top-full right-6 w-2 h-2 bg-on-background transform rotate-45 -mt-1"></div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
+<td class="px-md py-md">m.smith@metropol.edu</td>
+<td class="px-md py-md">Central University</td>
+<td class="px-md py-md font-mono text-sm">EDU-412-KM</td>
+<td class="px-md py-md">Oct 23, 2024</td>
+<td class="px-md py-md text-right space-x-2">
+<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
+<button class="px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
+<td class="px-md py-md">admin@cityhealth.org</td>
+<td class="px-md py-md">Municipal Health Board</td>
+<td class="px-md py-md font-mono text-sm">HEA-009-ZT</td>
+<td class="px-md py-md">Oct 22, 2024</td>
+<td class="px-md py-md text-right space-x-2">
+<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
+<button class="px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
+<td class="px-md py-md">s.rogers@justice.gov</td>
+<td class="px-md py-md">Federal Integrity Office</td>
+<td class="px-md py-md font-mono text-sm">FED-551-PP</td>
+<td class="px-md py-md">Oct 21, 2024</td>
+<td class="px-md py-md text-right space-x-2">
+<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
+<button class="px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-md py-sm bg-surface-container-low/90 flex justify-between items-center border-t border-outline-variant">
+<span class="font-caption text-caption text-on-surface-variant">Showing 4 of 24 pending requests</span>
+<div class="flex gap-xs">
+<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Contextual Information Card -->
+<div class="mt-lg grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="p-md bg-surface border border-outline-variant rounded-lg">
+<h3 class="font-headline-md text-headline-md text-primary mb-sm flex items-center gap-xs">
+<span class="material-symbols-outlined">info</span> Security Protocol
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">All access requests must be verified against the National Registry of Public Officials before approval. Revoking access will immediately invalidate all active sessions for the specific Device ID.</p>
+<a class="font-label-md text-label-md text-secondary hover:underline" href="#">Read full compliance guide</a>
+</div>
+<div class="p-md bg-primary-container text-white rounded-lg relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-md text-headline-md mb-sm">Audit Log Notice</h3>
+<p class="font-body-md text-body-md opacity-90 mb-md">Your account (Admin #442) is currently logging all 'Approve' and 'Revoke' actions for the weekly compliance report. Ensure institutional IDs match provided documentation.</p>
+<div class="flex gap-sm">
+<span class="px-sm py-base bg-secondary text-white rounded-full font-caption text-caption">LIVE MONITORING</span>
+<span class="px-sm py-base bg-white/20 text-white rounded-full font-caption text-caption">EST: 14:42:00</span>
+</div>
+</div>
+<!-- Subtle background decoration -->
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-9xl">verified_user</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="w-full py-md px-lg flex justify-between items-center bg-surface-dim border-t border-outline-variant">
+<span class="font-caption text-caption text-on-surface-variant">© 2026 Mae Cortes All rights reserved.</span>
+<div class="flex gap-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Accessibility Statement</a>
+</div>
+</footer>
+<!-- Success Toast -->
+<div class="fixed bottom-8 right-8 z-[100] transition-all duration-500 ease-out opacity-0 translate-y-4 pointer-events-none" id="toast">
+<div class="bg-primary-container text-on-primary-container px-lg py-sm rounded-lg flex items-center gap-sm shadow-lg border border-outline-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
+<span class="font-label-md text-label-md">Access approved successfully</span>
+</div>
+</div>
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Toast notification
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+    </script>
+
+
+
+
+</body></html>

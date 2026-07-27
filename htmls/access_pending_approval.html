@@ -1,0 +1,223 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Pending Approval | Civic Integrity</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#1b2225",
+                        "on-background": "#121c28",
+                        "surface-variant": "#d9e3f4",
+                        "primary": "#002046",
+                        "surface-tint": "#465f88",
+                        "on-tertiary-fixed-variant": "#41484c",
+                        "tertiary-container": "#30373b",
+                        "inverse-primary": "#aec7f7",
+                        "secondary-fixed": "#d2e4ff",
+                        "on-primary-fixed-variant": "#2e476f",
+                        "background": "#f8f9ff",
+                        "on-surface": "#121c28",
+                        "surface-bright": "#f8f9ff",
+                        "primary-fixed-dim": "#aec7f7",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c4c6cf",
+                        "secondary-fixed-dim": "#a1c9ff",
+                        "surface-container-highest": "#d9e3f4",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#87a0cd",
+                        "on-tertiary-fixed": "#151d20",
+                        "surface": "#f8f9ff",
+                        "surface-container-high": "#dfe9fa",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#99a0a5",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#dce3e8",
+                        "surface-container-low": "#eef4ff",
+                        "tertiary-fixed-dim": "#c0c7cc",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001b3d",
+                        "outline": "#74777f",
+                        "secondary-container": "#7ab7ff",
+                        "secondary": "#1261a3",
+                        "on-secondary-fixed": "#001c37",
+                        "surface-container": "#e5eeff",
+                        "on-surface-variant": "#44474e",
+                        "inverse-surface": "#27313e",
+                        "primary-fixed": "#d6e3ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#00487f",
+                        "on-secondary-container": "#00477d",
+                        "primary-container": "#1b365d",
+                        "surface-dim": "#d1dbec"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Atkinson Hyperlegible Next"],
+                        "headline-md": ["Atkinson Hyperlegible Next"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "caption": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
+<div class="font-headline-md text-headline-md font-bold text-primary">Civic Integrity</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80" data-icon="account_circle">account_circle</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80" data-icon="logout">logout</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center p-md">
+<div class="max-w-[1280px] w-full grid grid-cols-1 md:grid-cols-12 gap-lg items-center">
+<!-- Left Side: Visual Illustration (Bento Style) -->
+<div class="md:col-span-5 flex flex-col gap-sm order-2 md:order-1">
+<div class="bg-white border border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center text-center shadow-sm h-full relative overflow-hidden">
+<!-- Subtle Background Pattern -->
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#002046 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="relative z-10 animate-float mb-lg">
+<div class="w-32 h-32 rounded-full bg-secondary-container flex items-center justify-center text-primary mb-md">
+<span class="material-symbols-outlined text-[64px]" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div class="absolute -bottom-2 -right-2 w-16 h-16 rounded-full bg-white border-2 border-primary flex items-center justify-center text-primary shadow-lg">
+<span class="material-symbols-outlined text-[32px]" data-icon="timer">timer</span>
+</div>
+</div>
+<div class="font-headline-md text-headline-md text-primary mb-xs">Secure Verification</div>
+<p class="font-body-md text-body-md text-on-surface-variant px-sm">
+                        Our administrative protocol ensures the highest standard of platform security.
+                    </p>
+</div>
+</div>
+<!-- Right Side: Action & Message -->
+<div class="md:col-span-7 flex flex-col gap-md order-1 md:order-2">
+<div class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full w-fit">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status: Pending Verification</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary max-w-xl">
+                    Device/Account pending Admin approval.
+                </h1>
+<div class="p-md border-l-4 border-secondary bg-surface-container-low rounded-r-lg max-w-2xl">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Your request has been logged. The platform administrator has been notified of your login attempt. Access will be granted once your credentials and device have been verified against our security registry.
+                    </p>
+</div>
+<div class="flex flex-col gap-sm mt-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="notifications_active">notifications_active</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface">Admin notification sent via secure channel.</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="update">update</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface">Average verification time: 10-15 minutes.</div>
+</div>
+</div>
+<div class="mt-lg pt-lg border-t border-outline-variant flex flex-wrap gap-md">
+<button class="px-xl py-md bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors active:opacity-80 flex items-center gap-sm min-w-[180px] justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                        Return to Login
+                    </button>
+<button class="px-xl py-md border-2 border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-surface-variant transition-colors active:opacity-80 min-w-[180px] justify-center">
+                        Contact Support
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-md px-lg flex justify-between items-center bg-surface-dim border-t border-outline-variant text-on-surface font-caption text-caption">
+<div class="flex flex-col gap-xs">
+<div class="font-label-md text-label-md font-bold">Civic Integrity</div>
+<div>© 2024 Civic Integrity Government Platform. All rights reserved.</div>
+</div>
+<div class="hidden md:flex gap-md">
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Accessibility Statement</a>
+</div>
+</footer>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple interactive feedback on buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simulating a real-time status check update
+        setTimeout(() => {
+            console.log("Checking approval status...");
+        }, 5000);
+    </script>
+</body></html>
