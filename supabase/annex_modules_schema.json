@@ -1,0 +1,161 @@
+{
+  "description": "Annex A — Student Compliance Reporting: Supabase schema for Modules A–E",
+  "version": "1.0.0",
+  "shared": {
+    "schoolMetadata": {
+      "schoolName": "",
+      "schoolId": "",
+      "reportingYear": "",
+      "address": "",
+      "classification": "Public",
+      "level": "Elementary"
+    },
+    "signatures": {
+      "preparedBy": {
+        "name": "",
+        "designation": "",
+        "date": ""
+      },
+      "validatedBy": {
+        "name": "",
+        "designation": "",
+        "date": ""
+      }
+    }
+  },
+  "modules": {
+    "A": {
+      "title": "Incident Report",
+      "categories": ["A-1", "A-2", "A-3", "A-4", "A-5"],
+      "fields": {
+        "incidentDate": "",
+        "incidentPlace": "",
+        "motives": [],
+        "affectedStudents": [
+          {
+            "name": "",
+            "age": "",
+            "gender": "M",
+            "disability": "No",
+            "impacts": [],
+            "enrollmentStatus": "",
+            "performanceBefore": "",
+            "performanceAfter": ""
+          }
+        ],
+        "initiatingParty": [
+          {
+            "name": "",
+            "age": "",
+            "gender": "M"
+          }
+        ],
+        "actionsTaken": "",
+        "status": ""
+      }
+    },
+    "B": {
+      "title": "Behavioral Report",
+      "fields": {
+        "incidentDate": "",
+        "incidentPlace": "",
+        "incidentNature": [],
+        "affectedStudents": [
+          {
+            "name": "",
+            "age": "",
+            "gender": "M",
+            "disability": "No",
+            "impacts": [],
+            "enrollmentStatus": "",
+            "performanceBefore": "",
+            "performanceAfter": ""
+          }
+        ],
+        "respondents": [
+          {
+            "name": "",
+            "affiliation": "",
+            "age": "",
+            "gender": "M"
+          }
+        ],
+        "actionsTaken": "",
+        "status": ""
+      }
+    },
+    "C": {
+      "title": "Risk Registry",
+      "categories": ["C-1", "C-2", "C-3", "C-4", "C-5", "C-6", "C-7", "C-8"],
+      "fields": {
+        "dateIdentified": "",
+        "location": "",
+        "riskFactors": [],
+        "individuals": [
+          {
+            "name": "",
+            "age": "",
+            "gender": "M",
+            "disability": "No",
+            "familyContexts": [],
+            "enrollmentStatus": "",
+            "performanceBefore": "",
+            "performanceAfter": ""
+          }
+        ],
+        "intervention": "",
+        "status": ""
+      }
+    },
+    "D": {
+      "title": "School-Based Incident",
+      "categories": ["D-1", "D-2", "D-3", "D-4", "D-5", "D-6"],
+      "fields": {
+        "offenseDate": "",
+        "location": "",
+        "violations": [],
+        "subjects": [
+          {
+            "identificationRef": "",
+            "age": "",
+            "gender": "M",
+            "disability": "No"
+          }
+        ],
+        "programs": [],
+        "narrative": "",
+        "enrollmentStatus": "",
+        "performanceBefore": "",
+        "performanceAfter": "",
+        "status": ""
+      }
+    },
+    "E": {
+      "title": "Welfare Concern",
+      "categories": ["E-1", "E-2", "E-3", "E-4", "E-5", "E-6", "E-7", "E-8", "E-9"],
+      "fields": {
+        "incidentDate": "",
+        "incidentPlace": "",
+        "concerns": [],
+        "victims": [
+          {
+            "name": "",
+            "age": "",
+            "gender": "M",
+            "disability": "No"
+          }
+        ],
+        "respondents": [
+          {
+            "name": "",
+            "designation": "",
+            "age": "",
+            "gender": "M"
+          }
+        ],
+        "actionsTaken": "",
+        "status": ""
+      }
+    }
+  }
+}
