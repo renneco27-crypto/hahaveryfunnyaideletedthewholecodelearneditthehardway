@@ -1,5 +1,5 @@
 <!DOCTYPE html><html class="light" lang="en"><head>
-<meta charset="utf-8">
+<meta charset="utf-8"><link rel="icon" href="/favicon.ico" type="image/x-icon">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Pending Approval | Civic Integrity</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -202,7 +202,6 @@
 </footer>
 <!-- Micro-interaction Script -->
 <script>
-        // Simple interactive feedback on buttons
         document.querySelectorAll('button').forEach(btn => {
             btn.addEventListener('mousedown', function() {
                 this.style.transform = 'scale(0.98)';
@@ -215,9 +214,21 @@
             });
         });
 
-        // Simulating a real-time status check update
-        setTimeout(() => {
-            console.log("Checking approval status...");
-        }, 5000);
+        // Single-session detection: show specific message if kicked by another device
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('reason') === 'single_session') {
+            document.querySelector('h1').textContent = 'Already signed in on another device.';
+            document.querySelector('.p-md.border-l-4 p').textContent =
+                'This account is already active on another device. Only one session per account is allowed. Please sign out from your other device first, or contact support if you believe this is an error.';
+            document.querySelector('.font-label-md.uppercase').textContent = 'Status: Session Conflict';
+        }
+
+        // Logout button
+        document.querySelector('[data-icon="logout"]').addEventListener('click', function() {
+            window.location.href = '/login';
+        });
+        document.querySelector('button .material-symbols-outlined[data-icon="arrow_back"]').closest('button').addEventListener('click', function() {
+            window.location.href = '/login';
+        });
     </script>
 </body></html>

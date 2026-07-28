@@ -181,6 +181,9 @@ app.get('/api/reports', async (req, res) => {
 // ===== FRONTEND ROUTES WITH AUTH + CLEAN URLs =====
 const HTML_DIR = path.join(__dirname, 'htmls');
 
+// Single-session enforcement: map email -> token
+const activeSessions = {};
+
 // Verify session endpoint (called by frontend auth guard)
 app.post('/api/verify-session', async (req, res) => {
   const { token } = req.body;
@@ -201,11 +204,28 @@ app.post('/api/verify-session', async (req, res) => {
 
   const avatarUrl = user.user_metadata?.avatar_url || null;
   const fullName = user.user_metadata?.full_name || user.email || 'User';
+  const email = user.email;
 
-  res.json({ valid: true, user: { email: user.email, role, schoolName, avatarUrl, fullName } });
+  // Single-session check: if email already active with DIFFERENT token, reject
+  if (activeSessions[email] && activeSessions[email] !== token) {
+    return res.json({ valid: false, singleSession: true });
+  }
+
+  // Register this session
+  activeSessions[email] = token;
+
+  res.json({ valid: true, user: { email, role, schoolName, avatarUrl, fullName } });
+});
+
+// Sign-out endpoint — clears the active session
+app.post('/api/signout', (req, res) => {
+  const { email } = req.body;
+  if (email) delete activeSessions[email];
+  res.json({ success: true });
 });
 
 // Public routes
+app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'favicon.ico')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(HTML_DIR, 'login_ormoc_city_division_lrp_wired_1.html'));
 });

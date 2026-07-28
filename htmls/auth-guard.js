@@ -4,12 +4,15 @@
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   window.signOut = async function() {
+    var email = window.__user?.email;
+    if (email) {
+      try { await fetch('/api/signout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+    }
     sessionStorage.removeItem('auth_cache');
     await supabase.auth.signOut();
     window.location.href = '/login';
   };
 
-  // Step 1: Use cached auth data immediately (sidebars renders instantly)
   var cached = sessionStorage.getItem('auth_cache');
   if (cached) {
     try {
@@ -20,7 +23,6 @@
     } catch (e) {}
   }
 
-  // Step 2: Verify with server (background refresh)
   try {
     var { data: { session } } = await supabase.auth.getSession();
     if (!session) {
@@ -34,13 +36,14 @@
       body: JSON.stringify({ token: session.access_token })
     });
     var result = await res.json();
+
     if (!result.valid) {
       sessionStorage.removeItem('auth_cache');
-      window.location.href = '/pending';
+      var target = result.singleSession ? '/pending?reason=single_session' : '/pending';
+      window.location.href = target;
       return;
     }
 
-    // Cache for instant load on next navigation
     sessionStorage.setItem('auth_cache', JSON.stringify(result));
     window.__user = result.user;
 

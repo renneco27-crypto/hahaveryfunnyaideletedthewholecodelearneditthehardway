@@ -1,5 +1,5 @@
 <!DOCTYPE html><html class="light" lang="en" style=""><head>
-<meta charset="utf-8">
+<meta charset="utf-8"><link rel="icon" href="/favicon.ico" type="image/x-icon">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Ormoc City Division LRP - Admin Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -155,7 +155,7 @@
 <header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
 <div class="flex items-center gap-sm">
 </div>
-<div class="flex items-center gap-md"><button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
+<div class="flex items-center gap-md"><button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">onclick="window.open(\"https://myaccount.google.com/\",\"_blank\")" Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <div id="sidebar-root"></div>
@@ -199,8 +199,8 @@
 <span class="material-symbols-outlined text-primary text-3xl">check_circle</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Submitted</p>
-<p class="font-display text-display text-primary" id="stat-submitted">0</p>
+<p class="font-label-md text-label-md text-green-700 uppercase tracking-wider">Submitted</p>
+<p class="font-display text-display text-green-600" id="stat-submitted">0</p>
 </div>
 </div>
 
@@ -209,8 +209,8 @@
 <span class="material-symbols-outlined text-primary text-3xl">pending</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Pending</p>
-<p class="font-display text-display text-primary" id="stat-pending">—</p>
+<p class="font-label-md text-label-md text-red-700 uppercase tracking-wider">Pending</p>
+<p class="font-display text-display text-red-600" id="stat-pending">—</p>
 </div>
 </div>
 
@@ -368,3 +368,4 @@
 <script src="auth-guard.js"></script>
 <script src="sidebar.js"></script>
 </body></html>
+
