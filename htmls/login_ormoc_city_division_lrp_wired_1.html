@@ -149,7 +149,7 @@
 <!-- Email Login Form -->
 <div class="mb-md flex flex-col gap-sm">
 <input class="w-full px-md py-sm border border-outline rounded-lg font-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-on-surface" id="emailInput" placeholder="Enter your email" type="email">
-<button class="w-full bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" onclick="handleEmailLogin()">
+<button id="emailLoginBtn" class="w-full bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
     Sign In
 </button>
 </div>
@@ -159,7 +159,7 @@
 <div class="flex-grow border-t border-outline-variant"></div>
 </div>
 <!-- Google Auth Button -->
-<button class="w-full flex items-center justify-center gap-sm bg-white border border-outline px-md py-sm rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors duration-200 active:bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" onclick="handleGoogleLogin()" style="transform: translateY(0px); box-shadow: none;">
+<button id="googleLoginBtn" class="w-full flex items-center justify-center gap-sm bg-white border border-outline px-md py-sm rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors duration-200 active:bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" style="transform: translateY(0px); box-shadow: none;">
 <svg class="w-5 h-5" viewBox="0 0 24 24">
 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
@@ -203,33 +203,80 @@
 <a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Accessibility Statement</a>
 </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-        // Micro-interaction for the Google button hover
-        const authBtns = document.querySelectorAll('button');
-        authBtns.forEach(btn => {
-            btn.addEventListener('mouseenter', () => {
-                btn.style.transform = 'translateY(-1px)';
-                btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'translateY(0)';
-                btn.style.boxShadow = 'none';
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+      const SUPABASE_URL = 'https://nstyqceyjkgevnibfqks.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zdHlxY2V5amtnZXZuaWJmcWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NDMwMzcsImV4cCI6MjA5ODIxOTAzN30.EUozeDCEFqvkLSNOpaBEaXA2D8ZbdPrhGdrNFelpRCU';
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      async function checkAuthAndRoute() {
+        try {
+          const { data: { user }, error: userError } = await supabase.auth.getUser();
+          if (userError || !user) return;
+
+          // Check app_metadata (raw_app_meta_data) first, fall back to profiles table
+          let role = user.app_metadata?.role;
+
+          if (!role) {
+            const { data: profile } = await supabase
+              .from('profiles').select('role').eq('id', user.id).single();
+            role = profile?.role || 'user';
+          }
+
+          console.log('Logged in as: ' + user.email + ' | Role: ' + role);
+          window.location.href = role === 'admin' ? '/admin' : '/dashboard';
+        } catch (e) {
+          console.error('checkAuthAndRoute error:', e);
+        }
+      }
+
+      // Check session on page load
+      supabase.auth.getSession().then(function(res) {
+        if (res.data.session) checkAuthAndRoute();
+      }).catch(function(e) { console.error('getSession error:', e); });
+
+      // Listen for auth state changes (handles OAuth redirect)
+      supabase.auth.onAuthStateChange(function(event, session) {
+        if (event === 'SIGNED_IN' && session) checkAuthAndRoute();
+      });
+
+      // Google login (popup)
+      document.getElementById('googleLoginBtn').addEventListener('click', async function() {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin + '/login',
+            skipBrowserRedirect: true
+          }
         });
-
-        function handleEmailLogin() {
-            const email = document.getElementById('emailInput').value.trim().toLowerCase();
-            if (email) {
-                window.location.href = 'admin_overview_wired.html';
-            } else {
-                alert('Please enter your email address.');
-            }
+        if (error) { alert(error.message); return; }
+        if (data?.url) {
+          window.open(data.url, 'google-login', 'width=520,height=600,left=400,top=120');
         }
+      });
 
-        function handleGoogleLogin() {
-            window.location.href = 'school_dashboard_review_annex_a_report.html';
-        }
-    </script>
+      // Email login
+      document.getElementById('emailLoginBtn').addEventListener('click', async function() {
+        const email = document.getElementById('emailInput').value.trim().toLowerCase();
+        if (!email) { alert('Please enter your email address.'); return; }
+        const { error } = await supabase.auth.signInWithOtp({ email });
+        if (error) { alert(error.message); } else { alert('Check your email for the magic link.'); }
+      });
+
+      // Button hover effects
+      document.querySelectorAll('button').forEach(function(btn) {
+        btn.addEventListener('mouseenter', function() {
+          btn.style.transform = 'translateY(-1px)';
+          btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        });
+        btn.addEventListener('mouseleave', function() {
+          btn.style.transform = 'translateY(0)';
+          btn.style.boxShadow = 'none';
+        });
+      });
+    });
+</script>
 
 
 </body></html>

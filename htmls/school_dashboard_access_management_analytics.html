@@ -198,7 +198,7 @@
             <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">account_circle</span>
             Account
         </button>
-        <button onclick="location.href='login_ormoc_city_division_lrp_wired_1.html'" aria-label="Logout" class="h-10 min-w-[110px] flex items-center justify-center gap-xs rounded bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed transition-colors">
+        <button onclick="signOut()" aria-label="Logout" class="h-10 min-w-[110px] flex items-center justify-center gap-xs rounded bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed transition-colors">
             <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">logout</span>
             Logout
         </button>
@@ -213,19 +213,19 @@
     </div>
     <ul class="flex flex-col gap-xs">
         <li>
-            <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="school_dashboard_review_annex_a_report.html">
+            <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/dashboard">
                 <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">dashboard</span>
                 Overview
             </a>
         </li>
         <li>
-            <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="annex_modules_redesigned.html">
+            <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/submissions">
                 <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">description</span>
                 Submissions
             </a>
         </li>
         <li>
-            <a aria-current="page" class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg font-label-md text-label-md" href="school_dashboard_access_management_analytics.html">
+            <a aria-current="page" class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg font-label-md text-label-md" href="/analytics">
                 <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 1;">admin_panel_settings</span>
                 Access Management
             </a>
@@ -247,7 +247,7 @@
 <h3 class="font-label-md text-label-md">Total Incidents Reported</h3>
 <span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 0;">analytics</span>
 </div>
-<div class="font-display text-display text-on-surface">142</div>
+<div class="font-display text-display text-on-surface" id="total-incidents">0</div>
 <div class="font-caption text-caption text-outline">Year to date</div>
 </div>
 
@@ -256,7 +256,7 @@
 <h3 class="font-label-md text-label-md">Last Submission Date</h3>
 <span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 0;">history</span>
 </div>
-<div class="font-headline-md text-headline-md text-on-surface mt-sm">Oct 24, 2024</div>
+<div class="font-headline-md text-headline-md text-on-surface mt-sm" id="last-submission">—</div>
 <div class="font-caption text-caption text-outline mt-auto">Processed successfully</div>
 </div>
 </div>
@@ -264,31 +264,19 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-md mb-lg">
 <div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant p-md rounded-lg">
 <h3 class="font-label-md text-label-md text-on-surface mb-md">Incidents Reported Over Time</h3>
-<!-- Placeholder for Bar Chart -->
-<div class="w-full h-[300px] flex items-end gap-sm pt-lg border-b border-l border-outline-variant px-sm relative">
-<!-- Y-axis labels -->
-<div class="absolute left-[-20px] top-0 bottom-0 flex flex-col justify-between text-caption text-outline py-xs">
-<span>50</span>
-<span>25</span>
-<span>0</span>
-</div>
-<!-- Bars -->
-<div class="w-full flex justify-around items-end h-full"><div class="w-12 bg-secondary-container rounded-t-sm h-[40%]" title="Jan: 20"></div>
-<div class="w-12 bg-primary rounded-t-sm h-[60%]" title="Feb: 30"></div>
-<div class="w-12 bg-secondary rounded-t-sm h-[30%]" title="Mar: 15"></div>
-<div class="w-12 bg-secondary-container rounded-t-sm h-[80%]" title="Apr: 40"></div>
-<div class="w-12 bg-primary rounded-t-sm h-[50%]" title="May: 25"></div>
-<div class="w-12 bg-secondary rounded-t-sm h-[24%]" title="Jun: 12"></div></div>
-</div>
-<!-- X-axis labels -->
-<div class="flex justify-around text-caption text-outline mt-xs pl-sm">
-<span>Jan</span>
-<span>Feb</span>
-<span>Mar</span>
-<span>Apr</span>
-<span>May</span>
-<span>Jun</span>
-</div>
+        <div class="w-full h-[300px] flex items-end gap-sm pt-lg border-b border-l border-outline-variant px-sm relative" id="chart-container">
+            <div class="absolute left-[-20px] top-0 bottom-0 flex flex-col justify-between text-caption text-outline py-xs">
+                <span>50</span>
+                <span>25</span>
+                <span>0</span>
+            </div>
+            <div class="w-full flex justify-around items-end h-full" id="chart-bars">
+                <div class="text-caption text-outline w-full text-center py-md">Loading...</div>
+            </div>
+        </div>
+        <div class="flex justify-around text-caption text-outline mt-xs pl-sm" id="chart-labels">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+        </div>
 </div>
 
 </div>
@@ -308,64 +296,8 @@
 <th class="p-md font-semibold">Action</th>
 </tr>
 </thead>
-<tbody class="font-body-md text-body-md text-on-surface">
-<tr class="border-b border-outline-variant hover:bg-surface-variant transition-colors">
-<td class="p-md">Oct 24, 2024</td>
-<td class="p-md text-on-surface-variant">October 2024</td>
-<td class="p-md text-right">5</td>
-<td class="p-md">
-<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-[#E6F4EA] text-[#137333] font-label-md text-label-md">
-<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
-                                            Submitted
-                                        </span>
-</td>
-<td class="p-md">
-<button class="text-primary hover:underline font-label-md text-label-md">View Details</button>
-</td>
-</tr>
-<tr class="border-b border-outline-variant bg-[#F9FAFB] hover:bg-surface-variant transition-colors">
-<td class="p-md">Sep 30, 2024</td>
-<td class="p-md text-on-surface-variant">September 2024</td>
-<td class="p-md text-right">12</td>
-<td class="p-md">
-<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-[#E6F4EA] text-[#137333] font-label-md text-label-md">
-<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
-                                            Submitted
-                                        </span>
-</td>
-<td class="p-md">
-<button class="text-primary hover:underline font-label-md text-label-md">View Details</button>
-</td>
-</tr>
-<tr class="border-b border-outline-variant hover:bg-surface-variant transition-colors">
-<td class="p-md">Aug 31, 2024</td>
-<td class="p-md text-on-surface-variant">August 2024</td>
-<td class="p-md text-right">8</td>
-<td class="p-md">
-<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-[#FEF7E0] text-[#B06000] font-label-md text-label-md">
-<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: &quot;FILL&quot; 1;">pending</span>
-                                            Pending Review
-                                        </span>
-</td>
-<td class="p-md">
-<button class="text-primary hover:underline font-label-md text-label-md">View Details</button>
-</td>
-</tr>
-<tr class="border-b border-outline-variant bg-[#F9FAFB] hover:bg-surface-variant transition-colors">
-<td class="p-md">Jul 28, 2024</td>
-<td class="p-md text-on-surface-variant">July 2024</td>
-<td class="p-md text-right">0</td>
-<td class="p-md">
-<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-[#E6F4EA] text-[#137333] font-label-md text-label-md">
-<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
-                                            Submitted
-                                        </span>
-</td>
-<td class="p-md">
-<button class="text-primary hover:underline font-label-md text-label-md">View Details</button>
-</td>
-</tr>
-</tbody>
+            <tbody class="font-body-md text-body-md text-on-surface" id="history-tbody">
+            </tbody>
 </table>
 </div>
 </div>
@@ -374,7 +306,7 @@
 </div>
 <!-- Footer -->
 <footer class="w-full py-md px-lg flex justify-between items-center bg-surface-dim border-t border-outline-variant z-50 relative md:ml-64 md:w-[calc(100%-16rem)]">
-<span class="font-caption text-caption text-on-surface">© 2024 Civic Integrity Government Platform. All rights reserved.</span>
+<span class="font-caption text-caption text-on-surface">© 2026 Mae Cortes. All rights reserved.</span>
 <div class="flex gap-md">
 <a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Privacy Policy</a>
 <a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-opacity duration-200" href="#">Terms of Service</a>
@@ -383,4 +315,111 @@
 </footer>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="auth-guard.js"></script>
+<script>
+  const API_BASE = '';
+  const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const STATUS_CONFIG = {
+    'Submitted': { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' },
+    'Pending Review': { bg: '#FEF7E0', color: '#B06000', icon: 'pending' }
+  };
+
+  async function loadAnalytics() {
+    try {
+      const res = await fetch(`${API_BASE}/api/stats`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      // Total incidents
+      document.getElementById('total-incidents').textContent = data.total;
+
+      // Last submission date
+      const lastDate = data.lastSubmission ? new Date(data.lastSubmission).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+      document.getElementById('last-submission').textContent = lastDate + (data.total > 0 ? ` · ${data.total} report${data.total !== 1 ? 's' : ''} submitted` : '');
+
+      // Bar chart
+      renderChart(data.monthly);
+
+      // History table
+      renderHistory(data.reports);
+    } catch (err) {
+      console.error('Failed to load analytics:', err);
+      document.getElementById('chart-bars').innerHTML = '<div class="text-caption text-outline w-full text-center py-md">Could not load data</div>';
+    }
+  }
+
+  function renderChart(monthly) {
+    const barsContainer = document.getElementById('chart-bars');
+    const labelsContainer = document.getElementById('chart-labels');
+
+    const entries = Object.entries(monthly || {}).sort();
+    if (entries.length === 0) {
+      barsContainer.innerHTML = '<div class="text-caption text-outline w-full text-center py-md">No data yet</div>';
+      labelsContainer.innerHTML = '';
+      return;
+    }
+
+    const maxVal = Math.max(...entries.map(([,v]) => v), 1);
+    const heightPct = v => Math.max((v / maxVal) * 100, 4);
+
+    barsContainer.innerHTML = entries.map(([key, val]) => {
+      const [, mm] = key.split('-');
+      const monthLabel = MONTHS_SHORT[parseInt(mm, 10) - 1] || key;
+      const color = parseInt(mm, 10) % 2 === 0 ? 'bg-secondary-container' : 'bg-primary';
+      return `<div class="${color} rounded-t-sm" style="width:100%;height:${heightPct(val)}%" title="${monthLabel}: ${val}"></div>`;
+    }).join('');
+
+    labelsContainer.innerHTML = entries.map(([key]) => {
+      const [, mm] = key.split('-');
+      const monthLabel = MONTHS_SHORT[parseInt(mm, 10) - 1] || key;
+      return `<span>${monthLabel}</span>`;
+    }).join('');
+  }
+
+  function renderHistory(reports) {
+    const tbody = document.getElementById('history-tbody');
+    if (!reports || reports.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="p-md text-center text-outline">No reports submitted yet</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = reports.map((r, idx) => {
+      const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const period = r.reporting_year ? (r.module_type ? `${r.module_type} — ${r.reporting_year}` : r.reporting_year) : '—';
+      const incidents = r.report_data?.data?.categories?.length || r.report_data?.data?.length || 0;
+      const status = r.report_status || 'Submitted';
+      const cfg = STATUS_CONFIG[status] || { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' };
+      const alt = idx % 2 === 1 ? 'bg-[#F9FAFB]' : '';
+      return `<tr class="border-b border-outline-variant ${alt} hover:bg-surface-variant transition-colors">
+        <td class="p-md">${date}</td>
+        <td class="p-md text-on-surface-variant">${period}</td>
+        <td class="p-md text-right">${incidents}</td>
+        <td class="p-md">
+          <span class="inline-flex items-center gap-xs px-2 py-1 rounded" style="background:${cfg.bg};color:${cfg.color};font-size:14px;">
+            <span class="material-symbols-outlined" style="font-size:16px;font-variation-settings:'FILL' 1;">${cfg.icon}</span>
+            ${status}
+          </span>
+        </td>
+        <td class="p-md">
+          <button class="text-primary hover:underline font-label-md text-label-md" onclick="deleteReport(${r.id})">Delete</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function deleteReport(id) {
+    if (!confirm('Delete this report?')) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/reports/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await loadAnalytics();
+    } catch (err) {
+      console.error('Delete failed:', err);
+      alert('Failed to delete report.');
+    }
+  }
+
+  loadAnalytics();
+</script>
 </body></html>

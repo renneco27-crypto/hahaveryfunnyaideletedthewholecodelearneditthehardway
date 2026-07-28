@@ -146,7 +146,7 @@
         <span class="material-symbols-outlined text-[18px]">account_circle</span>
         <span class="hidden sm:inline">Account</span>
     </button>
-    <a href="login_ormoc_city_division_lrp_wired_1.html">
+    <a href="#" onclick="event.preventDefault(); signOut();">
         <button class="flex items-center justify-center gap-xs px-sm h-9 rounded-lg bg-primary text-on-primary hover:bg-tertiary transition-all shadow-md active:scale-95 font-label-md whitespace-nowrap">
             <span class="material-symbols-outlined text-[18px]">logout</span>
             <span class="hidden sm:inline">Logout</span>
@@ -168,15 +168,15 @@
         </div>
     </div>
     <nav class="space-y-xs">
-        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors bg-secondary-container text-on-secondary-container" href="school_dashboard_review_annex_a_report.html">
+        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors bg-secondary-container text-on-secondary-container" href="/dashboard">
             <span class="material-symbols-outlined flex-shrink-0">dashboard</span>
             Overview
         </a>
-        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors text-on-surface-variant hover:bg-surface-variant" href="annex_modules_redesigned.html">
+        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors text-on-surface-variant hover:bg-surface-variant" href="/submissions">
             <span class="material-symbols-outlined flex-shrink-0">description</span>
             Submissions
         </a>
-        <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg font-label-md transition-colors" href="school_dashboard_access_management_analytics.html">
+        <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg font-label-md transition-colors" href="/analytics">
             <span class="material-symbols-outlined flex-shrink-0">admin_panel_settings</span>
             Access Management
         </a>
@@ -352,9 +352,11 @@
         setTimeout(() => {
             submitSuccess.style.opacity = '1';
             setTimeout(() => {
-                window.location.href = 'school_dashboard_access_management_analytics.html';
+                window.location.href = '/analytics';
             }, 1500);
         }, 2050);
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="auth-guard.js"></script>
 </body></html>

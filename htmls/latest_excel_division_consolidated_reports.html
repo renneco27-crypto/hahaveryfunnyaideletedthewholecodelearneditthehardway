@@ -137,7 +137,7 @@
 <span class="material-symbols-outlined">account_circle</span>
 <span class="font-label-md text-label-md">Account</span>
 </button>
-<button onclick="location.href='login_ormoc_city_division_lrp_wired_1.html'" class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<button onclick="signOut()" class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
 <span class="material-symbols-outlined">logout</span>
 <span class="font-label-md text-label-md">Logout</span>
 </button>
@@ -154,15 +154,15 @@
 <p class="text-caption font-caption text-on-surface-variant">Management Portal</p>
 </div>
 <nav class="flex flex-col gap-xs">
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="admin_overview_wired.html">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/admin">
 <span class="material-symbols-outlined">dashboard</span>
                     Overview
                 </a>
-<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg transition-all font-label-md text-label-md" href="latest_excel_division_consolidated_reports.html">
+<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg transition-all font-label-md text-label-md" href="/reports">
 <span class="material-symbols-outlined">description</span>
                     Latest Excel
                 </a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="access_management_wired.html">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/access">
 <span class="material-symbols-outlined">admin_panel_settings</span>
                     Access Management
                 </a>
@@ -373,4 +373,6 @@
             card.style.transition = 'transform 0.2s ease-out, background-color 0.2s ease-out';
         });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="auth-guard.js"></script>
 </body></html>

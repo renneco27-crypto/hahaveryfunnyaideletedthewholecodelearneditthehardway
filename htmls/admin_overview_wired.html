@@ -155,7 +155,7 @@
 <header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
 <div class="flex items-center gap-sm">
 </div>
-<div class="flex items-center gap-md"><button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="login_ormoc_city_division_lrp_wired_1.html" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
+<div class="flex items-center gap-md"><button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <!-- SideNavBar -->
@@ -169,16 +169,16 @@
 </div>
 </div>
 <nav class="flex flex-col gap-base">
-<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="admin_overview_wired.html">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="/admin">
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-label-md text-label-md">Overview</span>
 </a>
 <!-- Submissions: Active State -->
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="latest_excel_division_consolidated_reports.html">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/reports">
 <span class="material-symbols-outlined">description</span>
                     Latest Excel
                 </a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="access_management_wired.html">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="/access">
 <span class="material-symbols-outlined">admin_panel_settings</span>
 <span class="font-label-md text-label-md">Access Management</span>
 </a>
@@ -199,26 +199,58 @@
 </div>
 <!-- Stats Bento Grid -->
 <div class="bento-grid mb-lg">
-<div class="col-span-12 md:col-span-6 lg:col-span-4 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-100">
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-100">
 <div class="flex justify-between items-start">
-<span class="material-symbols-outlined text-primary text-3xl">analytics</span>
-<span class="font-caption text-caption text-secondary font-bold">+12% vs last month</span>
+<span class="material-symbols-outlined text-primary text-3xl">map</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Reports</p>
-<p class="font-display text-display text-primary">1,284</p>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Districts</p>
+<p class="font-display text-display text-primary">10</p>
 </div>
 </div>
 
-
-<div class="col-span-12 md:col-span-6 lg:col-span-4 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-400">
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-200">
 <div class="flex justify-between items-start">
 <span class="material-symbols-outlined text-primary text-3xl">school</span>
-<span class="font-caption text-caption text-secondary font-bold">Active Institutions</span>
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Schools</p>
-<p class="font-display text-display text-primary">156</p>
+<p class="font-display text-display text-primary">98</p>
+</div>
+</div>
+
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-300">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl">check_circle</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Submitted</p>
+<p class="font-display text-display text-primary">0</p>
+</div>
+</div>
+
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-400">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl">pending</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Pending</p>
+<p class="font-display text-display text-primary">98</p>
+</div>
+</div>
+
+<div class="col-span-12 lg:col-span-12 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-500">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl">pie_chart</span>
+<span class="font-label-md text-label-md text-primary font-bold">Completion Rate</span>
+</div>
+<div>
+<div class="flex items-center gap-sm">
+<div class="flex-1 bg-outline-variant rounded-full h-3">
+<div class="bg-primary h-3 rounded-full" style="width: 0%"></div>
+</div>
+<span class="font-display text-display text-primary">0%</span>
+</div>
 </div>
 </div></div>
 <!-- Table Section -->
@@ -336,4 +368,6 @@
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="auth-guard.js"></script>
 </body></html>

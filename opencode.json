@@ -1,0 +1,9 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-agent-memory",
+    ".opencode/plugins/smart_read.ts",
+    ".opencode/plugins/semantic_chunk.ts",
+    ".opencode/plugins/semantic_diff.ts"
+  ]
+}

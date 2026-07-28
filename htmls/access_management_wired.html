@@ -126,7 +126,7 @@
     <span class="material-symbols-outlined">account_circle</span>
     <span class="font-label-md text-label-md">Account</span>
 </button>
-<button class="flex items-center justify-center gap-xs px-md h-10 min-w-[120px] bg-primary text-on-primary cursor-pointer active:opacity-80 transition-all hover:bg-primary-container rounded-lg font-label-md text-label-md" onclick="window.location.href='login_ormoc_city_division_lrp_wired_1.html'">
+<button class="flex items-center justify-center gap-xs px-md h-10 min-w-[120px] bg-primary text-on-primary cursor-pointer active:opacity-80 transition-all hover:bg-primary-container rounded-lg font-label-md text-label-md" onclick="signOut()">
     <span class="material-symbols-outlined">logout</span>
     <span class="font-label-md text-label-md">Logout</span>
 </button></div>
@@ -144,16 +144,16 @@
 </div>
 </div>
 <nav class="flex flex-col gap-base">
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="admin_overview_wired.html">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="/admin">
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-label-md text-label-md">Overview</span>
 </a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="latest_excel_division_consolidated_reports.html">
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="/reports">
 <span class="material-symbols-outlined">description</span>
 <span class="font-label-md text-label-md">Latest Excel</span>
 </a>
 <!-- Active State -->
-<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg transition-all duration-200" href="access_management_wired.html">
+<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg transition-all duration-200" href="/access">
 <span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
 <span class="font-label-md text-label-md">Access Management</span>
 </a>
@@ -309,4 +309,6 @@
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="auth-guard.js"></script>
 </body></html>
