@@ -133,34 +133,9 @@
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <!-- SideNavBar -->
-<aside class="fixed left-0 top-16 bottom-0 w-64 flex flex-col p-sm bg-surface-container-low/90 backdrop-blur-md border-r border-outline-variant">
-<div class="flex flex-col gap-xs mb-lg px-md">
-<div class="flex items-center gap-sm">
-<img class="w-10 h-10 rounded-full border border-outline" data-alt="A professional corporate headshot of a government administrator in a clean, minimalist studio environment with soft neutral lighting and a blurred professional background, representing high authority and reliability for the Ormoc City Division LRP platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAr-zNhP0MemZpxdbNlyb2wmQ2FG-ojLfRPrhXSHOAYVkmBLd0Fq7MTqMYWU7iKwEQgmlb_o3H8bE20-qz3KeHOjfH65tJm-aKmfAIg1T6AgjzvR6bzuoa4CPWGnIYTSKyEdihv4V-NJnXNk7svqYoshiMuzf5PuNvm8jXCH_r5aSdbp5rNJAc5Nx54Jy36GGCs6ixN19M5_iTtKRNNpmuYfO7qQj3g8xbeIr8a4Nrm31HmIkBY64giG8k4UhTHAYSzWXQTjhUBf_-">
-<div>
-<p class="font-label-md text-label-md text-primary">Admin Dashboard</p>
-<p class="font-caption text-caption text-on-surface-variant">Management Portal</p>
-</div>
-</div>
-</div>
-<nav class="flex flex-col gap-base">
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="/admin">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-md text-label-md">Overview</span>
-</a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all duration-200" href="/reports">
-<span class="material-symbols-outlined">description</span>
-<span class="font-label-md text-label-md">Latest Excel</span>
-</a>
-<!-- Active State -->
-<a class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg transition-all duration-200" href="/access">
-<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
-<span class="font-label-md text-label-md">Access Management</span>
-</a>
-</nav>
-</aside>
+<div id="sidebar-root"></div>
 <!-- Main Content Area -->
-<main class="ml-64 flex-1 p-lg max-w-container-max mx-auto">
+<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto">
 <!-- Table Container -->
 <div class="bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant rounded-lg overflow-hidden shadow-sm">
 <table class="w-full text-left border-collapse table-zebra">
@@ -311,4 +286,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
+<script src="sidebar.js"></script>
 </body></html>

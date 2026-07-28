@@ -205,35 +205,9 @@
     </div>
 </header>
 <div class="flex">
-<!-- SideNavBar -->
-<nav class="hidden md:flex fixed left-0 top-16 bottom-0 w-64 flex-col p-sm bg-surface-container-low border-r border-outline-variant z-40">
-    <div class="mb-lg px-sm">
-        <h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-xs">Admin Dashboard</h2>
-        <p class="font-caption text-caption text-outline">Management Portal</p>
-    </div>
-    <ul class="flex flex-col gap-xs">
-        <li>
-            <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/dashboard">
-                <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">dashboard</span>
-                Overview
-            </a>
-        </li>
-        <li>
-            <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/submissions">
-                <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">description</span>
-                Submissions
-            </a>
-        </li>
-        <li>
-            <a aria-current="page" class="flex items-center gap-sm bg-secondary-container text-on-secondary-container px-md py-sm rounded-lg font-label-md text-label-md" href="/analytics">
-                <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 1;">admin_panel_settings</span>
-                Access Management
-            </a>
-        </li>
-    </ul>
-</nav>
+<div id="sidebar-root"></div>
 <!-- Main Content Canvas -->
-<main class="w-full md:ml-64 p-md md:p-lg min-h-screen">
+<main class="w-full lg:ml-64 p-md md:p-lg min-h-screen">
 <div class="max-w-container-max mx-auto">
 <!-- Header -->
 <div class="mb-lg">
@@ -317,6 +291,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
+<script src="sidebar.js"></script>
 <script>
   const API_BASE = '';
   const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -327,7 +302,9 @@
 
   async function loadAnalytics() {
     try {
-      const res = await fetch(`${API_BASE}/api/stats`);
+      const school = window.__user?.schoolName;
+      const url = school ? `${API_BASE}/api/stats?schoolName=${encodeURIComponent(school)}` : `${API_BASE}/api/stats`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 

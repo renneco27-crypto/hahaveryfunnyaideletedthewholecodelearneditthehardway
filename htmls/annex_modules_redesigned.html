@@ -239,31 +239,8 @@ tailwind.config = {
 </div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
-<aside class="w-64 flex flex-col p-sm bg-surface-container-low border-r border-outline-variant sticky top-16 h-[calc(100vh-64px)]">
-<div class="flex flex-col gap-xs mb-lg px-md">
-<div class="flex items-center gap-sm mt-md">
-<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
-</div>
-<div><p class="font-label-md text-label-md text-on-surface font-bold">Ormoc City Division LRP</p><p class="font-caption text-caption text-on-surface-variant">Empowering Integrity, Protecting Futures</p></div>
-</div>
-</div>
-<nav class="flex flex-col gap-base">
-<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 text-on-surface-variant hover:bg-surface-variant" href="/dashboard">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-md text-label-md">Overview</span>
-</a>
-<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="/submissions">
-<span class="material-symbols-outlined">description</span>
-<span class="font-label-md text-label-md">Submissions</span>
-</a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="/analytics">
-<span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-label-md text-label-md">Access Management</span>
-</a>
-</nav>
-</aside>
-<main class="flex-1 p-lg max-w-container-max mx-auto overflow-y-auto">
+<div id="sidebar-root"></div>
+<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
 <div id="root"></div>
 </main>
 </div>
@@ -748,6 +725,7 @@ const ModuleAReportingPanel = () => {
           metadata: schoolMetadata,
           preparedBy,
           validatedBy,
+          userEmail: window.__user?.email,
           data: activeModule === 'A' ? { categories: categoryData } :
                 activeModule === 'B' ? moduleBData :
                 activeModule === 'C' ? { categories: moduleCData } :
@@ -2112,5 +2090,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<ModuleAReportingPan
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
+<script src="sidebar.js"></script>
 </body>
 </html>
+

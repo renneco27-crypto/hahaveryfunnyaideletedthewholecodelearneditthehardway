@@ -1,0 +1,171 @@
+[
+  {
+    "district": "District 1",
+    "psds": "Emma A. Porcadilla",
+    "schools": [
+      "OCCS",
+      "OC SPED IS (Elem)",
+      "OC SPED IS (Sec)",
+      "Alta Vista ES",
+      "Mahayag ES",
+      "Patag ES",
+      "Donghol IS (Elem)",
+      "Donghol IS (Sec)",
+      "OC Night HS",
+      "OC Senior HS"
+    ]
+  },
+  {
+    "district": "District 2",
+    "psds": "Ma. Jereza C. Matiga",
+    "schools": [
+      "Ipil CS",
+      "Camp Downes ES",
+      "Can-adieng ES",
+      "Can-untog ES",
+      "DC Rivilla ES",
+      "Hugpa ES",
+      "LY Palou ES",
+      "Mabini ES",
+      "Macabug ES",
+      "Mahayahay ES",
+      "Quezon Jr. ES",
+      "Sumangga ES",
+      "San Antonio IS (Elem)",
+      "San Antonio IS (Sec)",
+      "Ipil National HS"
+    ]
+  },
+  {
+    "district": "District 3",
+    "psds": "Elvira De Leon",
+    "schools": [
+      "Linao CS",
+      "Alegria-Batuan ES",
+      "JICA Lao ES",
+      "Naungan ES",
+      "Punta ES",
+      "Tambulilid ES",
+      "Lao IS (Elem)",
+      "Lao IS (Sec)",
+      "Linao NHS"
+    ]
+  },
+  {
+    "district": "District 4",
+    "psds": "Melisa R. Bughao",
+    "schools": [
+      "Cogon CS",
+      "Biliboy ES",
+      "Cabintan ES",
+      "Nasunogan ES",
+      "Salvacion ES",
+      "San Pablo ES",
+      "Sto. Niño ES",
+      "Tongonan ES",
+      "Cabintan NHS",
+      "PGBNHS",
+      "Salvacion NHS"
+    ]
+  },
+  {
+    "district": "District 5",
+    "psds": "Uldarico N. Bojos Jr.",
+    "schools": [
+      "Liloan CS",
+      "Airport ES",
+      "Balion ES",
+      "Leondoni ES",
+      "Libertad ES",
+      "Licuma ES",
+      "Manlilinao ES",
+      "RM Tan ES",
+      "JGNHS",
+      "Liloan NHS"
+    ]
+  },
+  {
+    "district": "District 6",
+    "psds": "Elena Angelita C. Sios-E",
+    "schools": [
+      "Valencia CS",
+      "Cagbuhangin ES",
+      "Concepcion ES",
+      "Dayhagan ES",
+      "Hibunaon ES",
+      "Juaton ES",
+      "Maticaa ES",
+      "T. Aviles ES",
+      "Maticaa NHS",
+      "Valencia NHS"
+    ]
+  },
+  {
+    "district": "District 7",
+    "psds": "Gina Labiste",
+    "schools": [
+      "San Jose CS",
+      "Cabatoan ES",
+      "Catmon ES",
+      "Dr. H. Serafica ES",
+      "Guintiguian ES",
+      "L. Cabahug ES",
+      "Monterico IS (Elem)",
+      "Monterico IS (Sec)",
+      "Sabang Bao ES",
+      "GBLNHS",
+      "RCSMNHS"
+    ]
+  },
+  {
+    "district": "District 8",
+    "psds": "Rhoda Dinoy",
+    "schools": [
+      "Dolores CS",
+      "Bagong ES",
+      "Cabaon-an ES",
+      "Luna ES",
+      "Magaswe ES",
+      "Milagro ES",
+      "Nueva Vista IS (Elem)",
+      "Nueva Vista IS (Sec)",
+      "Gaas IS (Elem)",
+      "Gaas IS (Sec)",
+      "Liberty IS (Elem)",
+      "Liberty IS (Sec)",
+      "Lake Danao IS (Elem)",
+      "Lake Danao IS (Sec)",
+      "Dolores NHS"
+    ]
+  },
+  {
+    "district": "District 9",
+    "psds": "Marylyn S. Tagalog",
+    "schools": [
+      "Curva CS",
+      "Domonar ES",
+      "Esperanza ES",
+      "Green Valley ES",
+      "Inaad ES",
+      "Margen ES",
+      "San Juan ES",
+      "San Vicente ES",
+      "VL Villasencio ES",
+      "Mas-in IS (Elem)",
+      "Mas-in IS (Sec)",
+      "Margen NHS"
+    ]
+  },
+  {
+    "district": "District 10",
+    "psds": "Caroline M. Magno",
+    "schools": [
+      "San Isidro IS (Elem)",
+      "San Isidro IS (Sec)",
+      "Bagong Buhay ES",
+      "Doña Feliza Mejia ES",
+      "NOCNHS",
+      "OC Sr. Sports SHS"
+    ]
+  }
+]

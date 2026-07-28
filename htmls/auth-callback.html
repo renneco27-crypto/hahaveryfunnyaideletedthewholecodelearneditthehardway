@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Signing in...</title></head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f8f9ff;font-family:sans-serif;color:#002046;">
+<p>Signing in...</p>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  (async function() {
+    const supabase = window.supabase.createClient(
+      'https://nstyqceyjkgevnibfqks.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zdHlxY2V5amtnZXZuaWJmcWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NDMwMzcsImV4cCI6MjA5ODIxOTAzN30.EUozeDCEFqvkLSNOpaBEaXA2D8ZbdPrhGdrNFelpRCU'
+    );
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && window.opener) {
+      window.opener.postMessage({ type: 'supabase-auth', session }, window.origin);
+    }
+    window.close();
+  })();
+</script>
+</body>
+</html>

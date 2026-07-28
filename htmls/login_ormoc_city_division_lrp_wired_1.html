@@ -241,12 +241,21 @@
         if (event === 'SIGNED_IN' && session) checkAuthAndRoute();
       });
 
+      // Listen for popup auth callback
+      window.addEventListener('message', async function(event) {
+        if (event.origin !== window.origin) return;
+        if (event.data?.type === 'supabase-auth' && event.data?.session) {
+          await supabase.auth.setSession(event.data.session);
+          // checkAuthAndRoute will fire via onAuthStateChange
+        }
+      });
+
       // Google login (popup)
       document.getElementById('googleLoginBtn').addEventListener('click', async function() {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin + '/login',
+            redirectTo: window.location.origin + '/auth/callback',
             skipBrowserRedirect: true
           }
         });

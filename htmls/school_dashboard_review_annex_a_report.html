@@ -158,30 +158,7 @@
 <!-- FIX 5: wrapper uses flex with min-w-0 on children to prevent overflow -->
 <div class="flex min-h-[calc(100vh-4rem)]">
 
-<!-- SideNavBar — unchanged visually, kept fixed+offset -->
-<aside class="hidden lg:flex fixed left-0 top-16 bottom-0 w-64 flex-col p-sm bg-surface-container-low/80 backdrop-blur-sm border-r border-outline-variant z-40">
-    <div class="flex items-center gap-sm p-md mb-lg">
-        <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold flex-shrink-0">SR</div>
-        <div class="min-w-0">
-            <p class="font-label-md text-on-surface truncate">School Rep</p>
-            <p class="text-xs text-on-surface-variant truncate">Regional Office VII</p>
-        </div>
-    </div>
-    <nav class="space-y-xs">
-        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors bg-secondary-container text-on-secondary-container" href="/dashboard">
-            <span class="material-symbols-outlined flex-shrink-0">dashboard</span>
-            Overview
-        </a>
-        <a class="flex items-center gap-sm px-md py-sm rounded-lg font-label-md transition-colors text-on-surface-variant hover:bg-surface-variant" href="/submissions">
-            <span class="material-symbols-outlined flex-shrink-0">description</span>
-            Submissions
-        </a>
-        <a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg font-label-md transition-colors" href="/analytics">
-            <span class="material-symbols-outlined flex-shrink-0">admin_panel_settings</span>
-            Access Management
-        </a>
-    </nav>
-</aside>
+<div id="sidebar-root"></div>
 
 <!-- FIX 6: main gets min-w-0 so it truly shrinks inside flex; sidebar margin only at lg+ -->
 <main class="flex-1 min-w-0 lg:ml-64 p-md md:p-lg">
@@ -359,4 +336,5 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
+<script src="sidebar.js"></script>
 </body></html>

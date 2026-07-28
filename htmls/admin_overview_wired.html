@@ -158,34 +158,9 @@
 <div class="flex items-center gap-md"><button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
-<!-- SideNavBar -->
-<aside class="w-64 flex flex-col p-sm bg-surface-container-low border-r border-outline-variant sticky top-16 h-[calc(100vh-64px)]">
-<div class="flex flex-col gap-xs mb-lg px-md">
-<div class="flex items-center gap-sm mt-md">
-<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
-</div>
-<div><p class="font-label-md text-label-md text-on-surface font-bold">Ormoc City Division LRP</p><p class="font-caption text-caption text-on-surface-variant">Empowering Integrity, Protecting Futures</p></div>
-</div>
-</div>
-<nav class="flex flex-col gap-base">
-<a class="flex items-center gap-sm px-md py-sm rounded-lg transition-colors duration-200 bg-secondary-container text-on-secondary-container" href="/admin">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-md text-label-md">Overview</span>
-</a>
-<!-- Submissions: Active State -->
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-all font-label-md text-label-md" href="/reports">
-<span class="material-symbols-outlined">description</span>
-                    Latest Excel
-                </a>
-<a class="flex items-center gap-sm text-on-surface-variant px-md py-sm hover:bg-surface-variant rounded-lg transition-colors duration-200" href="/access">
-<span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-label-md text-label-md">Access Management</span>
-</a>
-</nav>
-</aside>
+<div id="sidebar-root"></div>
 <!-- Main Content Area -->
-<main class="flex-1 p-lg max-w-container-max mx-auto overflow-y-auto">
+<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
 <!-- Page Header & Stats -->
 <div class="flex justify-between items-end mb-lg">
 <div>
@@ -205,7 +180,7 @@
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Districts</p>
-<p class="font-display text-display text-primary">10</p>
+<p class="font-display text-display text-primary" id="stat-districts">—</p>
 </div>
 </div>
 
@@ -215,7 +190,7 @@
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Schools</p>
-<p class="font-display text-display text-primary">98</p>
+<p class="font-display text-display text-primary" id="stat-schools">—</p>
 </div>
 </div>
 
@@ -225,7 +200,7 @@
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Submitted</p>
-<p class="font-display text-display text-primary">0</p>
+<p class="font-display text-display text-primary" id="stat-submitted">0</p>
 </div>
 </div>
 
@@ -235,7 +210,7 @@
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Pending</p>
-<p class="font-display text-display text-primary">98</p>
+<p class="font-display text-display text-primary" id="stat-pending">—</p>
 </div>
 </div>
 
@@ -247,9 +222,9 @@
 <div>
 <div class="flex items-center gap-sm">
 <div class="flex-1 bg-outline-variant rounded-full h-3">
-<div class="bg-primary h-3 rounded-full" style="width: 0%"></div>
+<div class="bg-primary h-3 rounded-full" id="stat-progress" style="width: 0%"></div>
 </div>
-<span class="font-display text-display text-primary">0%</span>
+<span class="font-display text-display text-primary" id="stat-rate">0%</span>
 </div>
 </div>
 </div></div>
@@ -268,62 +243,23 @@
 <thead>
 <tr class="bg-surface-container-low border-b-2 border-primary">
 <th class="text-left p-md font-label-md text-label-md text-primary">School Name</th>
-<th class="text-left p-md font-label-md text-label-md text-primary">Date Submitted</th>
+<th class="text-left p-md font-label-md text-label-md text-primary">PSDS</th>
+<th class="text-left p-md font-label-md text-label-md text-primary">District</th>
 <th class="text-left p-md font-label-md text-label-md text-primary">Status</th>
 
 </tr>
 </thead>
-<tbody class="font-body-md text-body-md">
-<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
-<td class="p-md font-bold">Saint Mary’s Academy</td>
-<td class="p-md">Oct 24, 2024</td>
-<td class="p-md">
-<span class="px-xs py-1 rounded bg-secondary-container text-on-secondary-container font-bold text-caption uppercase">Submitted</span>
-</td>
-
-</tr>
-<tr class="bg-surface-container-low border-b border-outline-variant hover:bg-surface-container transition-colors">
-<td class="p-md font-bold">Northwood Technical Institute</td>
-<td class="p-md">Oct 23, 2024</td>
-<td class="p-md">
-<span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span>
-</td>
-
-</tr>
-<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
-<td class="p-md font-bold">Oakwood Secondary School</td>
-<td class="p-md">Oct 22, 2024</td>
-<td class="p-md">
-<span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span>
-</td>
-
-</tr>
-<tr class="bg-surface-container-low border-b border-outline-variant hover:bg-surface-container transition-colors">
-<td class="p-md font-bold">Harbor City High</td>
-<td class="p-md">Oct 21, 2024</td>
-<td class="p-md">
-<span class="px-xs py-1 rounded bg-secondary-container text-on-secondary-container font-bold text-caption uppercase">Submitted</span>
-</td>
-
-</tr>
-<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
-<td class="p-md font-bold">Lincoln Preparatory</td>
-<td class="p-md">Oct 20, 2024</td>
-<td class="p-md">
-<span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span>
-</td>
-
-</tr>
+<tbody id="schools-tbody" class="font-body-md text-body-md">
 </tbody>
 </table>
 </div>
 <div class="p-md bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center font-caption text-caption">
-<span class="">Showing 5 of 1,284 submissions</span>
+<span id="showing-count">Loading...</span>
 <div class="flex gap-xs">
-<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors disabled:opacity-50">
+<button id="prev-page-btn" class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
 <span class="material-symbols-outlined">chevron_left</span>
 </button>
-<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
+<button id="next-page-btn" class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
@@ -368,6 +304,67 @@
 
 
 
+<script>
+  // Load schools JSON and populate stats + table with pagination
+  (async function() {
+    try {
+      const res = await fetch('/ormoc_city_division_schools.json');
+      const districts = await res.json();
+
+      let allSchools = [];
+      districts.forEach(d => {
+        d.schools.forEach(s => allSchools.push({ name: s, district: d.district, psds: d.psds }));
+      });
+
+      const totalSchools = allSchools.length;
+      const totalDistricts = districts.length;
+      const PAGE_SIZE = 10;
+      let currentPage = 0;
+      const totalPages = Math.ceil(totalSchools / PAGE_SIZE);
+
+      document.getElementById('stat-districts').textContent = totalDistricts;
+      document.getElementById('stat-schools').textContent = totalSchools;
+      document.getElementById('stat-submitted').textContent = '0';
+      document.getElementById('stat-pending').textContent = totalSchools;
+      document.getElementById('stat-rate').textContent = '0%';
+      document.getElementById('stat-progress').style.width = '0%';
+
+      function renderTable() {
+        const tbody = document.getElementById('schools-tbody');
+        const start = currentPage * PAGE_SIZE;
+        const end = Math.min(start + PAGE_SIZE, totalSchools);
+        let html = '';
+        for (let i = start; i < end; i++) {
+          const s = allSchools[i];
+          const alt = i % 2 === 1 ? 'bg-surface-container-low' : '';
+          html += '<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors ' + alt + '">';
+          html += '<td class="p-md font-bold">' + s.name + '</td>';
+          html += '<td class="p-md text-on-surface-variant">' + s.psds + '</td>';
+          html += '<td class="p-md text-on-surface-variant">' + s.district + '</td>';
+          html += '<td class="p-md"><span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span></td>';
+          html += '</tr>';
+        }
+        tbody.innerHTML = html;
+        document.getElementById('showing-count').textContent = 'Showing ' + (start + 1) + '–' + end + ' of ' + totalSchools + ' schools';
+        document.getElementById('prev-page-btn').disabled = currentPage === 0;
+        document.getElementById('next-page-btn').disabled = currentPage >= totalPages - 1;
+      }
+
+      document.getElementById('prev-page-btn').addEventListener('click', function() {
+        if (currentPage > 0) { currentPage--; renderTable(); }
+      });
+      document.getElementById('next-page-btn').addEventListener('click', function() {
+        if (currentPage < totalPages - 1) { currentPage++; renderTable(); }
+      });
+
+      renderTable();
+    } catch (e) {
+      console.error('Failed to load schools data:', e);
+      document.getElementById('showing-count').textContent = 'Could not load data';
+    }
+  })();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
+<script src="sidebar.js"></script>
 </body></html>
