@@ -1,0 +1,49 @@
+{
+  "referenceNumber": "LRP-2026-0810-002",
+  "module": "B",
+  "metadata": {
+    "schoolName": "Ipil CS",
+    "schoolId": "SCH-302501",
+    "reportingYear": "2026",
+    "address": "Ipil, Ormoc City, Leyte",
+    "classification": "Public",
+    "level": "Elementary"
+  },
+  "data": {
+    "incidentDate": "2026-05-20",
+    "incidentPlace": "School Canteen",
+    "incidentNature": ["N-1", "N-2"],
+    "affectedStudents": [
+      {
+        "name": "Garcia, Ana L.",
+        "age": "11",
+        "gender": "F",
+        "disability": "No",
+        "impacts": ["E-1: Emotional Damage", "E-6: Psychological / Emotional"],
+        "enrollmentStatus": "Maintained Attendance",
+        "performanceBefore": "Advanced",
+        "performanceAfter": "Proficient"
+      }
+    ],
+    "respondents": [
+      {
+        "name": "Lopez, Carlos R.",
+        "affiliation": "Student",
+        "age": "12",
+        "gender": "M"
+      }
+    ],
+    "actionsTaken": "Counseling sessions for both parties, peer mediation, classroom restructuring, parent conference held.",
+    "status": "Ongoing Intervention"
+  },
+  "preparedBy": {
+    "name": "Cortes, Maria E.",
+    "designation": "Guidance Counselor",
+    "date": "2026-07-15"
+  },
+  "validatedBy": {
+    "name": "Reyes, Antonio D.",
+    "designation": "School Principal",
+    "date": "2026-07-16"
+  }
+}

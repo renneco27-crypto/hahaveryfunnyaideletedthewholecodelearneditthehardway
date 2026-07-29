@@ -1,0 +1,231 @@
+{
+  "referenceNumber": "LRP-2026-0810-005",
+  "module": "E",
+  "metadata": {
+    "schoolName": "Ipil CS",
+    "schoolId": "SCH-302501",
+    "reportingYear": "2026",
+    "address": "Ipil, Ormoc City, Leyte",
+    "classification": "Public",
+    "level": "Elementary"
+  },
+  "categories": {
+    "E-1": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "E-2": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "E-3": {
+      "incidentDate": "2026-02-14",
+      "incidentPlace": "Classroom 3A — During Class Hours",
+      "concerns": ["EC-3"],
+      "victims": [
+        {
+          "name": "Torres, Luis M.",
+          "age": "9",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "Fernandez, Gloria S.",
+          "designation": "DepEd Teaching Personnel",
+          "age": "45",
+          "gender": "F"
+        }
+      ],
+      "actionsTaken": "Report filed with School Governance Council. Teacher issued Notice of Explanation. Case referred to Division Office for formal investigation.",
+      "status": "Status 3: Referred to Government Agencies"
+    },
+    "E-4": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "E-5": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "E-6": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "E-7": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "E-8": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "E-9": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "concerns": [],
+      "victims": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "respondents": [
+        {
+          "name": "",
+          "designation": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    }
+  },
+  "preparedBy": {
+    "name": "Cortes, Maria E.",
+    "designation": "Guidance Counselor",
+    "date": "2026-07-15"
+  },
+  "validatedBy": {
+    "name": "Reyes, Antonio D.",
+    "designation": "School Principal",
+    "date": "2026-07-16"
+  }
+}

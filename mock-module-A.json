@@ -1,0 +1,154 @@
+{
+  "referenceNumber": "LRP-2026-0810-001",
+  "module": "A",
+  "metadata": {
+    "schoolName": "Ipil CS",
+    "schoolId": "SCH-302501",
+    "reportingYear": "2026",
+    "address": "Ipil, Ormoc City, Leyte",
+    "classification": "Public",
+    "level": "Elementary"
+  },
+  "categories": {
+    "A-1": {
+      "incidentDate": "2026-06-15",
+      "incidentPlace": "Classroom 2B",
+      "motives": ["M-1"],
+      "affectedStudents": [
+        {
+          "name": "Doe, John C.",
+          "age": "12",
+          "gender": "M",
+          "disability": "No",
+          "impacts": ["E-1: Emotional Damage", "E-2: Physical Harm"],
+          "enrollmentStatus": "Maintained Attendance",
+          "performanceBefore": "Proficient",
+          "performanceAfter": "Developing"
+        }
+      ],
+      "initiatingParty": [
+        {
+          "name": "Smith, Mark A.",
+          "age": "13",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "Conducted mediation between students, notified parents, issued written apology, 3-day suspension.",
+      "status": "Resolved"
+    },
+    "A-2": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "motives": [],
+      "affectedStudents": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "impacts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "initiatingParty": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "A-3": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "motives": [],
+      "affectedStudents": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "impacts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "initiatingParty": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "A-4": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "motives": [],
+      "affectedStudents": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "impacts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "initiatingParty": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    },
+    "A-5": {
+      "incidentDate": "",
+      "incidentPlace": "",
+      "motives": [],
+      "affectedStudents": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "impacts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "initiatingParty": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M"
+        }
+      ],
+      "actionsTaken": "",
+      "status": ""
+    }
+  },
+  "preparedBy": {
+    "name": "Cortes, Maria E.",
+    "designation": "Guidance Counselor",
+    "date": "2026-07-15"
+  },
+  "validatedBy": {
+    "name": "Reyes, Antonio D.",
+    "designation": "School Principal",
+    "date": "2026-07-16"
+  }
+}

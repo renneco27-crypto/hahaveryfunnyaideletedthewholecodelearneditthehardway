@@ -1,0 +1,176 @@
+{
+  "referenceNumber": "LRP-2026-0810-003",
+  "module": "C",
+  "metadata": {
+    "schoolName": "Ipil CS",
+    "schoolId": "SCH-302501",
+    "reportingYear": "2026",
+    "address": "Ipil, Ormoc City, Leyte",
+    "classification": "Public",
+    "level": "Elementary"
+  },
+  "categories": {
+    "C-1": {
+      "dateIdentified": "2026-04-10",
+      "location": "Community Environment — Barangay Ipil",
+      "riskFactors": ["R-1", "R-3"],
+      "individuals": [
+        {
+          "name": "Santos, Miguel T.",
+          "age": "10",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": ["F-1", "F-2"],
+          "enrollmentStatus": "Maintained Attendance",
+          "performanceBefore": "Developing",
+          "performanceAfter": "Proficient"
+        }
+      ],
+      "intervention": "Home visitation, family counseling, DSWD referral for financial assistance, monthly monitoring.",
+      "status": "Status 1: Resolved"
+    },
+    "C-2": {
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "intervention": "",
+      "status": ""
+    },
+    "C-3": {
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "intervention": "",
+      "status": ""
+    },
+    "C-4": {
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "intervention": "",
+      "status": ""
+    },
+    "C-5": {
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "intervention": "",
+      "status": ""
+    },
+    "C-6": {
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "intervention": "",
+      "status": ""
+    },
+    "C-7": {
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "intervention": "",
+      "status": ""
+    },
+    "C-8": {
+      "dateIdentified": "",
+      "location": "",
+      "riskFactors": [],
+      "individuals": [
+        {
+          "name": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No",
+          "familyContexts": [],
+          "enrollmentStatus": "",
+          "performanceBefore": "",
+          "performanceAfter": ""
+        }
+      ],
+      "intervention": "",
+      "status": ""
+    }
+  },
+  "preparedBy": {
+    "name": "Cortes, Maria E.",
+    "designation": "Guidance Counselor",
+    "date": "2026-07-15"
+  },
+  "validatedBy": {
+    "name": "Reyes, Antonio D.",
+    "designation": "School Principal",
+    "date": "2026-07-16"
+  }
+}

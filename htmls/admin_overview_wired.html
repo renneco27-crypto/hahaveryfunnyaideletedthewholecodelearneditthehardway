@@ -206,11 +206,11 @@
 
 <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-400">
 <div class="flex justify-between items-start">
-<span class="material-symbols-outlined text-primary text-3xl">pending</span>
+<span class="material-symbols-outlined text-primary text-3xl">school</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-red-700 uppercase tracking-wider">Pending</p>
-<p class="font-display text-display text-red-600" id="stat-pending">—</p>
+<p class="font-label-md text-label-md text-blue-700 uppercase tracking-wider">Schools</p>
+<p class="font-display text-display text-blue-600" id="stat-pending">—</p>
 </div>
 </div>
 
@@ -355,7 +355,7 @@
       document.getElementById('stat-districts').textContent = totalDistricts;
       document.getElementById('stat-schools').textContent = totalSchools;
       document.getElementById('stat-submitted').textContent = submittedCount;
-      document.getElementById('stat-pending').textContent = totalSchools - submittedCount;
+      document.getElementById('stat-pending').textContent = submittedCount + ' / ' + totalSchools;
       document.getElementById('stat-rate').textContent = pct + '%';
       document.getElementById('stat-progress').style.width = pct + '%';
 

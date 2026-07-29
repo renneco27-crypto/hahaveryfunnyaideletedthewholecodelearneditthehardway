@@ -95,21 +95,47 @@ function cleanDir(dir) {
 }
 setInterval(() => cleanDir(TEMP_DIR), 60000);
 
-// Submit API Endpoint — save JSON only, defer DB insert via per-user queue
+// Batch buffer — collect submissions, flush every 8s as bulk insert
+const BATCH_BUFFER = [];
+const FLUSH_INTERVAL_MS = 8000;
+
+async function flushBatch() {
+  try {
+    const batch = BATCH_BUFFER.splice(0);
+    if (batch.length === 0) return;
+    const db = serviceClient || supabase;
+    const { error } = await db.from('bullying_reports').insert(batch);
+    if (error) {
+      console.error(`Batch flush failed (${batch.length} items):`, error.message);
+      BATCH_BUFFER.push(...batch);
+    } else {
+      console.log(`Batch flushed: ${batch.length} reports inserted`);
+    }
+  } catch (e) {
+    console.error('Batch flush error:', e.message);
+  }
+}
+setInterval(flushBatch, FLUSH_INTERVAL_MS);
+
+// Submit API Endpoint — enqueue to batch buffer, respond immediately
 app.post('/api/submit', async (req, res) => {
   try {
     const reportData = req.body;
     const refNum = reportData.referenceNumber || `LRP-${Date.now()}`;
     const email = reportData.userEmail || 'unknown';
-    const userDir = path.join(TEMP_DIR, email);
-    if (!fs.existsSync(userDir)) fs.mkdirSync(userDir, { recursive: true });
-    const filename = `${refNum}.json`;
-    const filePath = path.join(userDir, filename);
 
-    fs.writeFileSync(filePath, JSON.stringify(reportData, null, 2));
-    console.log(`Saved JSON for ${email}: ${filename}`);
+    BATCH_BUFFER.push({
+      reference_number: refNum,
+      module: reportData.module,
+      school_id: reportData.metadata?.schoolId || null,
+      school_name: reportData.metadata?.schoolName || null,
+      prepared_by: reportData.preparedBy || null,
+      validated_by: reportData.validatedBy || null,
+      status: 'Submitted',
+      report_data: reportData
+    });
 
-    scheduleUserQueue(email, filePath);
+    console.log(`Queued report ${refNum} for ${email} (buffer: ${BATCH_BUFFER.length})`);
     res.status(200).json({ success: true, referenceNumber: refNum });
   } catch (error) {
     console.error('Submit Error:', error);
@@ -133,7 +159,7 @@ app.get('/api/stats', async (req, res) => {
     const role = user.app_metadata?.role || profile?.role || 'user';
     const schoolName = profile?.school_name || null;
 
-    let query = supabase.from('bullying_reports').select('*');
+    let query = serviceClient.from('bullying_reports').select('*');
     if (role !== 'admin' && schoolName) query = query.eq('school_name', schoolName);
     const { data, error } = await query.order('created_at', { ascending: false });
 
@@ -166,7 +192,7 @@ app.get('/api/stats', async (req, res) => {
 app.delete('/api/reports/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { error } = await supabase.from('bullying_reports').delete().eq('id', id);
+    const { error } = await serviceClient.from('bullying_reports').delete().eq('id', id);
     if (error) throw error;
     res.json({ success: true });
   } catch (error) {
@@ -191,7 +217,7 @@ app.get('/api/reports', async (req, res) => {
     const role = user.app_metadata?.role || profile?.role || 'user';
     const schoolName = profile?.school_name || null;
 
-    let query = supabase.from('bullying_reports').select('*');
+    let query = serviceClient.from('bullying_reports').select('*');
     if (role !== 'admin' && schoolName) query = query.eq('school_name', schoolName);
     const { data, error } = await query.order('created_at', { ascending: false });
     if (error) throw error;
@@ -334,6 +360,16 @@ app.use((req, res, next) => {
 
 // Serve static assets (js, css, images, fonts) from htmls directory
 app.use(express.static(HTML_DIR));
+
+// Graceful shutdown — flush remaining buffer
+async function shutdown() {
+  console.log('Shutting down, flushing buffer...');
+  await flushBatch();
+  process.exit(0);
+}
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', err));
 
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
 

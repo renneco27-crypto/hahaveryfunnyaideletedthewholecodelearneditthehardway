@@ -1,0 +1,138 @@
+{
+  "referenceNumber": "LRP-2026-0810-004",
+  "module": "D",
+  "metadata": {
+    "schoolName": "Ipil CS",
+    "schoolId": "SCH-302501",
+    "reportingYear": "2026",
+    "address": "Ipil, Ormoc City, Leyte",
+    "classification": "Public",
+    "level": "Secondary"
+  },
+  "categories": {
+    "D-1": {
+      "offenseDate": "2026-03-08",
+      "location": "Off-Campus — Poblacion Market Area",
+      "violations": ["V-2"],
+      "subjects": [
+        {
+          "identificationRef": "LRN-10928301293",
+          "age": "15",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "programs": ["P-1", "P-2"],
+      "narrative": "Learner involved in physical altercation with another minor after school hours. Both parties referred to LSWDO for initial mediation and diversion program enrollment.",
+      "enrollmentStatus": "Maintained Attendance",
+      "performanceBefore": "Developing",
+      "performanceAfter": "Developing",
+      "status": "Status 2: On-going intervention"
+    },
+    "D-2": {
+      "offenseDate": "",
+      "location": "",
+      "violations": [],
+      "subjects": [
+        {
+          "identificationRef": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "programs": [],
+      "narrative": "",
+      "enrollmentStatus": "",
+      "performanceBefore": "",
+      "performanceAfter": "",
+      "status": ""
+    },
+    "D-3": {
+      "offenseDate": "",
+      "location": "",
+      "violations": [],
+      "subjects": [
+        {
+          "identificationRef": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "programs": [],
+      "narrative": "",
+      "enrollmentStatus": "",
+      "performanceBefore": "",
+      "performanceAfter": "",
+      "status": ""
+    },
+    "D-4": {
+      "offenseDate": "",
+      "location": "",
+      "violations": [],
+      "subjects": [
+        {
+          "identificationRef": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "programs": [],
+      "narrative": "",
+      "enrollmentStatus": "",
+      "performanceBefore": "",
+      "performanceAfter": "",
+      "status": ""
+    },
+    "D-5": {
+      "offenseDate": "",
+      "location": "",
+      "violations": [],
+      "subjects": [
+        {
+          "identificationRef": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "programs": [],
+      "narrative": "",
+      "enrollmentStatus": "",
+      "performanceBefore": "",
+      "performanceAfter": "",
+      "status": ""
+    },
+    "D-6": {
+      "offenseDate": "",
+      "location": "",
+      "violations": [],
+      "subjects": [
+        {
+          "identificationRef": "",
+          "age": "",
+          "gender": "M",
+          "disability": "No"
+        }
+      ],
+      "programs": [],
+      "narrative": "",
+      "enrollmentStatus": "",
+      "performanceBefore": "",
+      "performanceAfter": "",
+      "status": ""
+    }
+  },
+  "preparedBy": {
+    "name": "Cortes, Maria E.",
+    "designation": "Guidance Counselor",
+    "date": "2026-07-15"
+  },
+  "validatedBy": {
+    "name": "Reyes, Antonio D.",
+    "designation": "School Principal",
+    "date": "2026-07-16"
+  }
+}
