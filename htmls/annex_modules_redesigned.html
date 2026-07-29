@@ -275,7 +275,9 @@ const ModuleAReportingPanel = () => {
     'A-2': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
     'A-3': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
     'A-4': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
-    'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' }
+    'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-6': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-7': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' }
   });
 
   const [preparedBy, setPreparedBy] = useState({ name: '', designation: '', date: '' });
@@ -340,26 +342,32 @@ const ModuleAReportingPanel = () => {
   const [activeCRiskCategory, setActiveCRiskCategory] = useState('C-1');
   const visited = useRef({ A: true });
   const moduleCCategories = [
-    { id: 'C-1', label: 'Category C-1' },
-    { id: 'C-2', label: 'Category C-2' },
-    { id: 'C-3', label: 'Category C-3' },
-    { id: 'C-4', label: 'Category C-4' },
-    { id: 'C-5', label: 'Category C-5' },
-    { id: 'C-6', label: 'Category C-6' },
-    { id: 'C-7', label: 'Category C-7' },
-    { id: 'C-8', label: 'Category C-8' }
+    { id: 'C-1', label: 'C-1: Dysfunctional family / Without parent or guardian' },
+    { id: 'C-2', label: 'C-2: Member of a gang' },
+    { id: 'C-3', label: 'C-3: Community with high criminality' },
+    { id: 'C-4', label: 'C-4: Living in situation of armed conflict' },
+    { id: 'C-5', label: 'C-5: Status offense under Sec 57 of RA 9344' },
+    { id: 'C-6', label: 'C-6: Mendicant under PD 1563' },
+    { id: 'C-7', label: 'C-7: Solvent / Rugby user' },
+    { id: 'C-8', label: 'C-8: Marijuana / Drug use / Dependency' },
+    { id: 'C-9', label: 'C-9: User of cigarettes, vape, tobacco' },
+    { id: 'C-10', label: 'C-10: Involved in gambling activities' }
   ];
   const riskFactorOptions = [
-    { id: 'R-1', label: 'Risk Factor R-1' },
-    { id: 'R-2', label: 'Risk Factor R-2' },
-    { id: 'R-3', label: 'Risk Factor R-3' },
-    { id: 'R-4', label: 'Risk Factor R-4' }
+    { id: 'R-1', label: 'R-1: Dysfunctional family / Without parent or guardian' },
+    { id: 'R-2', label: 'R-2: Member of a gang' },
+    { id: 'R-3', label: 'R-3: Community with high criminality' },
+    { id: 'R-4', label: 'R-4: Living in situation of armed conflict' },
+    { id: 'R-5', label: 'R-5: Status offense under Sec 57 of RA 9344' },
+    { id: 'R-6', label: 'R-6: Mendicant under PD 1563' },
+    { id: 'R-7', label: 'R-7: Solvent / Rugby user' },
+    { id: 'R-8', label: 'R-8: Marijuana / Drug use / Dependency' },
+    { id: 'R-9', label: 'R-9: User of cigarettes, vape, tobacco' },
+    { id: 'R-10', label: 'R-10: Involved in gambling activities' }
   ];
   const familyContextOptions = [
-    { id: 'F-1', label: 'Context F-1' },
-    { id: 'F-2', label: 'Context F-2' },
-    { id: 'F-3', label: 'Context F-3' },
-    { id: 'F-4', label: 'Context F-4' }
+    { id: 'F-1', label: 'F-1: Dysfunctional family' },
+    { id: 'F-2', label: 'F-2: Without parent or guardian' }
   ];
   const cEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
   const cStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
@@ -432,11 +440,13 @@ const ModuleAReportingPanel = () => {
   const currentCategoryData = categoryData[activeCategory];
 
   const categoryOptions = [
-    { id: 'A-1', label: 'A-1: Physical Abuse (Unwanted physical contact: punching, shoving, kicking, etc.)' },
+    { id: 'A-1', label: 'A-1: Physical Bullying (Unwanted physical contact: punching, shoving, kicking, headlocks, etc.)' },
     { id: 'A-2', label: 'A-2: Verbal Bullying (Acts/words debasing, degrading, or demeaning human dignity)' },
-    { id: 'A-3', label: 'A-3: Cyberbullying (Bullying via technology/electronic means)' },
-    { id: 'A-4', label: 'A-4: Bullying in Written Form (Derogatory remarks written in notebooks, walls, lockers, etc.)' },
-    { id: 'A-5', label: 'A-5: Retaliation (Acts against a person who reported or witnessed bullying)' }
+    { id: 'A-3', label: 'A-3: Social Bullying (Acts to hurt, belittle, or reinforce social exclusion)' },
+    { id: 'A-4', label: 'A-4: Gender-based Bullying (Humiliates/excludes based on perceived or actual SOGI)' },
+    { id: 'A-5', label: 'A-5: Cyberbullying (Bullying through technology/electronic means: texting, email, chat, online games)' },
+    { id: 'A-6', label: 'A-6: Bullying in Written Form (Derogatory remarks written in notebooks, walls, lockers, etc.)' },
+    { id: 'A-7', label: 'A-7: Retaliation (Acts against a person who reports, provides info, or witnesses bullying)' }
   ];
 
   const motiveOptions = [
@@ -458,9 +468,10 @@ const ModuleAReportingPanel = () => {
     { id: 'B-5', label: 'B-5: Other Child Abuse Non-Amicable Offenses' }
   ];
   const natureOptions = [
-    { id: 'N-1', label: 'N-1: Physical' },
-    { id: 'N-2', label: 'N-2: Verbal' },
-    { id: 'N-3', label: 'N-3: Cyberbullying' }
+    { id: 'N-1', label: 'N-1: Physical Abuse (Acts that inflict bodily harm or subject children to hazardous tasks)' },
+    { id: 'N-2', label: 'N-2: Sexual Abuse (Acts of sexual nature: rape, harassment, demeaning remarks, obscene shows)' },
+    { id: 'N-3', label: 'N-3: Verbal Abuse (Acts or words debasing, degrading, or demeaning human worth/dignity)' },
+    { id: 'N-4', label: 'N-4: Psychological Abuse (Intimidation, stalking, public ridicule, grade threats, repeated verbal abuse)' }
   ];
   const affiliationOptions = ['School Personnel', 'Teacher', 'Non-Teaching Staff', 'Student', 'Parent/Guardian', 'Outside Community Member'];
   const currentCData = moduleCData && moduleCData[activeCRiskCategory];
