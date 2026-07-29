@@ -328,6 +328,11 @@ app.get('/pending', (req, res) => {
 app.get('/auth/callback', (req, res) => {
   res.sendFile(path.join(HTML_DIR, 'auth-callback.html'));
 });
+app.get('/auth/oauth-proxy', (req, res) => {
+  var redirectUrl = req.query.url;
+  if (!redirectUrl) return res.status(400).send('Missing url param');
+  res.send('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Mae.com — Signing in...</title><style>body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f8f9ff;font-family:Inter,sans-serif;color:#121c28}.loader{width:32px;height:32px;border:3px solid #d2e4ff;border-top-color:#002046;border-radius:50%;animation:spin .7s linear infinite;margin:12px auto}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div style="text-align:center"><div style="font-size:24px;font-weight:800;color:#002046">Mae.com</div><div class="loader"></div><div style="font-size:12px;color:#74777f;margin-top:8px">Redirecting to Google...</div></div><script>window.location.href=' + JSON.stringify(redirectUrl) + ';</script></body></html>');
+});
 
 // Protected routes (frontend auth guard enforces on each page)
 const protectedPages = [

@@ -261,7 +261,8 @@
         });
         if (error) { alert(error.message); return; }
         if (data?.url) {
-          window.open(data.url, 'google-login', 'width=520,height=600,left=400,top=120');
+          var proxyUrl = '/auth/oauth-proxy?url=' + encodeURIComponent(data.url);
+          window.open(proxyUrl, 'google-login', 'width=520,height=600,left=400,top=120');
         }
       });
 
