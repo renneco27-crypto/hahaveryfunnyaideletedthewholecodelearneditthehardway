@@ -120,9 +120,21 @@ app.post('/api/submit', async (req, res) => {
 // GET /api/stats — aggregated analytics (filter by schoolName for non-admin)
 app.get('/api/stats', async (req, res) => {
   try {
-    const { schoolName } = req.query;
+    const { token } = req.query;
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) return res.status(401).json({ error: 'Invalid token' });
+
+    const db = serviceClient || supabase;
+    const { data: profile } = await db
+      .from('profiles').select('role, school_name').eq('id', user.id).maybeSingle();
+
+    const role = user.app_metadata?.role || profile?.role || 'user';
+    const schoolName = profile?.school_name || null;
+
     let query = supabase.from('bullying_reports').select('*');
-    if (schoolName) query = query.eq('school_name', schoolName);
+    if (role !== 'admin' && schoolName) query = query.eq('school_name', schoolName);
     const { data, error } = await query.order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -166,9 +178,21 @@ app.delete('/api/reports/:id', async (req, res) => {
 // GET /api/reports — list reports (filter by schoolName for non-admin)
 app.get('/api/reports', async (req, res) => {
   try {
-    const { schoolName } = req.query;
+    const { token } = req.query;
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) return res.status(401).json({ error: 'Invalid token' });
+
+    const db = serviceClient || supabase;
+    const { data: profile } = await db
+      .from('profiles').select('role, school_name').eq('id', user.id).maybeSingle();
+
+    const role = user.app_metadata?.role || profile?.role || 'user';
+    const schoolName = profile?.school_name || null;
+
     let query = supabase.from('bullying_reports').select('*');
-    if (schoolName) query = query.eq('school_name', schoolName);
+    if (role !== 'admin' && schoolName) query = query.eq('school_name', schoolName);
     const { data, error } = await query.order('created_at', { ascending: false });
     if (error) throw error;
     res.json(data);
@@ -183,6 +207,39 @@ const HTML_DIR = path.join(__dirname, 'htmls');
 
 // Single-session enforcement: map email -> token
 const activeSessions = {};
+const blockedRequests = []; // { email, schoolName, deviceId, timestamp }
+const revokedUsers = {}; // email -> true
+
+// GET /api/access-requests — list pending blocked session attempts (latest per email)
+app.get('/api/access-requests', (req, res) => {
+  // Keep only the latest entry per email
+  var latest = {};
+  blockedRequests.forEach(function(r) { latest[r.email] = r; });
+  res.json(Object.values(latest));
+});
+
+// POST /api/access-requests/:email/approve — clear old session so new device can log in
+app.post('/api/access-requests/:email/approve', (req, res) => {
+  const { email } = req.params;
+  delete activeSessions[email];
+  const idx = blockedRequests.findIndex(r => r.email === email);
+  if (idx !== -1) blockedRequests.splice(idx, 1);
+  // Remove all remaining entries for this email
+  for (var i = blockedRequests.length - 1; i >= 0; i--) { if (blockedRequests[i].email === email) blockedRequests.splice(i, 1); }
+  res.json({ success: true });
+});
+
+// POST /api/access-requests/:email/revoke — permanently block user
+app.post('/api/access-requests/:email/revoke', (req, res) => {
+  const { email } = req.params;
+  delete activeSessions[email];
+  revokedUsers[email] = true;
+  const idx = blockedRequests.findIndex(r => r.email === email);
+  if (idx !== -1) blockedRequests.splice(idx, 1);
+  // Remove all remaining entries for this email
+  for (var i = blockedRequests.length - 1; i >= 0; i--) { if (blockedRequests[i].email === email) blockedRequests.splice(i, 1); }
+  res.json({ success: true });
+});
 
 // Verify session endpoint (called by frontend auth guard)
 app.post('/api/verify-session', async (req, res) => {
@@ -206,9 +263,16 @@ app.post('/api/verify-session', async (req, res) => {
   const fullName = user.user_metadata?.full_name || user.email || 'User';
   const email = user.email;
 
-  // Single-session check: if email already active with DIFFERENT token, reject
+  // Track token changes for admin visibility (don't block — Supabase rotates tokens)
   if (activeSessions[email] && activeSessions[email] !== token) {
-    return res.json({ valid: false, singleSession: true });
+    blockedRequests.push({ email, schoolName, deviceId: token.slice(-8), timestamp: new Date().toISOString() });
+  }
+  // Always update to the latest token
+  activeSessions[email] = token;
+
+  // Check if user is revoked
+  if (revokedUsers[email]) {
+    return res.json({ valid: false });
   }
 
   // Register this session

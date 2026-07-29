@@ -201,6 +201,7 @@
 </div>
 </footer>
 <!-- Micro-interaction Script -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
         document.querySelectorAll('button').forEach(btn => {
             btn.addEventListener('mousedown', function() {
@@ -223,12 +224,20 @@
             document.querySelector('.font-label-md.uppercase').textContent = 'Status: Session Conflict';
         }
 
-        // Logout button
-        document.querySelector('[data-icon="logout"]').addEventListener('click', function() {
-            window.location.href = '/login';
-        });
-        document.querySelector('button .material-symbols-outlined[data-icon="arrow_back"]').closest('button').addEventListener('click', function() {
-            window.location.href = '/login';
-        });
+// Logout button — clear all local/session storage + supabase session + notify server
+        function goLogin() {
+            var email = new URLSearchParams(window.location.search).get('email') || '';
+            localStorage.clear();
+            sessionStorage.clear();
+            var promises = [];
+            if (window.supabase) {
+                var sb = window.supabase.createClient('https://nstyqceyjkgevnibfqks.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zdHlxY2V5amtnZXZuaWJmcWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NDMwMzcsImV4cCI6MjA5ODIxOTAzN30.EUozeDCEFqvkLSNOpaBEaXA2D8ZbdPrhGdrNFelpRCU');
+                promises.push(sb.auth.signOut());
+            }
+            if (email) promises.push(fetch('/api/signout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }));
+            Promise.all(promises).catch(function(){}).then(function() { window.location.href = '/login'; });
+        }
+        document.querySelector('[data-icon="logout"]').addEventListener('click', goLogin);
+        document.querySelector('button .material-symbols-outlined[data-icon="arrow_back"]').closest('button').addEventListener('click', goLogin);
     </script>
 </body></html>

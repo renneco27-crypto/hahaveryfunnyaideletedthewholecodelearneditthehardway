@@ -155,7 +155,7 @@
 <header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
 <div class="flex items-center gap-sm">
 </div>
-<div class="flex items-center gap-md"><button class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">onclick="window.open(\"https://myaccount.google.com/\",\"_blank\")" Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
+<div class="flex items-center gap-md"><button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <div id="sidebar-root"></div>
@@ -232,8 +232,13 @@
 <section class="bg-surface-container-lowest border border-outline-variant">
 <div class="p-md border-b border-outline-variant flex justify-between items-center">
 <h2 class="font-headline-md text-headline-md text-primary">Recent Submissions</h2>
-<div class="flex gap-sm">
-<button class="text-on-surface-variant hover:text-primary transition-colors">
+<div class="flex gap-sm items-center">
+<select id="status-filter" class="text-xs border border-outline-variant rounded px-sm py-1 bg-surface text-on-surface font-label-md">
+<option value="all">All</option>
+<option value="submitted">Submitted</option>
+<option value="pending">Not Yet Submitted</option>
+</select>
+<button class="text-on-surface-variant hover:text-primary transition-colors" onclick="document.getElementById('status-filter').value='all'; renderTable();">
 <span class="material-symbols-outlined">filter_list</span>
 </button>
 </div>
@@ -305,11 +310,29 @@
 
 
 <script>
-  // Load schools JSON and populate stats + table with pagination
+  function getAuthToken() {
+    try { return (JSON.parse(sessionStorage.getItem('auth_cache') || '{}')).token || ''; } catch(e) { return ''; }
+  }
+
+  function waitAuth(cb) {
+    var t = getAuthToken();
+    if (t) { cb(t); return; }
+    var iv = setInterval(function() {
+      t = getAuthToken();
+      if (t) { clearInterval(iv); cb(t); }
+    }, 100);
+  }
+
+  waitAuth(function(token) {
+  // Load schools JSON, stats, and populate stats + table with pagination
   (async function() {
     try {
-      const res = await fetch('/ormoc_city_division_schools.json');
-      const districts = await res.json();
+      const [schoolsRes, statsRes] = await Promise.all([
+        fetch('/ormoc_city_division_schools.json'),
+        fetch('/api/stats?token=' + encodeURIComponent(token))
+      ]);
+      const districts = await schoolsRes.json();
+      const stats = await statsRes.json();
 
       let allSchools = [];
       districts.forEach(d => {
@@ -320,41 +343,61 @@
       const totalDistricts = districts.length;
       const PAGE_SIZE = 10;
       let currentPage = 0;
-      const totalPages = Math.ceil(totalSchools / PAGE_SIZE);
+
+      // Build a map of school_name -> status from reports
+      var submittedMap = {};
+      stats.reports.forEach(function(r) {
+        if (r.school_name && !submittedMap[r.school_name]) submittedMap[r.school_name] = r.status;
+      });
+      var submittedCount = Object.keys(submittedMap).length;
+      var pct = totalSchools > 0 ? Math.round(submittedCount / totalSchools * 100) : 0;
 
       document.getElementById('stat-districts').textContent = totalDistricts;
       document.getElementById('stat-schools').textContent = totalSchools;
-      document.getElementById('stat-submitted').textContent = '0';
-      document.getElementById('stat-pending').textContent = totalSchools;
-      document.getElementById('stat-rate').textContent = '0%';
-      document.getElementById('stat-progress').style.width = '0%';
+      document.getElementById('stat-submitted').textContent = submittedCount;
+      document.getElementById('stat-pending').textContent = totalSchools - submittedCount;
+      document.getElementById('stat-rate').textContent = pct + '%';
+      document.getElementById('stat-progress').style.width = pct + '%';
 
-      function renderTable() {
+function renderTable() {
         const tbody = document.getElementById('schools-tbody');
+        var filter = document.getElementById('status-filter').value;
+        var filtered = allSchools;
+        if (filter === 'submitted') filtered = allSchools.filter(function(s) { return submittedMap[s.name]; });
+        else if (filter === 'pending') filtered = allSchools.filter(function(s) { return !submittedMap[s.name]; });
+        const totalFiltered = filtered.length;
+        const totalPages = Math.ceil(totalFiltered / PAGE_SIZE) || 1;
+        if (currentPage >= totalPages) currentPage = totalPages - 1;
         const start = currentPage * PAGE_SIZE;
-        const end = Math.min(start + PAGE_SIZE, totalSchools);
+        const end = Math.min(start + PAGE_SIZE, totalFiltered);
         let html = '';
         for (let i = start; i < end; i++) {
-          const s = allSchools[i];
+          const s = filtered[i];
           const alt = i % 2 === 1 ? 'bg-surface-container-low' : '';
           html += '<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors ' + alt + '">';
           html += '<td class="p-md font-bold">' + s.name + '</td>';
           html += '<td class="p-md text-on-surface-variant">' + s.psds + '</td>';
           html += '<td class="p-md text-on-surface-variant">' + s.district + '</td>';
-          html += '<td class="p-md"><span class="px-xs py-1 rounded bg-surface-variant text-on-surface-variant font-bold text-caption uppercase">Not Yet Submitted</span></td>';
+          html += '<td class="p-md"><span class="px-xs py-1 rounded font-bold text-caption uppercase ' + (submittedMap[s.name] ? 'bg-green-100 text-green-800' : 'bg-surface-variant text-on-surface-variant') + '">' + (submittedMap[s.name] ? 'Submitted' : 'Not Yet Submitted') + '</span></td>';
           html += '</tr>';
         }
-        tbody.innerHTML = html;
-        document.getElementById('showing-count').textContent = 'Showing ' + (start + 1) + '–' + end + ' of ' + totalSchools + ' schools';
+tbody.innerHTML = html;
+        document.getElementById('showing-count').textContent = 'Showing ' + (start + 1) + '–' + end + ' of ' + totalFiltered + ' school' + (totalFiltered !== 1 ? 's' : '');
         document.getElementById('prev-page-btn').disabled = currentPage === 0;
-        document.getElementById('next-page-btn').disabled = currentPage >= totalPages - 1;
+        document.getElementById('next-page-btn').disabled = currentPage >= (Math.ceil(totalFiltered / PAGE_SIZE) || 1) - 1;
       }
 
-      document.getElementById('prev-page-btn').addEventListener('click', function() {
+document.getElementById('prev-page-btn').addEventListener('click', function() {
         if (currentPage > 0) { currentPage--; renderTable(); }
       });
       document.getElementById('next-page-btn').addEventListener('click', function() {
-        if (currentPage < totalPages - 1) { currentPage++; renderTable(); }
+        var f = document.getElementById('status-filter').value;
+        var fil = f === 'all' ? allSchools : f === 'submitted' ? allSchools.filter(function(s) { return submittedMap[s.name]; }) : allSchools.filter(function(s) { return !submittedMap[s.name]; });
+        var tp = Math.ceil(fil.length / PAGE_SIZE) || 1;
+        if (currentPage < tp - 1) { currentPage++; renderTable(); }
+      });
+      document.getElementById('status-filter').addEventListener('change', function() {
+        currentPage = 0; renderTable();
       });
 
       renderTable();
@@ -362,7 +405,8 @@
       console.error('Failed to load schools data:', e);
       document.getElementById('showing-count').textContent = 'Could not load data';
     }
-  })();
+})();
+  });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>

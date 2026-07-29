@@ -107,6 +107,12 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
             vertical-align: middle;
+}
+        .login-mesh {
+            background-color: #f8f9ff;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(214, 227, 255, 0.5) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(122, 183, 255, 0.2) 0px, transparent 50%);
         }
         .watermark-overlay {
             background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0067KEle55rkVIqVHG0YjG6OektTZvNhimDCkYaM9C0h1zPe5upD5I1dT_pZL5C0BE_iuvirL9rFZZOzoKHO-H5_2lnoQn9YtNixoQM3RstZxw_3F27-oTXFHrIMmzmPuBnx3so8HT4-8bDONRIlny7PhfffYy2ahBLmmU8svku39vvJukkI411Wb3MxBceW2vbTT8H5BVlMjaqUCFGsnKYOB8IvC3nfg9KLslTVGje0-lrZ0ZvZ45wYvjBUv0tLu9ghic6lQBZZg');
@@ -122,8 +128,8 @@
     </style>
 </head>
 <body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col overflow-x-hidden">
-<!-- Watermark Overlay -->
-<div class="watermark-overlay"></div>
+<!-- Background Mesh Gradient -->
+<div class="fixed inset-0 z-[-1] login-mesh pointer-events-none"></div>
 <!-- TopNavBar -->
 <nav class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
 <div class="flex items-center gap-sm">
@@ -152,19 +158,19 @@
 <section class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg shadow-sm">
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-md">
 <div class="space-y-xs">
-<h3 class="font-headline-md text-headline-md text-primary">78 / 95 Schools Submitted</h3>
+<h3 class="font-headline-md text-headline-md text-primary" id="schools-submitted">—</h3>
 <div class="w-full md:w-96 bg-surface-container-highest h-3 rounded-full overflow-hidden">
-<div class="bg-secondary h-full" style="width: 82%;"></div>
+<div class="bg-secondary h-full transition-all duration-500" id="progress-bar" style="width: 0%;"></div>
 </div>
 </div>
 <div class="flex gap-lg">
 <div class="text-center">
 <p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider">Total Cases Compiled</p>
-<p class="font-headline-md text-headline-md text-secondary">342</p>
+<p class="font-headline-md text-headline-md text-secondary" id="total-cases">—</p>
 </div>
 <div class="text-center">
 <p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider">Last Received</p>
-<p class="font-headline-md text-headline-md text-on-surface">5 mins ago</p>
+<p class="font-headline-md text-headline-md text-on-surface" id="last-received">—</p>
 </div>
 </div>
 </div>
@@ -210,15 +216,16 @@
 </div>
 </section>
 <!-- Section 3: Master Aggregated Live Data Table -->
+<div class="max-w-xl mx-auto">
 <section class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm">
 <!-- Filter Bar -->
 <div class="p-md border-b border-outline-variant flex flex-col lg:flex-row gap-md items-center justify-between">
 <div class="relative w-full lg:w-96">
 <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-<input class="w-full pl-xl pr-md py-sm rounded-lg border-outline-variant focus:border-secondary focus:ring-2 focus:ring-secondary/20 bg-surface" placeholder="Search School Name or ID..." type="text"/>
+<input class="w-full pl-xl pr-md py-sm rounded-lg border-outline-variant focus:border-secondary focus:ring-2 focus:ring-secondary/20 bg-surface" placeholder="Search ID..." type="text" id="reports-search"/>
 </div>
 <div class="flex flex-wrap gap-sm w-full lg:w-auto">
-<select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20">
+<select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="reports-category">
 <option>Category: All</option>
 <option>Bullying</option>
 <option>Abuse</option>
@@ -226,21 +233,21 @@
 <option>CICL</option>
 <option>Other</option>
 </select>
-<select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20">
+<select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="reports-status">
 <option>Status: All</option>
 <option>Resolved</option>
 <option>On-going</option>
 <option>Referred</option>
 </select>
 <div class="flex items-center gap-xs bg-surface-variant p-1 rounded-lg">
-<button class="px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md">Raw Data</button>
-<button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md">School Status</button>
+<button class="px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md" id="view-raw">Raw Data</button>
+<button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md" id="view-status">School Status</button>
 </div>
 </div>
 </div>
 <!-- Table Content -->
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
+<div class="overflow-x-auto" id="table-container">
+<table class="w-full text-left border-collapse" id="reports-table">
 <thead>
 <tr class="bg-primary text-on-primary">
 <th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">School Name &amp; ID</th>
@@ -251,83 +258,27 @@
 <th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Action Status</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant">
-<!-- Example Row 1 -->
-<tr class="hover:bg-surface-container-high transition-colors">
-<td class="px-md py-md">
-<div class="font-label-md text-label-md text-on-surface">Ormoc City Central School</div>
-<div class="text-caption font-caption text-on-surface-variant">ID: 121852</div>
-</td>
-<td class="px-md py-md">
-<span class="bg-error-container text-on-error-container px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">Bullying</span>
-</td>
-<td class="px-md py-md text-body-md max-w-xs truncate">Reported verbal harassment in Grade 5...</td>
-<td class="px-md py-md text-right font-bold text-secondary">12</td>
-<td class="px-md py-md text-caption">Oct 24, 2026</td>
-<td class="px-md py-md">
-<div class="flex items-center gap-xs text-orange-600 font-bold text-xs uppercase">
-<span class="w-2 h-2 rounded-full bg-orange-600"></span>
-                                        On-going
-                                    </div>
-</td>
-</tr>
-<!-- Example Row 2 (Zebra) -->
-<tr class="bg-surface-container-low hover:bg-surface-container-high transition-colors">
-<td class="px-md py-md">
-<div class="font-label-md text-label-md text-on-surface">Valencia National High School</div>
-<div class="text-caption font-caption text-on-surface-variant">ID: 303491</div>
-</td>
-<td class="px-md py-md">
-<span class="bg-secondary-container text-on-secondary-container px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">Child Abuse</span>
-</td>
-<td class="px-md py-md text-body-md max-w-xs truncate">Alleged corporal punishment case...</td>
-<td class="px-md py-md text-right font-bold text-secondary">03</td>
-<td class="px-md py-md text-caption">Oct 24, 2026</td>
-<td class="px-md py-md">
-<div class="flex items-center gap-xs text-emerald-600 font-bold text-xs uppercase">
-<span class="w-2 h-2 rounded-full bg-emerald-600"></span>
-                                        Resolved
-                                    </div>
-</td>
-</tr>
-<!-- Example Row 3 -->
-<tr class="hover:bg-surface-container-high transition-colors">
-<td class="px-md py-md">
-<div class="font-label-md text-label-md text-on-surface">Ipil National High School</div>
-<div class="text-caption font-caption text-on-surface-variant">ID: 303487</div>
-</td>
-<td class="px-md py-md">
-<span class="bg-outline-variant text-on-surface-variant px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">Other</span>
-</td>
-<td class="px-md py-md text-body-md max-w-xs truncate">Family dispute involving students...</td>
-<td class="px-md py-md text-right font-bold text-secondary">08</td>
-<td class="px-md py-md text-caption">Oct 23, 2026</td>
-<td class="px-md py-md">
-<div class="flex items-center gap-xs text-blue-600 font-bold text-xs uppercase">
-<span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                        Referred
-                                    </div>
-</td>
-</tr>
+<tbody class="divide-y divide-outline-variant" id="reports-tbody">
 </tbody>
 </table>
 </div>
 <!-- Pagination -->
 <div class="p-md bg-surface-container flex items-center justify-between">
-<span class="text-caption font-caption text-on-surface-variant">Showing 1 to 10 of 342 entries</span>
+<span class="text-caption font-caption text-on-surface-variant" id="reports-info">No entries</span>
 <div class="flex items-center gap-xs">
-<button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant">
+<button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="reports-prev">
 <span class="material-symbols-outlined">chevron_left</span>
 </button>
-<button class="px-xs py-1 rounded bg-primary text-on-primary font-bold">1</button>
-<button class="px-xs py-1 rounded hover:bg-surface-variant font-bold">2</button>
-<button class="px-xs py-1 rounded hover:bg-surface-variant font-bold">3</button>
-<button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant">
+<button class="px-xs py-1 rounded bg-primary text-on-primary font-bold page-btn" data-page="1">1</button>
+<button class="px-xs py-1 rounded hover:bg-surface-variant font-bold page-btn" data-page="2">2</button>
+<button class="px-xs py-1 rounded hover:bg-surface-variant font-bold page-btn" data-page="3">3</button>
+<button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="reports-next">
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
 </div>
 </section>
+</div>
 </main>
 </div>
 <!-- Footer -->
@@ -340,15 +291,195 @@
 </div>
 </footer>
 <script>
-        // Simple micro-interaction for the stats cards
         document.querySelectorAll('.grid > div').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-2px)';
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0)';
-            });
+            card.addEventListener('mouseenter', () => { card.style.transform = 'translateY(-2px)'; });
+            card.addEventListener('mouseleave', () => { card.style.transform = 'translateY(0)'; });
             card.style.transition = 'transform 0.2s ease-out, background-color 0.2s ease-out';
+        });
+
+        async function loadStats(token) {
+            try {
+                var [schoolsRes, statsRes] = await Promise.all([
+                    fetch('/ormoc_city_division_schools.json'),
+                    fetch('/api/stats?token=' + encodeURIComponent(token))
+                ]);
+                var districts = await schoolsRes.json();
+                var stats = await statsRes.json();
+                var totalSchools = 0;
+                districts.forEach(function(d) { totalSchools += d.schools.length; });
+
+                var submittedSchools = new Set(stats.reports.map(function(r) { return r.school_name; })).size;
+                var pct = totalSchools > 0 ? (submittedSchools / totalSchools * 100).toFixed(0) : 0;
+
+                document.getElementById('schools-submitted').textContent = submittedSchools + ' / ' + totalSchools + ' Schools Submitted';
+                document.getElementById('progress-bar').style.width = pct + '%';
+                document.getElementById('total-cases').textContent = stats.total;
+
+                if (stats.lastSubmission) {
+                    var diff = Date.now() - new Date(stats.lastSubmission).getTime();
+                    var mins = Math.floor(diff / 60000);
+                    var hrs = Math.floor(mins / 60);
+                    var str = mins < 1 ? 'Just now' : mins < 60 ? mins + ' min ago' : hrs + 'h ' + (mins % 60) + 'm ago';
+                    document.getElementById('last-received').textContent = str;
+                }
+            } catch (e) { console.error('Stats load error:', e); }
+        }
+        // loadStats() called below with token
+
+        function getAuthToken() {
+            try { return (JSON.parse(sessionStorage.getItem('auth_cache') || '{}')).token || ''; } catch(e) { return ''; }
+        }
+
+        function waitAuth(cb) {
+            var t = getAuthToken();
+            if (t) { cb(t); return; }
+            var iv = setInterval(function() {
+                t = getAuthToken();
+                if (t) { clearInterval(iv); cb(t); }
+            }, 100);
+        }
+
+        // Reports table: live data with search, filter, pagination
+        var reportsData = [];
+        var reportsPage = 0;
+        var REPORTS_PAGE_SIZE = 10;
+
+        function loadReportsTable(token) {
+            fetch('/api/stats?token=' + encodeURIComponent(token)).then(function(r) { return r.json(); }).then(function(stats) {
+                reportsData = stats.reports || [];
+                goReportsPage(0);
+            }).catch(function(e) { console.error('Reports load error:', e); });
+        }
+
+        function goReportsPage(p) {
+            reportsPage = p;
+            var search = (document.getElementById('reports-search')?.value || '').toLowerCase();
+            var catFilter = document.getElementById('reports-category')?.value || 'Category: All';
+            var statusFilter = document.getElementById('reports-status')?.value || 'Status: All';
+
+            var filtered = reportsData.filter(function(r) {
+                if (search && !String(r.school_id || r.report_data?.metadata?.schoolId || '').toLowerCase().includes(search)) return false;
+                if (catFilter !== 'Category: All') {
+                    var mod = (r.module || r.report_data?.module || '').toLowerCase();
+                    var cat = catFilter.toLowerCase();
+                    if (cat === 'bullying' && !mod.includes('a') && !mod.includes('b')) return false;
+                    if (cat === 'abuse' && mod !== 'c') return false;
+                }
+                if (statusFilter !== 'Status: All') {
+                    var st = (r.status || '').toLowerCase();
+                    var sf = statusFilter.toLowerCase();
+                    if (sf === 'resolved' && st !== 'submitted' && st !== 'resolved') return false;
+                    if (sf === 'on-going' && st !== 'pending') return false;
+                }
+                return true;
+            });
+
+            var totalPages = Math.ceil(filtered.length / REPORTS_PAGE_SIZE) || 1;
+            if (p >= totalPages) p = totalPages - 1;
+            var start = p * REPORTS_PAGE_SIZE;
+            var end = Math.min(start + REPORTS_PAGE_SIZE, filtered.length);
+            var page = filtered.slice(start, end);
+
+            var tbody = document.getElementById('reports-tbody');
+            tbody.innerHTML = page.map(function(r, i) {
+                var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
+                var schoolName = r.school_name || '—';
+                var schoolId = r.school_id || r.report_data?.metadata?.schoolId || '—';
+                var module = r.module || r.report_data?.module || '—';
+                var summary = r.report_data?.data?.categories ? Object.keys(r.report_data.data.categories).length + ' categories' : 'Report data';
+                var caseCount = r.report_data?.data?.categories ? Object.keys(r.report_data.data.categories).length : 1;
+                var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+                var status = r.status || 'pending';
+                var statusColor = status === 'submitted' || status === 'sent' ? 'text-emerald-600' : status === 'pending' ? 'text-orange-600' : 'text-blue-600';
+                var statusDot = status === 'submitted' || status === 'sent' ? 'bg-emerald-600' : status === 'pending' ? 'bg-orange-600' : 'bg-blue-600';
+                var statusLabel = status === 'submitted' || status === 'sent' ? 'Submitted' : status === 'pending' ? 'Pending' : status;
+                var categoryBadge = module === 'A' ? 'Bullying' : module === 'B' ? 'Behavioral' : module === 'C' ? 'CAR' : module === 'D' ? 'CICL' : module === 'E' ? 'Other' : module;
+                var badgeBg = module === 'A' ? 'bg-error-container text-on-error-container' : module === 'B' ? 'bg-secondary-container text-on-secondary-container' : module === 'C' ? 'bg-primary-container text-on-primary-container' : module === 'D' ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-outline-variant text-on-surface-variant';
+                return '<tr class="hover:bg-surface-container-high transition-colors ' + bg + '">' +
+                    '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(schoolName) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(String(schoolId)) + '</div></td>' +
+                    '<td class="px-md py-md"><span class="' + badgeBg + ' px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">' + categoryBadge + '</span></td>' +
+                    '<td class="px-md py-md text-body-md max-w-xs truncate">' + escHtml(summary) + '</td>' +
+                    '<td class="px-md py-md text-right font-bold text-secondary">' + String(caseCount).padStart(2, '0') + '</td>' +
+                    '<td class="px-md py-md text-caption">' + date + '</td>' +
+                    '<td class="px-md py-md"><div class="flex items-center gap-xs ' + statusColor + ' font-bold text-xs uppercase"><span class="w-2 h-2 rounded-full ' + statusDot + '"></span> ' + statusLabel + '</div></td></tr>';
+            }).join('');
+            if (page.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="px-md py-md text-center text-on-surface-variant">No matching entries</td></tr>';
+
+            document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + filtered.length + ' entr' + (filtered.length !== 1 ? 'ies' : 'y');
+            document.getElementById('reports-prev').disabled = p === 0;
+            document.getElementById('reports-next').disabled = p >= totalPages - 1;
+            document.querySelectorAll('.page-btn').forEach(function(btn) {
+                var n = parseInt(btn.dataset.page) - 1;
+                btn.className = 'px-xs py-1 rounded font-bold ' + (n === p ? 'bg-primary text-on-primary' : 'hover:bg-surface-variant');
+            });
+        }
+
+        function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        document.getElementById('reports-search').addEventListener('input', function() { goReportsPage(0); });
+        document.getElementById('reports-category').addEventListener('change', function() { goReportsPage(0); });
+        document.getElementById('reports-status').addEventListener('change', function() { goReportsPage(0); });
+        document.getElementById('reports-prev').addEventListener('click', function() { if (reportsPage > 0) goReportsPage(reportsPage - 1); });
+        document.getElementById('reports-next').addEventListener('click', function() { goReportsPage(reportsPage + 1); });
+        document.querySelectorAll('.page-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() { goReportsPage(parseInt(this.dataset.page) - 1); });
+        });
+        waitAuth(function(tok) { loadStats(tok); loadReportsTable(tok); });
+
+        // View toggle: Raw Data / School Status
+        var districtsCache = [];
+        var allSchools = [];
+        fetch('/ormoc_city_division_schools.json').then(function(r) { return r.json(); }).then(function(d) {
+            districtsCache = d;
+            d.forEach(function(dd) { dd.schools.forEach(function(s) { allSchools.push({ school: s, district: dd.district }); }); });
+        });
+
+        function showSchoolStatus() {
+            var submittedSet = new Set((reportsData || []).map(function(r) { return r.school_name; }));
+            var tbody = document.getElementById('reports-tbody');
+            if (!allSchools.length) { tbody.innerHTML = '<tr><td colspan="3" class="px-md py-md text-center text-on-surface-variant">Loading school data...</td></tr>'; return; }
+            tbody.innerHTML = allSchools.map(function(item, i) {
+                var submitted = submittedSet.has(item.school.name);
+                var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
+                return '<tr class="hover:bg-surface-container-high transition-colors ' + bg + '">' +
+                    '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(item.school.name) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(item.school.id) + '</div></td>' +
+                    '<td class="px-md py-md"><span class="text-caption font-caption text-on-surface-variant">' + escHtml(item.district) + '</span></td>' +
+                    '<td class="px-md py-md"><div class="flex items-center gap-xs ' + (submitted ? 'text-emerald-600' : 'text-on-surface-variant') + ' font-bold text-xs uppercase"><span class="w-2 h-2 rounded-full ' + (submitted ? 'bg-emerald-600' : 'bg-outline-variant') + '"></span> ' + (submitted ? 'Submitted' : 'Not Yet Submitted') + '</div></td></tr>';
+            }).join('');
+            document.getElementById('reports-info').textContent = 'Showing all ' + allSchools.length + ' schools';
+            var pag = document.querySelector('#reports-prev')?.parentElement;
+            if (pag) pag.style.display = 'none';
+            document.querySelector('.flex.items-center.justify-between')?.style.setProperty('display', 'none');
+        }
+
+        function showRawData() {
+            var pag = document.querySelector('#reports-prev')?.parentElement;
+            if (pag) pag.style.display = '';
+            document.querySelector('.flex.items-center.justify-between')?.style.setProperty('display', 'flex');
+            goReportsPage(reportsPage);
+        }
+
+        document.getElementById('view-raw').addEventListener('click', function() {
+            document.getElementById('view-raw').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
+            document.getElementById('view-status').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+            // Change thead back to report columns
+            document.querySelector('#reports-table thead tr').innerHTML =
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">School Name &amp; ID</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Category</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Incident Summary</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-right">Case Count</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Submission Date</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Action Status</th>';
+            showRawData();
+        });
+        document.getElementById('view-status').addEventListener('click', function() {
+            document.getElementById('view-status').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
+            document.getElementById('view-raw').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+            document.querySelector('#reports-table thead tr').innerHTML =
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">School Name &amp; ID</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">District</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Submission Status</th>';
+            showSchoolStatus();
         });
     </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>

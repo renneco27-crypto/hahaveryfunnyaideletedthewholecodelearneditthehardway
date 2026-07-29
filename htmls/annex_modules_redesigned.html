@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -27,7 +27,7 @@ button,input,select,textarea { font:inherit; }
 /* ── Card ── */
 .card {
   background: #ffffff;
-  border: 1px solid #c4c6cf;
+  border: 1px solid #9ca3af;
   border-radius: 16px;
   padding: 0;
   box-shadow: 0 2px 8px rgba(0,32,70,.05);
@@ -78,8 +78,9 @@ button,input,select,textarea { font:inherit; }
 /* ── Fields ── */
 .field-label { display:flex; align-items:center; gap:4px; margin-bottom:6px; font-size:12px; color:#44474e; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
 .required { color:#ba1a1a; margin-left:2px; }
-.field-input,.field-select,.field-textarea { width:100%; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; color:#121c28; font-size:14px; box-sizing:border-box; }
+.field-input,.field-select,.field-textarea { width:100%; border:1px solid #9ca3af; border-radius:10px; padding:10px 12px; background:#fbfdff; color:#121c28; font-size:14px; box-sizing:border-box; }
 .field-input:focus,.field-select:focus,.field-textarea:focus { outline:none; border-color:#1261a3; box-shadow:0 0 0 3px rgba(18,97,163,.12); }
+.date-select:focus,.date-select:active { background:#eef4ff; }
 .field-textarea { min-height:100px; resize:vertical; }
 .field-error { border-color:#ba1a1a !important; background:#fff5f5 !important; }
 .error-text { color:#ba1a1a; font-size:11px; font-weight:700; margin-top:4px; }
@@ -94,12 +95,12 @@ button,input,select,textarea { font:inherit; }
 
 /* ── Chips ── */
 .chip-list { display:flex; flex-wrap:wrap; gap:10px; }
-.checkbox-chip { display:flex; align-items:flex-start; gap:8px; border:1px solid #c4c6cf; border-radius:10px; padding:10px 12px; background:#fbfdff; min-width:160px; cursor:pointer; transition:all .2s; }
+.checkbox-chip { display:flex; align-items:flex-start; gap:8px; border:1px solid #9ca3af; border-radius:10px; padding:10px 12px; background:#fbfdff; min-width:160px; cursor:pointer; transition:all .2s; }
 .checkbox-chip:hover { border-color:#1261a3; background:#f0f4ff; }
 .checkbox-chip input { margin-top:2px; accent-color:#1261a3; cursor:pointer; }
 
 /* ── Row cards / inline sub-cards ── */
-.row-card { border:1px solid #c4c6cf; border-radius:12px; padding:14px; background:#fbfdff; position:relative; margin-bottom:12px; }
+.row-card { border:1px solid #9ca3af; border-radius:12px; padding:14px; background:#fbfdff; position:relative; margin-bottom:12px; }
 .remove-btn { position:absolute; top:10px; right:10px; border:none; background:transparent; color:#ba1a1a; cursor:pointer; padding:4px; transition:all .2s; display:flex; align-items:center; }
 .remove-btn:hover { color:#002046; transform:scale(1.1); }
 .remove-btn .material-symbols-outlined { font-size:20px; }
@@ -109,14 +110,14 @@ button,input,select,textarea { font:inherit; }
 
 /* ── Category pills ── */
 .category-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
-.category-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; font-size:13px; }
+.category-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #9ca3af; border-radius:999px; background:#ffffff; color:#44474e; cursor:pointer; font-weight:700; transition:all .2s; font-size:13px; }
 .category-btn:hover { border-color:#1261a3; }
 .category-btn.active { background:#1261a3; color:#ffffff; border-color:#1261a3; }
 
 /* ── Counters (redesigned) ── */
 .counter-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:4px; }
 .counter-pill {
-  border:1px solid #c4c6cf;
+  border:1px solid #9ca3af;
   border-radius:14px;
   padding:16px 12px;
   background:#ffffff;
@@ -150,7 +151,7 @@ button,input,select,textarea { font:inherit; }
   position:sticky; bottom:0; z-index:20;
   background:rgba(255,255,255,.98);
   backdrop-filter:blur(12px);
-  border-top:1px solid #c4c6cf;
+  border-top:1px solid #9ca3af;
   padding:12px 20px;
   margin-left:-18px; margin-right:-18px; margin-bottom:-120px;
   display:flex; justify-content:flex-end; align-items:center; gap:10px;
@@ -170,7 +171,7 @@ button,input,select,textarea { font:inherit; }
 .hint-note { font-size:12px; color:#44474e; margin-top:4px; }
 .compact { font-size:12px; color:#44474e; }
 .radio-group { display:flex; gap:12px; flex-wrap:wrap; }
-.radio-option { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c4c6cf; border-radius:10px; background:#fbfdff; cursor:pointer; transition:all .2s; }
+.radio-option { display:flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #9ca3af; border-radius:10px; background:#fbfdff; cursor:pointer; transition:all .2s; }
 .radio-option:hover { border-color:#1261a3; }
 .radio-option input[type="radio"] { cursor:pointer; accent-color:#1261a3; }
 
@@ -192,7 +193,7 @@ tailwind.config = {
         "tertiary-container": "#30373b", "inverse-primary": "#aec7f7", "secondary-fixed": "#d2e4ff",
         "on-primary-fixed-variant": "#2e476f", background: "#f8f9ff", "on-surface": "#121c28",
         "surface-bright": "#f8f9ff", "primary-fixed-dim": "#aec7f7", "error-container": "#ffdad6",
-        "outline-variant": "#c4c6cf", "secondary-fixed-dim": "#a1c9ff", "surface-container-highest": "#d9e3f4",
+        "outline-variant": "#9ca3af", "secondary-fixed-dim": "#a1c9ff", "surface-container-highest": "#d9e3f4",
         "surface-container-lowest": "#ffffff", error: "#ba1a1a", "on-primary-container": "#87a0cd",
         "on-tertiary-fixed": "#151d20", surface: "#f8f9ff", "surface-container-high": "#dfe9fa",
         "inverse-on-surface": "#eaf1ff", "on-tertiary": "#ffffff", "on-tertiary-container": "#99a0a5",
@@ -253,7 +254,7 @@ tailwind.config = {
 </div>
 </footer>
 <script type="text/babel">
-      const { useMemo, useState } = React;
+      const { useMemo, useState, useRef, useEffect } = React;
 
 
 const ModuleAReportingPanel = () => {
@@ -270,16 +271,70 @@ const ModuleAReportingPanel = () => {
   });
 
   const [categoryData, setCategoryData] = useState({
-    'A-1': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
-    'A-2': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
-    'A-3': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
-    'A-4': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' },
-    'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: 'Resolved' }
+    'A-1': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-2': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-3': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-4': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' }
   });
 
   const [preparedBy, setPreparedBy] = useState({ name: '', designation: '', date: '' });
   const [validatedBy, setValidatedBy] = useState({ name: '', designation: '', date: '' });
   const [validationErrors, setValidationErrors] = useState({});
+
+  useEffect(function() {
+    var u = window.__user;
+    if (u && u.schoolName) {
+      setSchoolMetadata(function(prev) {
+        if (prev.schoolName) return prev;
+        return Object.assign({}, prev, { schoolName: u.schoolName, schoolId: u.schoolId || '' });
+      });
+    }
+    var iv = setInterval(function() {
+      u = window.__user;
+      if (u && u.schoolName) {
+        clearInterval(iv);
+        setSchoolMetadata(function(prev) {
+          if (prev.schoolName) return prev;
+          return Object.assign({}, prev, { schoolName: u.schoolName, schoolId: u.schoolId || '' });
+        });
+      }
+    }, 200);
+    return function() { clearInterval(iv); };
+  }, []);
+
+  const MONTHS = [{v:'01',l:'Jan'},{v:'02',l:'Feb'},{v:'03',l:'Mar'},{v:'04',l:'Apr'},{v:'05',l:'May'},{v:'06',l:'Jun'},{v:'07',l:'Jul'},{v:'08',l:'Aug'},{v:'09',l:'Sep'},{v:'10',l:'Oct'},{v:'11',l:'Nov'},{v:'12',l:'Dec'}];
+  const YEARS = [];
+  for (var y = 2020; y <= 2035; y++) YEARS.push(String(y));
+
+  function parseDateParts(val) {
+    if (!val || typeof val !== 'string') return { m: '', d: '', y: '' };
+    var p = val.split('-');
+    return { y: p[0] || '', m: p[1] || '', d: p[2] || '' };
+  }
+
+  function DateInput(props) {
+    var parts = parseDateParts(props.value);
+    function onChange(part, v) {
+      var np = Object.assign({}, parts, part);
+      var composed = np.y && np.m && np.d ? np.y + '-' + np.m + '-' + np.d : '';
+      props.onChange({ target: { value: composed } });
+    }
+    return React.createElement('div', { style: { display: 'flex', gap: '4px' } },
+      React.createElement('select', { value: parts.m, onChange: function(e) { onChange({ m: e.target.value }, null); }, className: 'field-input date-select', style: { flex: '1', minWidth: '0' } },
+        React.createElement('option', { value: '' }, 'Month'),
+        MONTHS.map(function(mm) { return React.createElement('option', { key: mm.v, value: mm.v }, mm.l); })
+      ),
+      React.createElement('select', { value: parts.d, onChange: function(e) { onChange({ d: e.target.value }, null); }, className: 'field-input date-select', style: { flex: '1', minWidth: '0' } },
+        React.createElement('option', { value: '' }, 'Day'),
+        Array.from({ length: 31 }, function(_, i) { var dv = String(i + 1).padStart(2, '0'); return React.createElement('option', { key: dv, value: dv }, i + 1); })
+      ),
+      React.createElement('select', { value: parts.y, onChange: function(e) { onChange({ y: e.target.value }, null); }, className: 'field-input date-select', style: { flex: '1', minWidth: '0' } },
+        React.createElement('option', { value: '' }, 'Year'),
+        YEARS.map(function(yy) { return React.createElement('option', { key: yy, value: yy }, yy); })
+      )
+    );
+  }
 
   const [activeModule, setActiveModule] = useState('A');
   const [activeCRiskCategory, setActiveCRiskCategory] = useState('C-1');
@@ -309,7 +364,7 @@ const ModuleAReportingPanel = () => {
   const cEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
   const cStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
   const makeCIndividual = () => ({ name: '', age: '', gender: 'M', disability: 'No', familyContexts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' });
-  const makeCCategoryData = () => ({ dateIdentified: '', location: '', riskFactors: [], individuals: [makeCIndividual()], intervention: '', status: 'Status 1: Resolved' });
+  const makeCCategoryData = () => ({ dateIdentified: '', location: '', riskFactors: [], individuals: [makeCIndividual()], intervention: '', status: '' });
 
   const [moduleCData, setModuleCData] = useState(null);
 
@@ -338,7 +393,7 @@ const ModuleAReportingPanel = () => {
   const dEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
   const dStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
   const makeDSubject = () => ({ identificationRef: '', age: '', gender: 'M', disability: 'No' });
-  const makeDCategoryData = () => ({ offenseDate: '', location: '', violations: [], subjects: [makeDSubject()], programs: [], narrative: '', enrollmentStatus: '', performanceBefore: '', performanceAfter: '', status: 'Status 1: Resolved' });
+  const makeDCategoryData = () => ({ offenseDate: '', location: '', violations: [], subjects: [makeDSubject()], programs: [], narrative: '', enrollmentStatus: '', performanceBefore: '', performanceAfter: '', status: '' });
 
   const [moduleDData, setModuleDData] = useState(null);
 
@@ -367,7 +422,7 @@ const ModuleAReportingPanel = () => {
   const eStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
   const makeEVictim = () => ({ name: '', age: '', gender: 'M', disability: 'No' });
   const makeERespondent = () => ({ name: '', designation: '', age: '', gender: 'M' });
-  const makeECategoryData = () => ({ incidentDate: '', incidentPlace: '', concerns: [], victims: [makeEVictim()], respondents: [makeERespondent()], actionsTaken: '', status: 'Status 1: Resolved' });
+  const makeECategoryData = () => ({ incidentDate: '', incidentPlace: '', concerns: [], victims: [makeEVictim()], respondents: [makeERespondent()], actionsTaken: '', status: '' });
 
   const [moduleEData, setModuleEData] = useState(null);
 
@@ -419,7 +474,7 @@ const ModuleAReportingPanel = () => {
         incidentDate: '', incidentPlace: '', incidentNature: [],
         affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }],
         respondents: [{ name: '', affiliation: '', age: '', gender: 'M' }],
-        actionsTaken: '', status: 'Resolved'
+        actionsTaken: '', status: ''
       });
     }
     if (activeModule === 'C' && !moduleCData) {
@@ -797,25 +852,25 @@ const ModuleAReportingPanel = () => {
         </div>
       </div>
 
-      <div style={{ position: 'sticky', top: 0, zIndex: 30, background: 'rgba(255,255,255,0.97)', border: '1px solid #c4c6cf', borderRadius: '14px', padding: '12px 20px', boxShadow: '0 4px 16px rgba(0,32,70,.08)', backdropFilter: 'blur(10px)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+      <div style={{ position: 'sticky', top: 0, zIndex: 30, background: 'rgba(255,255,255,0.97)', border: '1px solid #9ca3af', borderRadius: '14px', padding: '12px 20px', boxShadow: '0 4px 16px rgba(0,32,70,.08)', backdropFilter: 'blur(10px)', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: '24px', flex: 1 }}>
           <div>
             <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
               <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>school</span> School
             </p>
-            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.schoolName || <span style={{ color: '#c4c6cf', fontStyle: 'italic' }}>Pending</span>}</p>
+            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.schoolName || <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>Pending</span>}</p>
           </div>
           <div>
             <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
               <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>tag</span> School ID
             </p>
-            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.schoolId || <span style={{ color: '#c4c6cf', fontStyle: 'italic' }}>Pending</span>}</p>
+            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.schoolId || <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>Pending</span>}</p>
           </div>
           <div>
             <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
               <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>calendar_month</span> Year
             </p>
-            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.reportingYear || <span style={{ color: '#c4c6cf', fontStyle: 'italic' }}>Pending</span>}</p>
+            <p style={{ fontSize: '13px', fontWeight: '700', color: '#002046' }}>{schoolMetadata.reportingYear || <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>Pending</span>}</p>
           </div>
           <div>
             <p style={{ fontSize: '10px', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -853,7 +908,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Santiago Elementary" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Santiago Elementary" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -925,7 +980,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Date of Incident <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors.incidentDate ? 'field-error' : ''}`} value={currentCategoryData.incidentDate} onChange={e => updateCategoryField('incidentDate', e.target.value)} />
+                <DateInput value={currentCategoryData.incidentDate} onChange={e => updateCategoryField('incidentDate', e.target.value)} />
                 {validationErrors.incidentDate && <div className="error-text">{validationErrors.incidentDate}</div>}
               </div>
               <div>
@@ -966,7 +1021,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" className={`field-input ${validationErrors[`student${idx}Age`] ? 'field-error' : ''}`} value={student.age} onChange={e => updateAffectedStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
+                    <input type="number" min="1" max="100" className={`field-input ${validationErrors[`student${idx}Age`] ? 'field-error' : ''}`} value={student.age} onChange={e => updateAffectedStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
                   </div>
                   <div>
                     <label className="field-label">Gender</label>
@@ -1042,7 +1097,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age</label>
-                    <input type="number" value={party.age} onChange={e => updateInitiatingParty(idx, 'age', e.target.value)} placeholder="e.g., 38" className="field-input" />
+                    <input type="number" min="1" max="100" value={party.age} onChange={e => updateInitiatingParty(idx, 'age', e.target.value)} placeholder="e.g., 38" className="field-input" />
                   </div>
                   <div>
                     <label className="field-label">Gender</label>
@@ -1075,6 +1130,7 @@ const ModuleAReportingPanel = () => {
               <div>
                 <label className="field-label">Case Status <span className="required">*</span></label>
                 <select className="field-select" value={currentCategoryData.status} onChange={e => updateCategoryField('status', e.target.value)}>
+                  <option value="">Select Status</option>
                   {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
@@ -1096,7 +1152,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Santiago Elementary" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Santiago Elementary" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1168,7 +1224,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Date of Incident <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors.bIncidentDate ? 'field-error' : ''}`} value={moduleBData.incidentDate} onChange={e => updateModuleBField('incidentDate', e.target.value)} />
+                <DateInput value={moduleBData.incidentDate} onChange={e => updateModuleBField('incidentDate', e.target.value)} />
                 {validationErrors.bIncidentDate && <div className="error-text">{validationErrors.bIncidentDate}</div>}
               </div>
               <div>
@@ -1209,7 +1265,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" className={`field-input ${validationErrors['bStudent' + idx + 'Age'] ? 'field-error' : ''}`} value={student.age} onChange={e => updateModuleBStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
+                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['bStudent' + idx + 'Age'] ? 'field-error' : ''}`} value={student.age} onChange={e => updateModuleBStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
                   </div>
                   <div>
                     <label className="field-label">Gender</label>
@@ -1292,7 +1348,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age</label>
-                    <input type="number" value={resp.age} onChange={e => updateModuleBRespondent(idx, 'age', e.target.value)} placeholder="e.g., 30" className="field-input" />
+                    <input type="number" min="1" max="100" value={resp.age} onChange={e => updateModuleBRespondent(idx, 'age', e.target.value)} placeholder="e.g., 30" className="field-input" />
                   </div>
                   <div>
                     <label className="field-label">Gender</label>
@@ -1325,6 +1381,7 @@ const ModuleAReportingPanel = () => {
               <div>
                 <label className="field-label">Case Status <span className="required">*</span></label>
                 <select className="field-select" value={moduleBData.status} onChange={e => updateModuleBField('status', e.target.value)}>
+                  <option value="">Select Status</option>
                   {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
@@ -1346,7 +1403,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Central Elementary School" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1418,7 +1475,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Date Identified <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Date'] ? 'field-error' : ''}`} value={currentCData.dateIdentified} onChange={e => updateCField('dateIdentified', e.target.value)} />
+                <DateInput value={currentCData.dateIdentified} onChange={e => updateCField('dateIdentified', e.target.value)} />
                 {validationErrors['c' + activeCRiskCategory + 'Date'] && <div className="error-text">{validationErrors['c' + activeCRiskCategory + 'Date']}</div>}
               </div>
               <div>
@@ -1459,7 +1516,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Ind' + idx + 'Age'] ? 'field-error' : ''}`} value={ind.age} onChange={e => updateCIndividual(idx, 'age', e.target.value)} placeholder="e.g., 11" />
+                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Ind' + idx + 'Age'] ? 'field-error' : ''}`} value={ind.age} onChange={e => updateCIndividual(idx, 'age', e.target.value)} placeholder="e.g., 11" />
                   </div>
                   <div>
                     <label className="field-label">Gender</label>
@@ -1540,6 +1597,7 @@ const ModuleAReportingPanel = () => {
               <div>
                 <label className="field-label">Status <span className="required">*</span></label>
                 <select className="field-select" value={currentCData.status} onChange={e => updateCField('status', e.target.value)}>
+                  <option value="">Select Status</option>
                   {cStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
@@ -1561,7 +1619,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Central Elementary School" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1633,7 +1691,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Date of Offense / Incident <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors['d' + activeDCategory + 'Date'] ? 'field-error' : ''}`} value={currentDData.offenseDate} onChange={e => updateDField('offenseDate', e.target.value)} />
+                <DateInput value={currentDData.offenseDate} onChange={e => updateDField('offenseDate', e.target.value)} />
                 {validationErrors['d' + activeDCategory + 'Date'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Date']}</div>}
               </div>
               <div>
@@ -1675,7 +1733,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" className={`field-input ${validationErrors['d' + activeDCategory + 'Sub' + idx + 'Age'] ? 'field-error' : ''}`} value={sub.age} onChange={e => updateDSubject(idx, 'age', e.target.value)} placeholder="e.g., 15" />
+                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['d' + activeDCategory + 'Sub' + idx + 'Age'] ? 'field-error' : ''}`} value={sub.age} onChange={e => updateDSubject(idx, 'age', e.target.value)} placeholder="e.g., 15" />
                   </div>
                   <div>
                     <label className="field-label">Gender</label>
@@ -1758,6 +1816,7 @@ const ModuleAReportingPanel = () => {
               <div>
                 <label className="field-label">Status <span className="required">*</span></label>
                 <select className="field-select" value={currentDData.status} onChange={e => updateDField('status', e.target.value)}>
+                  <option value="">Select Status</option>
                   {dStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
@@ -1779,7 +1838,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} onChange={e => setSchoolMetadata(p => ({ ...p, schoolName: e.target.value }))} placeholder="e.g., Central Elementary School" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1851,7 +1910,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Date of Incident <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors['e' + activeECategory + 'Date'] ? 'field-error' : ''}`} value={currentEData.incidentDate} onChange={e => updateEField('incidentDate', e.target.value)} />
+                <DateInput value={currentEData.incidentDate} onChange={e => updateEField('incidentDate', e.target.value)} />
                 {validationErrors['e' + activeECategory + 'Date'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Date']}</div>}
               </div>
               <div>
@@ -1893,7 +1952,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" className={`field-input ${validationErrors['e' + activeECategory + 'Vic' + idx + 'Age'] ? 'field-error' : ''}`} value={vic.age} onChange={e => updateEVictim(idx, 'age', e.target.value)} placeholder="e.g., 13" />
+                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['e' + activeECategory + 'Vic' + idx + 'Age'] ? 'field-error' : ''}`} value={vic.age} onChange={e => updateEVictim(idx, 'age', e.target.value)} placeholder="e.g., 13" />
                     {validationErrors['e' + activeECategory + 'Vic' + idx + 'Age'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Vic' + idx + 'Age']}</div>}
                   </div>
                   <div>
@@ -1952,7 +2011,7 @@ const ModuleAReportingPanel = () => {
                   </div>
                   <div>
                     <label className="field-label">Age</label>
-                    <input type="number" className="field-input" value={resp.age} onChange={e => updateERespondent(idx, 'age', e.target.value)} placeholder="e.g., 28" />
+                    <input type="number" min="1" max="100" className="field-input" value={resp.age} onChange={e => updateERespondent(idx, 'age', e.target.value)} placeholder="e.g., 28" />
                   </div>
                   <div>
                     <label className="field-label">Gender</label>
@@ -1990,6 +2049,7 @@ const ModuleAReportingPanel = () => {
               <div>
                 <label className="field-label">Status <span className="required">*</span></label>
                 <select className="field-select" value={currentEData.status} onChange={e => updateEField('status', e.target.value)}>
+                  <option value="">Select Status</option>
                   {eStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
@@ -2054,7 +2114,7 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Date <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors.preparedDate ? 'field-error' : ''}`} value={preparedBy.date} onChange={e => setPreparedBy(p => ({ ...p, date: e.target.value }))} />
+                <DateInput value={preparedBy.date} onChange={e => setPreparedBy(p => ({ ...p, date: e.target.value }))} />
               </div>
             </div>
           </div>
@@ -2073,7 +2133,7 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Date <span className="required">*</span></label>
-                <input type="date" className={`field-input ${validationErrors.validatedDate ? 'field-error' : ''}`} value={validatedBy.date} onChange={e => setValidatedBy(p => ({ ...p, date: e.target.value }))} />
+                <DateInput value={validatedBy.date} onChange={e => setValidatedBy(p => ({ ...p, date: e.target.value }))} />
               </div>
             </div>
           </div>

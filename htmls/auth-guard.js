@@ -17,8 +17,9 @@
   if (cached) {
     try {
       var parsed = JSON.parse(cached);
-      if (parsed.valid && parsed.user) {
+      if (parsed.user) {
         window.__user = parsed.user;
+        window.__token = parsed.token;
       }
     } catch (e) {}
   }
@@ -39,13 +40,14 @@
 
     if (!result.valid) {
       sessionStorage.removeItem('auth_cache');
-      var target = result.singleSession ? '/pending?reason=single_session' : '/pending';
+      var target = result.singleSession ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '') : '/pending';
       window.location.href = target;
       return;
     }
 
-    sessionStorage.setItem('auth_cache', JSON.stringify(result));
+    sessionStorage.setItem('auth_cache', JSON.stringify({ user: result.user, token: session.access_token }));
     window.__user = result.user;
+    window.__token = session.access_token;
 
     if (window.location.pathname === '/admin' && result.user.role !== 'admin') {
       window.location.href = '/dashboard';

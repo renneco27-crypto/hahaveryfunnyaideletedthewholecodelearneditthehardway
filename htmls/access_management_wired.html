@@ -148,61 +148,11 @@
 <th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider text-right">Actions</th>
 </tr>
 </thead>
-<tbody class="font-body-md text-body-md text-on-surface">
-<!-- Row 1 -->
-<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
-<td class="px-md py-md">j.doe@state.gov.uk</td>
-<td class="px-md py-md">Department of Transit</td>
-<td class="px-md py-md font-mono text-sm">CIV-882-XQ</td>
-<td class="px-md py-md">Oct 24, 2024</td>
-<td class="px-md py-md text-right space-x-2">
-<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
-<div class="inline-block relative">
-<button class="tooltip-trigger px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
-<div class="tooltip invisible opacity-0 absolute bottom-full right-0 mb-2 w-48 p-2 bg-on-background text-white text-xs rounded shadow-lg transition-all z-10">
-                                        Permanently denies this user's ability to sync with institutional nodes.
-                                        <div class="absolute top-full right-6 w-2 h-2 bg-on-background transform rotate-45 -mt-1"></div>
-</div>
-</div>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
-<td class="px-md py-md">m.smith@metropol.edu</td>
-<td class="px-md py-md">Central University</td>
-<td class="px-md py-md font-mono text-sm">EDU-412-KM</td>
-<td class="px-md py-md">Oct 23, 2024</td>
-<td class="px-md py-md text-right space-x-2">
-<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
-<button class="px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
-<td class="px-md py-md">admin@cityhealth.org</td>
-<td class="px-md py-md">Municipal Health Board</td>
-<td class="px-md py-md font-mono text-sm">HEA-009-ZT</td>
-<td class="px-md py-md">Oct 22, 2024</td>
-<td class="px-md py-md text-right space-x-2">
-<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
-<button class="px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
-</td>
-</tr>
-<!-- Row 4 -->
-<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">
-<td class="px-md py-md">s.rogers@justice.gov</td>
-<td class="px-md py-md">Federal Integrity Office</td>
-<td class="px-md py-md font-mono text-sm">FED-551-PP</td>
-<td class="px-md py-md">Oct 21, 2024</td>
-<td class="px-md py-md text-right space-x-2">
-<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="showToast()">Approve</button>
-<button class="px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]">Revoke</button>
-</td>
-</tr>
+<tbody class="font-body-md text-body-md text-on-surface" id="access-tbody">
 </tbody>
 </table>
 <div class="px-md py-sm bg-surface-container-low/90 flex justify-between items-center border-t border-outline-variant">
-<span class="font-caption text-caption text-on-surface-variant">Showing 4 of 24 pending requests</span>
+<span class="font-caption text-caption text-on-surface-variant" id="access-count">No pending requests</span>
 <div class="flex gap-xs">
 <button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
 <span class="material-symbols-outlined text-sm">chevron_left</span>
@@ -256,29 +206,70 @@
 </div>
 </div>
 <script>
-        // Micro-interaction for buttons
         document.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('mousedown', () => {
-                btn.style.transform = 'scale(0.98)';
-            });
-            btn.addEventListener('mouseup', () => {
-                btn.style.transform = 'scale(1)';
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'scale(1)';
-            });
+            btn.addEventListener('mousedown', () => { btn.style.transform = 'scale(0.98)'; });
+            btn.addEventListener('mouseup', () => { btn.style.transform = 'scale(1)'; });
+            btn.addEventListener('mouseleave', () => { btn.style.transform = 'scale(1)'; });
         });
 
-        // Toast notification
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.remove('opacity-0', 'translate-y-4');
-            toast.classList.add('opacity-100', 'translate-y-0');
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            t.querySelector('span:last-child').textContent = msg;
+            t.classList.remove('opacity-0', 'translate-y-4');
+            t.classList.add('opacity-100', 'translate-y-0');
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-4');
-                toast.classList.remove('opacity-100', 'translate-y-0');
+                t.classList.add('opacity-0', 'translate-y-4');
+                t.classList.remove('opacity-100', 'translate-y-0');
             }, 3000);
         }
+
+        async function loadRequests() {
+            try {
+                var res = await fetch('/api/access-requests');
+                var data = await res.json();
+                var tbody = document.getElementById('access-tbody');
+                var countEl = document.getElementById('access-count');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-md py-md text-center text-on-surface-variant">No pending access requests</td></tr>';
+                    countEl.textContent = 'No pending requests';
+                    return;
+                }
+                countEl.textContent = 'Showing ' + data.length + ' pending request' + (data.length !== 1 ? 's' : '');
+                tbody.innerHTML = data.map(function(r) {
+                    return '<tr class="border-b border-outline-variant transition-colors hover:bg-surface-container">' +
+                        '<td class="px-md py-md">' + esc(r.email) + '</td>' +
+                        '<td class="px-md py-md">' + esc(r.schoolName || '—') + '</td>' +
+                        '<td class="px-md py-md font-mono text-sm">' + esc(r.deviceId || '—') + '</td>' +
+                        '<td class="px-md py-md">' + new Date(r.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</td>' +
+                        '<td class="px-md py-md text-right space-x-2">' +
+                        '<button class="px-sm py-xs bg-green-700 text-white font-label-md text-label-md rounded hover:bg-green-800 transition-colors cursor-pointer min-w-[80px]" onclick="approve(\'' + r.email.replace(/'/g, "\\'") + '\')">Approve</button>' +
+                        '<button class="px-sm py-xs bg-error text-white font-label-md text-label-md rounded hover:bg-red-800 transition-colors cursor-pointer min-w-[80px]" onclick="revoke(\'' + r.email.replace(/'/g, "\\'") + '\')">Revoke</button>' +
+                        '</td></tr>';
+                }).join('');
+            } catch (e) {
+                console.error('Access load error:', e);
+            }
+        }
+
+        function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        async function approve(email) {
+            try {
+                var res = await fetch('/api/access-requests/' + encodeURIComponent(email) + '/approve', { method: 'POST' });
+                var data = await res.json();
+                if (data.success) { showToast('Approved: ' + email); loadRequests(); }
+            } catch (e) { console.error(e); }
+        }
+
+        async function revoke(email) {
+            try {
+                var res = await fetch('/api/access-requests/' + encodeURIComponent(email) + '/revoke', { method: 'POST' });
+                var data = await res.json();
+                if (data.success) { showToast('Revoked: ' + email); loadRequests(); }
+            } catch (e) { console.error(e); }
+        }
+
+        loadRequests();
     </script>
 
 

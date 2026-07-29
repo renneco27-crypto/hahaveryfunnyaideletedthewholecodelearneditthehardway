@@ -104,7 +104,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle;
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+.custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f8f9ff; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
         @keyframes fade-in-up {
@@ -129,9 +129,7 @@
 <!-- FIX 3: prevent body-level horizontal scroll caused by overflowing children -->
 <body class="bg-background text-on-surface font-body-md min-h-screen overflow-x-hidden">
 
-<div aria-hidden="true" class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-<img alt="" class="w-full h-full object-cover opacity-20 blur-[6px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRNcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
-</div>
+<div aria-hidden="true" class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none" style="background-color:#f8f9ff;background-image:radial-gradient(at 0% 0%,rgba(214,227,255,0.5) 0px,transparent 50%),radial-gradient(at 100% 0%,rgba(122,183,255,0.2) 0px,transparent 50%);"></div>
 
 <!-- TopNavBar — FIX 4: use flex-wrap + gap so items don't overlap on narrow screens -->
 <header class="flex flex-wrap justify-between items-center w-full px-md h-auto min-h-[4rem] py-2 sticky top-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant will-change-transform">
@@ -177,18 +175,30 @@
     <div class="tab-content block" id="overview-section">
     <section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
 
-        <div class="p-md md:px-lg md:py-md border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-sm">
-            <div class="flex flex-wrap items-center gap-sm">
-                <h2 class="font-headline-md text-headline-md text-on-surface">Incident Log</h2>
-                <span class="bg-secondary-fixed text-on-secondary-fixed px-sm py-0.5 rounded-full text-xs font-bold tracking-wide whitespace-nowrap">0 RECORDS DETECTED</span>
+<div class="p-md border-b border-outline-variant flex flex-col lg:flex-row gap-md items-center justify-between">
+            <div class="relative w-full lg:w-96">
+                <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                <input class="w-full pl-xl pr-md py-sm rounded-lg border-outline-variant focus:border-secondary focus:ring-2 focus:ring-secondary/20 bg-surface" placeholder="Search ID..." type="text" id="search-input">
             </div>
-            <div class="flex items-center gap-sm flex-shrink-0">
-                <button class="flex items-center gap-xs px-sm py-base text-on-surface-variant border border-outline-variant rounded hover:bg-surface-container transition-colors text-xs font-bold whitespace-nowrap">
-                    <span class="material-symbols-outlined text-sm">filter_list</span> FILTER
-                </button>
-                <button class="flex items-center gap-xs px-sm py-base text-on-surface-variant border border-outline-variant rounded hover:bg-surface-container transition-colors text-xs font-bold whitespace-nowrap">
-                    <span class="material-symbols-outlined text-sm">download</span> EXPORT
-                </button>
+            <div class="flex flex-wrap gap-sm w-full lg:w-auto">
+                <select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="filter-category">
+                    <option>Category: All</option>
+                    <option>Bullying</option>
+                    <option>Abuse</option>
+                    <option>CAR</option>
+                    <option>CICL</option>
+                    <option>Other</option>
+                </select>
+                <select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="filter-status">
+                    <option>Status: All</option>
+                    <option>Resolved</option>
+                    <option>On-going</option>
+                    <option>Referred</option>
+                </select>
+                <div class="flex items-center gap-xs bg-surface-variant p-1 rounded-lg">
+                    <button class="px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md" id="btn-raw">Raw Data</button>
+                    <button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md" id="btn-status">School Status</button>
+                </div>
             </div>
         </div>
 
@@ -209,6 +219,22 @@
             <tbody class="divide-y divide-outline-variant bg-white">
             </tbody>
         </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="p-md border-t border-outline-variant flex items-center justify-between">
+            <span class="text-caption text-on-surface-variant" id="pagination-info">Showing 0 records</span>
+            <div class="flex items-center gap-xs">
+                <button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="page-prev">
+                    <span class="material-symbols-outlined text-sm">chevron_left</span>
+                </button>
+                <button class="px-xs py-1 rounded bg-primary text-on-primary font-bold text-label-md" id="page-1">1</button>
+                <button class="px-xs py-1 rounded hover:bg-surface-variant font-bold text-label-md" id="page-2">2</button>
+                <button class="px-xs py-1 rounded hover:bg-surface-variant font-bold text-label-md" id="page-3">3</button>
+                <button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="page-next">
+                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                </button>
+            </div>
         </div>
 
         <!-- Footer row — FIX 9: wrap properly on mobile -->
@@ -275,7 +301,7 @@
 </div>
 </footer>
 
-<script src="populate_dashboard.js"></script>
+
 <script>
     const navLinks = document.querySelectorAll('.nav-link');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -335,6 +361,168 @@
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+    function getAuthToken() {
+        try { return (JSON.parse(sessionStorage.getItem('auth_cache') || '{}')).token || ''; } catch(e) { return ''; }
+    }
+
+    function waitAuth(cb) {
+        var t = getAuthToken();
+        if (t) { cb(t); return; }
+        var iv = setInterval(function() {
+            t = getAuthToken();
+            if (t) { clearInterval(iv); cb(t); }
+        }, 100);
+    }
+
+    let allReports = [];
+    let currentPage = 1;
+    const pageSize = 10;
+
+    async function loadReports(token) {
+        try {
+            const res = await fetch('/api/stats?token=' + encodeURIComponent(token));
+            const stats = await res.json();
+            allReports = stats.reports || [];
+            renderTable();
+            updatePagination();
+        } catch(e) { console.error('Failed to load reports:', e); }
+    }
+
+    function renderTable() {
+        const tbody = document.querySelector('#overview-section tbody');
+        if (!tbody) return;
+        const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+        const catFilter = document.getElementById('filter-category')?.value || 'All';
+        const statusFilter = document.getElementById('filter-status')?.value || 'All';
+
+        let filtered = allReports;
+        if (search) {
+            filtered = filtered.filter(r =>
+                (r.school_id || r.report_data?.metadata?.schoolId || '').toLowerCase().includes(search)
+            );
+        }
+        if (catFilter !== 'All') filtered = filtered.filter(r => r.module === catFilter || r.category === catFilter);
+        if (statusFilter !== 'All') {
+            filtered = filtered.filter(r => {
+                const s = (r.status || '').toLowerCase();
+                return s.includes(statusFilter.toLowerCase());
+            });
+        }
+
+        const start = (currentPage - 1) * pageSize;
+        const page = filtered.slice(start, start + pageSize);
+
+        tbody.innerHTML = page.map(r => `
+            <tr class="hover:bg-surface-container-low transition-colors cursor-pointer" onclick="viewReport('${r.id}')">
+                <td class="px-md py-sm text-sm font-medium">${r.module || '-'}</td>
+                <td class="px-md py-sm text-sm">${r.created_at ? new Date(r.created_at).toLocaleDateString() : '-'}</td>
+                <td class="px-md py-sm text-sm">${r.school_name || '-'}</td>
+                <td class="px-md py-sm text-sm">${r.school_id || r.report_data?.metadata?.schoolId || '-'}</td>
+                <td class="px-md py-sm text-sm">${(r.report_data && typeof r.report_data === 'object') ? JSON.stringify(r.report_data).substring(0, 60) : '-'}</td>
+                <td class="px-md py-sm text-sm">${r.status || '-'}</td>
+            </tr>
+        `).join('');
+
+        document.getElementById('pagination-info').textContent = `Showing ${page.length} of ${filtered.length} records`;
+    }
+
+    function updatePagination() {
+        const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+        const catFilter = document.getElementById('filter-category')?.value || 'All';
+        const statusFilter = document.getElementById('filter-status')?.value || 'All';
+
+        let filtered = allReports;
+        if (search) filtered = filtered.filter(r => (r.school_id || r.report_data?.metadata?.schoolId || '').toLowerCase().includes(search));
+        if (catFilter !== 'All') filtered = filtered.filter(r => r.module === catFilter || r.category === catFilter);
+        if (statusFilter !== 'All') filtered = filtered.filter(r => (r.status || '').toLowerCase().includes(statusFilter.toLowerCase()));
+
+        const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+        for (let i = 1; i <= 3; i++) {
+            const btn = document.getElementById('page-' + i);
+            if (i <= totalPages) {
+                btn.style.display = '';
+                btn.className = i === currentPage
+                    ? 'px-xs py-1 rounded bg-primary text-on-primary font-bold text-label-md'
+                    : 'px-xs py-1 rounded hover:bg-surface-variant font-bold text-label-md';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+    }
+
+    function viewReport(id) {
+        const report = allReports.find(r => r.id === id);
+        if (!report) return;
+        window.location.href = 'annex_modules_redesigned.html?ref=' + (report.reference_number || report.id);
+    }
+
+    document.getElementById('search-input')?.addEventListener('input', () => { currentPage = 1; renderTable(); updatePagination(); });
+    document.getElementById('filter-category')?.addEventListener('change', () => { currentPage = 1; renderTable(); updatePagination(); });
+    document.getElementById('filter-status')?.addEventListener('change', () => { currentPage = 1; renderTable(); updatePagination(); });
+    document.getElementById('page-prev')?.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); updatePagination(); } });
+    document.getElementById('page-next')?.addEventListener('click', () => { currentPage++; renderTable(); updatePagination(); });
+    for (let i = 1; i <= 3; i++) {
+        document.getElementById('page-' + i)?.addEventListener('click', () => { currentPage = i; renderTable(); updatePagination(); });
+    }
+
+    document.getElementById('submit-btn')?.addEventListener('click', function() {
+        const btn = document.getElementById('submit-btn');
+        const progress = document.getElementById('submit-progress');
+        const success = document.getElementById('submit-success');
+        if (!btn) return;
+        btn.classList.add('pointer-events-none');
+        progress.style.width = '100%';
+        setTimeout(function() {
+            success.style.opacity = '1';
+            setTimeout(function() {
+                window.location.href = '/analytics';
+            }, 1500);
+        }, 2050);
+    });
+
+    // View toggle: Raw Data / School Status
+    var dSchools = [];
+    fetch('/ormoc_city_division_schools.json').then(function(r) { return r.json(); }).then(function(d) {
+        d.forEach(function(dd) { dd.schools.forEach(function(s) { dSchools.push({ school: s, district: dd.district }); }); });
+    });
+
+    document.getElementById('btn-raw').addEventListener('click', function() {
+        document.getElementById('btn-raw').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
+        document.getElementById('btn-status').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+        document.querySelector('#overview-section thead tr').innerHTML =
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Incident Type</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Date &amp; Place</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Victim Details</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Bully Details</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Motives / Effect</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Action Taken</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Status</th>';
+        renderTable();
+    });
+    document.getElementById('btn-status').addEventListener('click', function() {
+        document.getElementById('btn-status').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
+        document.getElementById('btn-raw').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+        var submittedSet = new Set((allReports || []).map(function(r) { return r.school_name; }));
+        var tbody = document.querySelector('#overview-section tbody');
+        var u = window.__user || {};
+        var mySchool = u.schoolName;
+        if (!dSchools.length) { tbody.innerHTML = '<tr><td colspan="7" class="px-md py-sm text-center text-on-surface-variant text-sm">Loading...</td></tr>'; return; }
+        var myItem = dSchools.filter(function(item) { return item.school.name === mySchool; });
+        if (!myItem.length && mySchool) { myItem = [{ school: { name: mySchool, id: '' }, district: '' }]; }
+        document.querySelector('#overview-section thead tr').innerHTML =
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">School Name &amp; ID</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">District</th>' +
+            '<th class="px-md py-sm text-left font-label-md text-primary border-b-2 border-primary uppercase tracking-tight whitespace-nowrap">Submission Status</th>' +
+            '<th class="px-md py-sm"></th><th class="px-md py-sm"></th><th class="px-md py-sm"></th><th class="px-md py-sm"></th>';
+        tbody.innerHTML = myItem.map(function(item, i) {
+            var submitted = submittedSet.has(item.school.name);
+            return '<tr class="hover:bg-surface-container-low transition-colors"><td class="px-md py-sm text-sm font-medium">' + item.school.name + '<br><span class="text-xs text-on-surface-variant">ID: ' + item.school.id + '</span></td><td class="px-md py-sm text-sm">' + item.district + '</td><td class="px-md py-sm text-sm"><span class="inline-flex items-center gap-xs text-xs font-bold uppercase ' + (submitted ? 'text-emerald-600' : 'text-on-surface-variant') + '"><span class="w-2 h-2 rounded-full ' + (submitted ? 'bg-emerald-600' : 'bg-outline-variant') + '"></span> ' + (submitted ? 'Submitted' : 'Not Yet Submitted') + '</span></td><td></td><td></td><td></td><td></td></tr>';
+        }).join('');
+    });
+
+    waitAuth(function(tok) { loadReports(tok); });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
-<script src="sidebar.js"></script>
-</body></html>
+<script src="sidebar.js"></script></body></html>
