@@ -369,26 +369,26 @@ const ModuleAReportingPanel = () => {
   const [moduleCData, setModuleCData] = useState(null);
 
   const moduleDCategories = [
-    { id: 'D-1', label: 'Category D-1' },
-    { id: 'D-2', label: 'Category D-2' },
-    { id: 'D-3', label: 'Category D-3' },
-    { id: 'D-4', label: 'Category D-4' },
-    { id: 'D-5', label: 'Category D-5' },
-    { id: 'D-6', label: 'Category D-6' }
+    { id: 'D-1', label: 'D-1: Crimes Against Persons (e.g., physical injuries)' },
+    { id: 'D-2', label: 'D-2: Crimes Against Property (e.g., theft, damage)' },
+    { id: 'D-3', label: 'D-3: Status Offenses (under Section 57 of RA 9344)' },
+    { id: 'D-4', label: 'D-4: Substance / Alcohol Violations' },
+    { id: 'D-5', label: 'D-5: Ordinance / Curfew Violations' },
+    { id: 'D-6', label: 'D-6: Other Special Penal Law Violations' }
   ];
   const violationOptions = [
-    { id: 'V-1', label: 'Violation V-1' },
-    { id: 'V-2', label: 'Violation V-2' },
-    { id: 'V-3', label: 'Violation V-3' },
-    { id: 'V-4', label: 'Violation V-4' },
-    { id: 'V-5', label: 'Violation V-5' },
-    { id: 'V-6', label: 'Violation V-6' }
+    { id: 'V-1', label: 'V-1: Theft / Malicious Mischief' },
+    { id: 'V-2', label: 'V-2: Physical Altercation / Harm' },
+    { id: 'V-3', label: 'V-3: Truancy / Habitual Absence' },
+    { id: 'V-4', label: 'V-4: Substance Use / Possession' },
+    { id: 'V-5', label: 'V-5: Bullying / Intimidation' },
+    { id: 'V-6', label: 'V-6: Property Destruction' }
   ];
   const programOptions = [
-    { id: 'P-1', label: 'Program P-1' },
-    { id: 'P-2', label: 'Program P-2' },
-    { id: 'P-3', label: 'Program P-3' },
-    { id: 'P-4', label: 'Program P-4' }
+    { id: 'P-1', label: 'P-1: Counseling & Behavioral Guidance' },
+    { id: 'P-2', label: 'P-2: School-Based Diversion Program' },
+    { id: 'P-3', label: 'P-3: Community Service & Restoration' },
+    { id: 'P-4', label: 'P-4: Referred to LSWDO / DSWD Intervention' }
   ];
   const dEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
   const dStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
@@ -398,32 +398,33 @@ const ModuleAReportingPanel = () => {
   const [moduleDData, setModuleDData] = useState(null);
 
   const moduleECategories = [
-    { id: 'E-1', label: 'Category E-1' },
-    { id: 'E-2', label: 'Category E-2' },
-    { id: 'E-3', label: 'Category E-3' },
-    { id: 'E-4', label: 'Category E-4' },
-    { id: 'E-5', label: 'Category E-5' },
-    { id: 'E-6', label: 'Category E-6' },
-    { id: 'E-7', label: 'Category E-7' },
-    { id: 'E-8', label: 'Category E-8' },
-    { id: 'E-9', label: 'Category E-9' }
+    { id: 'E-1', label: 'E-1: Child Labor — Any work or economic activity performed by a child that subjects him/her to exploitation or is harmful to health/safety (DOLE Order 149, s. 2016)' },
+    { id: 'E-2', label: 'E-2: Child Trafficking — Recruitment, transportation, harboring, or receipt of children for exploitation, sexual services, forced labor, or organ removal' },
+    { id: 'E-3', label: 'E-3: Corporal Punishment — Punishment/penalty imposed for discipline/control by teachers, staff, or adults involving physical, humiliating, or degrading acts' },
+    { id: 'E-4', label: 'E-4: Child Marriage — Marriage/informal union/cohabitation involving a child solemnized in civil, church, traditional, or customary proceedings' },
+    { id: 'E-5', label: 'E-5: Grave Child Rights Violation (GCRV) — Flagrant violations including killing/maiming, recruitment of CIAC, rape, abduction, attacks on schools/hospitals, or denial of humanitarian access' },
+    { id: 'E-6', label: 'E-6: Online Sexual Abuse and Exploitation of Children (OSAEC / OCSEA) — Use of ICT/electronic means to sexually abuse or exploit children (grooming, extortion, image sharing, live-streaming)' },
+    { id: 'E-7', label: 'E-7: Gender-based Violence (GBV) — Any act of violence directed against an individual based on their actual or perceived gender identity' },
+    { id: 'E-8', label: 'E-8: Gender-based Sexual Harassment — Verbal, non-verbal, psychological, or physical harassment based on sexual orientation, gender identity, or expression' },
+    { id: 'E-9', label: 'E-9: Rape Cases — Sexual assault/rape cases involving a learner' }
   ];
   const eConcernOptions = [
-    { id: 'EC-1', label: 'Concern C-1' },
-    { id: 'EC-2', label: 'Concern C-2' },
-    { id: 'EC-3', label: 'Concern C-3' },
-    { id: 'EC-4', label: 'Concern C-4' },
-    { id: 'EC-5', label: 'Concern C-5' },
-    { id: 'EC-6', label: 'Concern C-6' },
-    { id: 'EC-7', label: 'Concern C-7' },
-    { id: 'EC-8', label: 'Concern C-8' },
-    { id: 'EC-9', label: 'Concern C-9' }
+    { id: 'EC-1', label: 'EC-1: Child Labor' },
+    { id: 'EC-2', label: 'EC-2: Child Trafficking' },
+    { id: 'EC-3', label: 'EC-3: Corporal Punishment' },
+    { id: 'EC-4', label: 'EC-4: Child Marriage' },
+    { id: 'EC-5', label: 'EC-5: Grave Child Rights Violation (GCRV)' },
+    { id: 'EC-6', label: 'EC-6: Online Sexual Abuse and Exploitation of Children (OSAEC / OCSEA)' },
+    { id: 'EC-7', label: 'EC-7: Gender-based Violence (GBV)' },
+    { id: 'EC-8', label: 'EC-8: Gender-based Sexual Harassment' },
+    { id: 'EC-9', label: 'EC-9: Rape Cases' }
   ];
   const eStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
   const makeEVictim = () => ({ name: '', age: '', gender: 'M', disability: 'No' });
   const makeERespondent = () => ({ name: '', designation: '', age: '', gender: 'M' });
   const makeECategoryData = () => ({ incidentDate: '', incidentPlace: '', concerns: [], victims: [makeEVictim()], respondents: [makeERespondent()], actionsTaken: '', status: '' });
 
+  const eDesignationOptions = ['DepEd Teaching Personnel', 'DepEd Non-Teaching Personnel', 'Relatives', 'Not related to the victim'];
   const [moduleEData, setModuleEData] = useState(null);
 
   const [moduleBData, setModuleBData] = useState(null);
@@ -431,35 +432,35 @@ const ModuleAReportingPanel = () => {
   const currentCategoryData = categoryData[activeCategory];
 
   const categoryOptions = [
-    { id: 'A-1', label: 'Category A-1: Physical Abuse' },
-    { id: 'A-2', label: 'Category A-2: Psychological Abuse' },
-    { id: 'A-3', label: 'Category A-3: Sexual Abuse' },
-    { id: 'A-4', label: 'Category A-4: Neglect' },
-    { id: 'A-5', label: 'Category A-5: Other Concerns' }
+    { id: 'A-1', label: 'A-1: Physical Abuse (Unwanted physical contact: punching, shoving, kicking, etc.)' },
+    { id: 'A-2', label: 'A-2: Verbal Bullying (Acts/words debasing, degrading, or demeaning human dignity)' },
+    { id: 'A-3', label: 'A-3: Cyberbullying (Bullying via technology/electronic means)' },
+    { id: 'A-4', label: 'A-4: Bullying in Written Form (Derogatory remarks written in notebooks, walls, lockers, etc.)' },
+    { id: 'A-5', label: 'A-5: Retaliation (Acts against a person who reported or witnessed bullying)' }
   ];
 
   const motiveOptions = [
-    { id: 'M-1', label: 'Motive M-1' },
-    { id: 'M-2', label: 'Motive M-2' }
+    { id: 'M-1', label: 'M-1: Social (To hurt, belittle, or reinforce social exclusion)' },
+    { id: 'M-2', label: 'M-2: Gender-based (Humiliates/excludes based on perceived or actual SOGI)' }
   ];
 
-  const impactFlags = ['Impact E-1', 'Impact E-2', 'Impact E-3', 'Impact E-4', 'Impact E-5', 'Impact E-6'];
+  const impactFlags = ['E-1: Emotional Damage', 'E-2: Physical Harm', 'E-3: Attempted Suicide', 'E-4: Suicide Death', 'E-5: Death', 'E-6: Psychological / Emotional (Sadness, anxiety, mood swings, overthinking, trauma)'];
   const enrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred'];
   const performanceOptions = ['Advanced', 'Proficient', 'Developing', 'Beginning'];
   const statusOptions = ['Resolved', 'Ongoing Intervention', 'Referred to Government Agencies', 'Referred to NGO'];
   const genderOptions = ['M', 'F', 'LGBTQIA+'];
 
   const moduleBCategories = [
-    { id: 'B-1', label: 'Category B-1: Bullying/Harassment' },
-    { id: 'B-2', label: 'Category B-2: Violence/Assault' },
-    { id: 'B-3', label: 'Category B-3: Threat/Intimidation' },
-    { id: 'B-4', label: 'Category B-4: Discrimination' },
-    { id: 'B-5', label: 'Category B-5: Other Behavioral Concern' }
+    { id: 'B-1', label: 'B-1: Physical Abuse (Acts that inflict bodily harm or subject children to hazardous tasks)' },
+    { id: 'B-2', label: 'B-2: Sexual Abuse (Acts of sexual nature, harassment, demeaning remarks, obscene shows)' },
+    { id: 'B-3', label: 'B-3: Verbal Abuse (Acts or words debasing, degrading, or demeaning human worth/dignity)' },
+    { id: 'B-4', label: 'B-4: Psychological Abuse (Intimidation, stalking, public ridicule, grade threats, repeated verbal abuse)' },
+    { id: 'B-5', label: 'B-5: Other Child Abuse Non-Amicable Offenses' }
   ];
   const natureOptions = [
-    { id: 'N-1', label: 'Nature N-1: Physical' },
-    { id: 'N-2', label: 'Nature N-2: Verbal' },
-    { id: 'N-3', label: 'Nature N-3: Cyberbullying' }
+    { id: 'N-1', label: 'N-1: Physical' },
+    { id: 'N-2', label: 'N-2: Verbal' },
+    { id: 'N-3', label: 'N-3: Cyberbullying' }
   ];
   const affiliationOptions = ['School Personnel', 'Teacher', 'Non-Teaching Staff', 'Student', 'Parent/Guardian', 'Outside Community Member'];
   const currentCData = moduleCData && moduleCData[activeCRiskCategory];
@@ -826,7 +827,7 @@ const ModuleAReportingPanel = () => {
             Official Compliance Report
           </div>
           <div style={{ fontSize: '20px', fontWeight: '800', color: '#002046', fontFamily: "'Atkinson Hyperlegible Next', sans-serif", wordBreak: 'break-word' }}>
-            Annex A — Module {activeModule}{activeModule === 'A' ? ' — Incident Report' : activeModule === 'B' ? ' — Behavioral Report' : activeModule === 'C' ? ' — Risk Registry' : activeModule === 'D' ? ' — School-Based Incident' : ' — Welfare Concern'}
+            Annex {activeModule === 'D' || activeModule === 'E' ? activeModule : 'A'} — Module {activeModule}{activeModule === 'A' ? ' — School-Based Incident Report on Bullying' : activeModule === 'B' ? ' — School-Based Incident Report on Child Abuse' : activeModule === 'C' ? ' — Risk Registry Report' : activeModule === 'D' ? ' — School-Based Consolidated Report on Incidents of Children in Conflict with the Law (CICL)' : ' — School-Based Consolidated Report on Other Learner Rights and Protection Concerns'}
           </div>
         </div>
         <div style={{ display: 'flex', background: '#dfe9fa', borderRadius: '999px', padding: '4px', gap: '4px', flexShrink: 0 }}>
@@ -908,7 +909,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Santiago Elementary" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -918,7 +919,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -956,7 +960,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Incident Categories</div>
-                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+                <div className="card-header-subtitle">OFFENSE &amp; VIOLATION DETAILS</div>
               </div>
             </div>
             <div className="category-pills">
@@ -974,7 +978,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Incident Details</div>
-                <div className="card-header-subtitle">SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 3: INCIDENT DETAILS</div>
               </div>
             </div>
             <div className="panel-grid">
@@ -1082,9 +1086,9 @@ const ModuleAReportingPanel = () => {
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
-              <div className="card-header-text">
+<div className="card-header-text">
                 <div className="card-header-title">Initiating Party</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 5: INITIATING PARTY [SUB-SECTION]</div>
               </div>
             </div>
             {currentCategoryData.initiatingParty.map((party, idx) => (
@@ -1152,7 +1156,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Santiago Elementary" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1162,7 +1166,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -1218,7 +1225,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Incident Details</div>
-                <div className="card-header-subtitle">SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 3: INCIDENT DETAILS</div>
               </div>
             </div>
             <div className="panel-grid">
@@ -1252,7 +1259,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Affected Student(s)</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 4: AFFECTED STUDENT(S) [SUB-SECTION]</div>
               </div>
             </div>
             {moduleBData.affectedStudents.map((student, idx) => (
@@ -1328,7 +1335,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Respondents</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 5: RESPONDENTS [SUB-SECTION]</div>
               </div>
             </div>
             {moduleBData.respondents.map((resp, idx) => (
@@ -1368,8 +1375,8 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Actions & Status</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Actions &amp; Status</div>
+                <div className="card-header-subtitle">SECTION 6: ACTIONS &amp; STATUS</div>
               </div>
             </div>
             <div className="panel-grid-1">
@@ -1403,7 +1410,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1413,7 +1420,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -1503,7 +1513,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Individual at Risk</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 4: INDIVIDUAL AT RISK [SUB-SECTION]</div>
               </div>
             </div>
             {currentCData.individuals.map((ind, idx) => (
@@ -1584,8 +1594,8 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">shield</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Protective & Diversion Intervention</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Protective &amp; Diversion Intervention</div>
+                <div className="card-header-subtitle">SECTION 5: PROTECTIVE &amp; DIVERSION INTERVENTION</div>
               </div>
             </div>
             <div className="panel-grid-1">
@@ -1619,7 +1629,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1629,7 +1639,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -1719,7 +1732,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Primary Subject Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-subtitle">Learner Details (CICL)</div>
               </div>
             </div>
             {currentDData.subjects.map((sub, idx) => (
@@ -1727,7 +1740,7 @@ const ModuleAReportingPanel = () => {
                 {currentDData.subjects.length > 1 && <button className="remove-btn" type="button" onClick={() => removeDSubject(idx)} title="Remove">✕</button>}
                 <div className="panel-grid">
                   <div>
-                    <label className="field-label">Identification Reference <span className="required">*</span></label>
+                    <label className="field-label">Learner's Reference Number (LRN) <span className="required">*</span></label>
                     <input className={`field-input ${validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref'] ? 'field-error' : ''}`} value={sub.identificationRef} onChange={e => updateDSubject(idx, 'identificationRef', e.target.value)} placeholder="e.g., LRN-10928301293" />
                     {validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref']}</div>}
                   </div>
@@ -1769,8 +1782,8 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">shield</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Rehabilitation & Diversion Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Rehabilitation &amp; Diversion Details</div>
+                <div className="card-header-subtitle">Intervention or Diversion Programs Initiated or Adopted by School</div>
               </div>
             </div>
             <div style={{ marginBottom: '16px' }}>
@@ -1838,7 +1851,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1848,7 +1861,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -1937,8 +1953,8 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Affected Student / Victim Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Victim Details</div>
+                <div className="card-header-subtitle">SECTION 4: VICTIM DETAILS [SUB-SECTION]</div>
               </div>
             </div>
             {currentEData.victims.map((vic, idx) => (
@@ -1989,8 +2005,8 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Subject / Respondent Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Perpetrator Details</div>
+                <div className="card-header-subtitle">SECTION 5: PERPETRATOR DETAILS [SUB-SECTION]</div>
               </div>
             </div>
             {currentEData.respondents.map((resp, idx) => (
@@ -2006,7 +2022,7 @@ const ModuleAReportingPanel = () => {
                     <label className="field-label">Designation / Relationship</label>
                     <select className="field-select" value={resp.designation} onChange={e => updateERespondent(idx, 'designation', e.target.value)}>
                       <option value="">Select</option>
-                      {affiliationOptions.map(a => <option key={a} value={a}>{a}</option>)}
+                      {eDesignationOptions.map(a => <option key={a} value={a}>{a}</option>)}
                     </select>
                   </div>
                   <div>
@@ -2034,10 +2050,10 @@ const ModuleAReportingPanel = () => {
 
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
+<div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Actions Taken & Case Status</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Actions &amp; Status</div>
+                <div className="card-header-subtitle">SECTION 6: ACTIONS &amp; STATUS</div>
               </div>
             </div>
             <div className="panel-grid-1">
@@ -2070,22 +2086,22 @@ const ModuleAReportingPanel = () => {
           <div className="counter-pill resolved">
             <div className="counter-icon"><span className="material-symbols-outlined">check_circle</span></div>
             <div className="counter-num">{counters.resolved}</div>
-            <div className="counter-label">Resolved</div>
+            <div className="counter-label">Resolved Cases</div>
           </div>
           <div className="counter-pill ongoing">
             <div className="counter-icon"><span className="material-symbols-outlined">pending_actions</span></div>
             <div className="counter-num">{counters.ongoing}</div>
-            <div className="counter-label">Ongoing</div>
+            <div className="counter-label">Ongoing Cases</div>
           </div>
           <div className="counter-pill external">
             <div className="counter-icon"><span className="material-symbols-outlined">account_balance</span></div>
             <div className="counter-num">{counters.external}</div>
-            <div className="counter-label">Gov Agency</div>
+            <div className="counter-label">Referred to Gov Agency</div>
           </div>
           <div className="counter-pill ngo">
             <div className="counter-icon"><span className="material-symbols-outlined">corporate_fare</span></div>
             <div className="counter-num">{counters.ngo}</div>
-            <div className="counter-label">NGO</div>
+            <div className="counter-label">Referred to NGO</div>
           </div>
         </div>
       </div>
