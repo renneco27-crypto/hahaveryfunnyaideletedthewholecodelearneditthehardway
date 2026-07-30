@@ -1,5 +1,35 @@
 # Memory
 
+## Session Summary (2026-07-30)
+
+All changes in commit messages: "fixed annex a-e", "remove dashboard route...", "move auth token...", "restore sidebar..."
+
+### What was done
+
+1. **Date inputs** — Fixed partial date preservation using `::y:...|m:...|d:...` encoding so users can fill month/day/year incrementally.
+
+2. **Submit button** — Green flash animation + success badge → POST → redirect to /analytics at 800ms.
+
+3. **401 on `/api/stats`** — Fixed by adding `Authorization: Bearer <token>` header (moved from query param). All endpoints now use `getToken(req)` helper that reads header first, falls back to query param. CORS configured to allow `Authorization` header.
+
+4. **Deleted test records** — 6 test rows removed from `bullying_reports` Supabase table.
+
+5. **Module → Annex relabeling** — Buttons changed from "Module A/B/C/D/E" to "Annex A/B/C/D/E". Annex titles use full formal names (e.g. "Annex A — School-Based Incident Report on Bullying").
+
+6. **Annex D redesign** — Removed per-category D-1–D-6 pills. Replaced with CICL table (LRN, Age, Gender, Disability, Case/Violation, Actions, Status) + Section B intervention narrative + summary counters. School Year moved into School Information card.
+
+7. **Save Draft + Resume** — Save Draft button now collects all module state and POSTs to `/api/drafts`. On page load checks `?draft=REF` to resume. After submit, draft is auto-deleted. Requires new `form_drafts` Supabase table (migration created).
+
+8. **Reports page** — Annex D detail view renders CICL table properly. `annexLabel()` uses full titles. Badges show "Annex A"–"Annex E". Filter uses "Annex: All" with correct annex options.
+
+9. **Analytics page** — Fixed field references (`report_data.metadata.reportingYear`, `r.status`, `r.module`). Fetches both stats and drafts, merges and displays. Draft rows show "Continue" button. School name header in subtitle.
+
+10. **Auth token in header** — All fetch calls moved from `?token=` query param to `Authorization: Bearer <token>` header. `sendBeacon` replaced with `fetch` + `keepalive`.
+
+11. **Sidebar restored** — Re-added after user request. Non-admin Overview link REMOVED (only Submissions + Access Management remain). Admin Overview stays at `/admin`.
+
+12. **`/dashboard` route REMOVED** — Login redirects to `/analytics`. Auth-guard non-admin redirects to `/analytics`. Do NOT re-add.
+
 ## Repository Map
 
 ```
@@ -65,7 +95,18 @@ Function Names: showReportDetail, goReportsPage, annexLabel, categoryBadge
 
 Description: showReportDetail now renders Module D with CICL summary header + table + intervention narrative. goReportsPage counts ciclList.length for module D instead of category keys. annexLabel uses full titles (e.g. "Annex A — School-Based Incident Report on Bullying"). categoryBadge shows "Annex A" through "Annex E". Filter uses "Annex: All" with "Annex A"-"Annex E" options.
 
-### htmls/school_dashboard_access_management_analytics.html
+## DELETED / REMOVED (DO NOT RESTORE)
+
+### `/dashboard` route (server.js)
+- **DELETED** — removed from protectedPages array. Do not re-add.
+- Login redirect now goes to `/analytics` instead (`login_ormoc_city_division_lrp_wired_1.html:228`)
+- Auth-guard non-admin redirect goes to `/analytics` instead (`auth-guard.js:53`)
+
+### Overview sidebar link (sidebar.js:24)
+- **DELETED** for non-admin users. Admin Overview still exists at `/admin`.
+- Non-admin sidebar only has: Submissions, Access Management.
+
+### `school_dashboard_access_management_analytics.html`
 
 Keywords: analytics, draft rows, school filter, auth fix, renderHistory, annexLabel
 
