@@ -285,7 +285,11 @@ const ModuleAReportingPanel = () => {
   const [formState, setFormState] = useState('editing');
   const [activeCategory, setActiveCategory] = useState('A-1');
   
-  const [schoolMetadata, setSchoolMetadata] = useState({
+  const savedMeta = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('lrp_school_meta') || 'null') : null;
+  const savedPrepared = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('lrp_prepared_by') || 'null') : null;
+  const savedValidated = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('lrp_validated_by') || 'null') : null;
+
+  const [schoolMetadata, setSchoolMetadata] = useState(savedMeta || {
     schoolName: '',
     schoolId: '',
     reportingYear: '',
@@ -302,8 +306,8 @@ const ModuleAReportingPanel = () => {
     'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' }
   });
 
-  const [preparedBy, setPreparedBy] = useState({ name: '', designation: '', date: '' });
-  const [validatedBy, setValidatedBy] = useState({ name: '', designation: '', date: '' });
+  const [preparedBy, setPreparedBy] = useState(savedPrepared || { name: '', designation: '', date: '' });
+  const [validatedBy, setValidatedBy] = useState(savedValidated || { name: '', designation: '', date: '' });
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(function() {
@@ -360,6 +364,17 @@ const ModuleAReportingPanel = () => {
 
     return function() { clearInterval(iv); };
   }, []);
+
+  // Persist school metadata + preparedBy/validatedBy to localStorage
+  useEffect(function() {
+    try { localStorage.setItem('lrp_school_meta', JSON.stringify(schoolMetadata)); } catch(e) {}
+  }, [schoolMetadata]);
+  useEffect(function() {
+    try { localStorage.setItem('lrp_prepared_by', JSON.stringify(preparedBy)); } catch(e) {}
+  }, [preparedBy]);
+  useEffect(function() {
+    try { localStorage.setItem('lrp_validated_by', JSON.stringify(validatedBy)); } catch(e) {}
+  }, [validatedBy]);
 
   const MONTHS = [{v:'01',l:'Jan'},{v:'02',l:'Feb'},{v:'03',l:'Mar'},{v:'04',l:'Apr'},{v:'05',l:'May'},{v:'06',l:'Jun'},{v:'07',l:'Jul'},{v:'08',l:'Aug'},{v:'09',l:'Sep'},{v:'10',l:'Oct'},{v:'11',l:'Nov'},{v:'12',l:'Dec'}];
   const YEARS = [];
