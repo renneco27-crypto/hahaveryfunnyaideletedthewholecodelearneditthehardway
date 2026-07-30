@@ -159,7 +159,7 @@
 <!-- sidebar removed -->
 
 <!-- FIX 6: main gets min-w-0 so it truly shrinks inside flex; sidebar margin only at lg+ -->
-<main class="flex-1 min-w-0 lg:ml-64 p-md md:p-lg">
+<main class="flex-1 min-w-0 p-md md:p-lg">
 <div class="max-w-container-max mx-auto space-y-lg">
 
     <!-- Welcome Header -->
@@ -381,7 +381,7 @@
 
     async function loadReports(token) {
         try {
-            const res = await fetch('/api/stats?token=' + encodeURIComponent(token));
+            const res = await fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + token } });
             const stats = await res.json();
             allReports = stats.reports || [];
             renderTable();

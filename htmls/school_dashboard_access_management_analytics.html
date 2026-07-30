@@ -207,7 +207,7 @@
 <div class="flex">
 <!-- sidebar removed -->
 <!-- Main Content Canvas -->
-<main class="w-full lg:ml-64 p-md md:p-lg min-h-screen">
+<main class="w-full p-md md:p-lg min-h-screen">
 <div class="max-w-container-max mx-auto">
 <!-- Header -->
 <div class="mb-lg">
@@ -309,12 +309,15 @@
       const token = window.__token;
       if (!token) throw new Error('No auth token');
 
-      const statsUrl = `${API_BASE}/api/stats?token=${encodeURIComponent(token)}`;
-      const draftsUrl = `${API_BASE}/api/drafts?token=${encodeURIComponent(token)}`;
+      const headers = { 'Authorization': 'Bearer ' + token };
+      const statsUrl = `${API_BASE}/api/stats`;
+      const draftsUrl = `${API_BASE}/api/drafts`;
+      const statsOpts = { headers };
+      const draftsOpts = { headers };
 
       const [statsRes, draftsRes] = await Promise.all([
-        fetch(statsUrl),
-        fetch(draftsUrl)
+        fetch(statsUrl, statsOpts),
+        fetch(draftsUrl, draftsOpts)
       ]);
 
       if (!statsRes.ok) throw new Error(`Stats HTTP ${statsRes.status}`);

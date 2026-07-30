@@ -139,7 +139,7 @@
 <!-- SideNavBar -->
 <!-- sidebar removed -->
 <!-- Main Content Area -->
-<main class="flex-1 lg:ml-64 p-lg space-y-lg max-w-[1200px] mx-auto w-full">
+<main class="flex-1 p-lg space-y-lg max-w-[1200px] mx-auto w-full">
 <!-- Section 1: Division Submission Summary Header -->
 <section class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg shadow-sm">
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
@@ -271,7 +271,7 @@ Download Excel
             try {
                 var [schoolsRes, statsRes] = await Promise.all([
                     fetch('/ormoc_city_division_schools.json'),
-                    fetch('/api/stats?token=' + encodeURIComponent(token))
+                    fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + token } })
                 ]);
                 var districts = await schoolsRes.json();
                 var stats = await statsRes.json();
@@ -315,7 +315,7 @@ Download Excel
         var REPORTS_PAGE_SIZE = 10;
 
         function loadReportsTable(token) {
-            fetch('/api/stats?token=' + encodeURIComponent(token)).then(function(r) { return r.json(); }).then(function(stats) {
+            fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(r) { return r.json(); }).then(function(stats) {
                 reportsData = stats.reports || [];
                 goReportsPage(0);
             }).catch(function(e) { console.error('Reports load error:', e); });

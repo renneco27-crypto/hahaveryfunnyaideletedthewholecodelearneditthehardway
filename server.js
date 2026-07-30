@@ -95,6 +95,13 @@ function cleanDir(dir) {
 }
 setInterval(() => cleanDir(TEMP_DIR), 60000);
 
+// Extract auth token from Authorization header or query param
+function getToken(req) {
+  const auth = req.headers.authorization;
+  if (auth && auth.startsWith('Bearer ')) return auth.slice(7);
+  return req.query.token || null;
+}
+
 // Submit API Endpoint — save JSON only, defer DB insert via per-user queue
 app.post('/api/submit', async (req, res) => {
   try {
@@ -120,7 +127,7 @@ app.post('/api/submit', async (req, res) => {
 // Draft API — Save, List, Load, Delete drafts
 app.post('/api/drafts', async (req, res) => {
   try {
-    const { token } = req.query;
+    const token = getToken(req);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
@@ -160,7 +167,7 @@ app.post('/api/drafts', async (req, res) => {
 
 app.get('/api/drafts', async (req, res) => {
   try {
-    const { token } = req.query;
+    const token = getToken(req);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
@@ -186,7 +193,7 @@ app.get('/api/drafts', async (req, res) => {
 
 app.get('/api/drafts/:ref', async (req, res) => {
   try {
-    const { token } = req.query;
+    const token = getToken(req);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
@@ -207,7 +214,7 @@ app.get('/api/drafts/:ref', async (req, res) => {
 
 app.delete('/api/drafts/:ref', async (req, res) => {
   try {
-    const { token } = req.query;
+    const token = getToken(req);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
@@ -228,7 +235,7 @@ app.delete('/api/drafts/:ref', async (req, res) => {
 // GET /api/stats — aggregated analytics (filter by schoolName for non-admin)
 app.get('/api/stats', async (req, res) => {
   try {
-    const { token } = req.query;
+    const token = getToken(req);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
@@ -286,7 +293,7 @@ app.delete('/api/reports/:id', async (req, res) => {
 // GET /api/reports — list reports (filter by schoolName for non-admin)
 app.get('/api/reports', async (req, res) => {
   try {
-    const { token } = req.query;
+    const token = getToken(req);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);

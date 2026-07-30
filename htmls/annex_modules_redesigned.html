@@ -255,7 +255,7 @@ tailwind.config = {
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <!-- sidebar removed -->
-<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
+<main class="flex-1 p-lg max-w-container-max mx-auto overflow-y-auto">
 <div id="root"></div>
 </main>
 </div>
@@ -321,7 +321,7 @@ const ModuleAReportingPanel = () => {
     var params = new URLSearchParams(window.location.search);
     var ref = params.get('draft');
     if (ref && window.__token) {
-      fetch('/api/drafts/' + encodeURIComponent(ref) + '?token=' + encodeURIComponent(window.__token))
+      fetch('/api/drafts/' + encodeURIComponent(ref), { headers: { 'Authorization': 'Bearer ' + window.__token } })
         .then(function(r) { return r.json(); })
         .then(function(draft) {
           var d = draft.report_data || {};
@@ -1010,9 +1010,9 @@ const ModuleAReportingPanel = () => {
     payload.eReferredNGOCount = eReferredNGOCount;
 
     try {
-      var res = await fetch('/api/drafts?token=' + encodeURIComponent(window.__token), {
+      var res = await fetch('/api/drafts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + window.__token },
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error('Server returned ' + res.status);
@@ -1044,7 +1044,7 @@ const ModuleAReportingPanel = () => {
       }));
       // Delete draft after submit if resuming from one
       if (draftRef && window.__token) {
-        navigator.sendBeacon('/api/drafts/' + encodeURIComponent(draftRef) + '?token=' + encodeURIComponent(window.__token));
+        fetch('/api/drafts/' + encodeURIComponent(draftRef), { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + window.__token }, keepalive: true });
       }
       setTimeout(function() {
         window.location.href = '/analytics';
