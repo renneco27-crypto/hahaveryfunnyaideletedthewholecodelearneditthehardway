@@ -469,5 +469,33 @@
   }
 
   loadAnalytics();
+
+  // Timer banner for pending submissions
+  (function() {
+    var ts = sessionStorage.getItem('submitted_pending');
+    if (!ts) return;
+    var elapsed = Date.now() - parseInt(ts, 10);
+    var remaining = Math.max(0, 180000 - elapsed);
+    sessionStorage.removeItem('submitted_pending');
+
+    var banner = document.createElement('div');
+    banner.id = 'sync-banner';
+    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#FEF3C7;border-top:2px solid #F59E0B;padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:14px;color:#92400E;font-weight:600;';
+    banner.innerHTML = '<span class="material-symbols-outlined" style="color:#D97706">sync</span> <span id="sync-msg">Processing submission... Refreshing in <span id="sync-timer">' + Math.ceil(remaining/1000) + '</span>s</span>';
+    document.body.appendChild(banner);
+
+    var start = Date.now();
+    var iv = setInterval(function() {
+      var left = Math.max(0, remaining - (Date.now() - start));
+      document.getElementById('sync-timer').textContent = Math.ceil(left/1000);
+      if (left <= 0) {
+        clearInterval(iv);
+        banner.style.background = '#DCFCE7';
+        banner.style.borderColor = '#22C55E';
+        banner.innerHTML = '<span class="material-symbols-outlined" style="color:#16A34A">check_circle</span> Ready! Refreshing data...';
+        setTimeout(function() { location.reload(); }, 1000);
+      }
+    }, 1000);
+  })();
 </script>
 </body></html>

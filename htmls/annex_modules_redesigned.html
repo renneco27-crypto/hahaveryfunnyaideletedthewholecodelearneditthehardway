@@ -1166,6 +1166,7 @@ const ModuleAReportingPanel = () => {
       if (draftRef && window.__token) {
         fetch('/api/drafts/' + encodeURIComponent(draftRef), { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + window.__token }, keepalive: true });
       }
+      sessionStorage.setItem('submitted_pending', Date.now().toString());
       setTimeout(function() {
         window.location.href = '/analytics';
       }, 800);
@@ -2290,6 +2291,12 @@ const ModuleAReportingPanel = () => {
         </div>
       )}
 
+      {Object.keys(validationErrors).filter(function(k) { return validationErrors[k]; }).length > 0 && (
+        <div className="error-banner" style={{display:'flex',alignItems:'center',gap:'8px',padding:'10px 16px',marginBottom:'8px',background:'#FEF2F2',border:'1px solid #FCA5A5',borderRadius:'8px',color:'#991B1B',fontSize:'14px',fontWeight:'600'}}>
+          <span className="material-symbols-outlined" style={{color:'#DC2626',fontSize:'20px'}}>warning</span>
+          Please fix {Object.keys(validationErrors).filter(function(k) { return validationErrors[k]; }).length} error(s) before submitting.
+        </div>
+      )}
       <div className="sticky-footer">
         <button className="secondary-btn" type="button" onClick={handleSaveDraft}>
           <span className="material-symbols-outlined">save</span> Save Draft
