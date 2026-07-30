@@ -340,11 +340,13 @@
     const maxVal = Math.max(...entries.map(([,v]) => v), 1);
     const heightPct = v => Math.max((v / maxVal) * 100, 4);
 
+    const barCount = entries.length;
     barsContainer.innerHTML = entries.map(([key, val]) => {
       const [, mm] = key.split('-');
       const monthLabel = MONTHS_SHORT[parseInt(mm, 10) - 1] || key;
       const color = parseInt(mm, 10) % 2 === 0 ? 'bg-secondary-container' : 'bg-primary';
-      return `<div class="${color} rounded-t-sm" style="width:100%;height:${heightPct(val)}%" title="${monthLabel}: ${val}"></div>`;
+      const barWidth = barCount <= 3 ? `${Math.max(30, 90 / barCount)}%` : '100%';
+      return `<div class="${color} rounded-t-sm" style="width:${barWidth};max-width:80px;height:${heightPct(val)}%" title="${monthLabel}: ${val}"></div>`;
     }).join('');
 
     labelsContainer.innerHTML = entries.map(([key]) => {

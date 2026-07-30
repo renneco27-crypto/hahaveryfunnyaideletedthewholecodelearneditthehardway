@@ -109,21 +109,7 @@
             vertical-align: middle;
 }
         .login-mesh {
-            background-color: #f8f9ff;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(214, 227, 255, 0.5) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(122, 183, 255, 0.2) 0px, transparent 50%);
-        }
-        .watermark-overlay {
-            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0067KEle55rkVIqVHG0YjG6OektTZvNhimDCkYaM9C0h1zPe5upD5I1dT_pZL5C0BE_iuvirL9rFZZOzoKHO-H5_2lnoQn9YtNixoQM3RstZxw_3F27-oTXFHrIMmzmPuBnx3so8HT4-8bDONRIlny7PhfffYy2ahBLmmU8svku39vvJukkI411Wb3MxBceW2vbTT8H5BVlMjaqUCFGsnKYOB8IvC3nfg9KLslTVGje0-lrZ0ZvZ45wYvjBUv0tLu9ghic6lQBZZg');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 600px;
-            opacity: 0.05;
-            pointer-events: none;
-            position: fixed;
-            inset: 0;
-            z-index: 0;
+            background-color: #f5f6f8;
         }
     </style>
 </head>
@@ -156,70 +142,54 @@
 <main class="flex-1 lg:ml-64 p-lg space-y-lg max-w-[1200px] mx-auto w-full">
 <!-- Section 1: Division Submission Summary Header -->
 <section class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg shadow-sm">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-md">
-<div class="space-y-xs">
-<h3 class="font-headline-md text-headline-md text-primary" id="schools-submitted">—</h3>
-<div class="w-full md:w-96 bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div class="flex-1 space-y-xs">
+<p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider">Schools Submitted</p>
+<h3 class="font-headline-lg text-headline-lg text-primary" id="schools-submitted">—</h3>
+<div class="w-full md:w-80 bg-surface-container-highest h-2 rounded-full overflow-hidden mt-xs">
 <div class="bg-secondary h-full transition-all duration-500" id="progress-bar" style="width: 0%;"></div>
 </div>
 </div>
-<div class="flex gap-lg">
-<div class="text-center">
-<p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider">Total Cases Compiled</p>
+<div class="flex gap-md md:gap-lg border-t md:border-t-0 md:border-l border-outline-variant pt-md md:pt-0 md:pl-lg">
+<div>
+<p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider mb-xs">Total Cases Compiled</p>
 <p class="font-headline-md text-headline-md text-secondary" id="total-cases">—</p>
 </div>
-<div class="text-center">
-<p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider">Last Received</p>
+<div>
+<p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider mb-xs">Last Received</p>
 <p class="font-headline-md text-headline-md text-on-surface" id="last-received">—</p>
 </div>
 </div>
 </div>
 </section>
 <!-- Section 2: Division Consolidated Reports Generator -->
-<section>
-<div class="flex justify-between items-center mb-md">
-<h3 class="font-headline-md text-headline-md text-primary">Division Consolidated Reports Generator</h3>
-<button class="flex items-center gap-xs bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:bg-opacity-90 transition-all shadow-sm active:opacity-80">
-<span class="material-symbols-outlined">download_for_offline</span>
-                        Download All 6 Division Reports (.zip)
-                    </button>
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Division Consolidated Reports</h3>
+<p class="text-caption font-caption text-on-surface-variant mt-xs">Select a report category and download the latest aggregated Excel file.</p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
-<!-- Report Card Generator -->
-<script>
-                        const reports = [
-                            "BULLYING",
-                            "CHILD ABUSE",
-                            "CHILDREN IN CONFLICT WITH THE LAW",
-                            "CHILDREN-AT-RISK",
-                            "CP POLICY / ANTI-BULLYING / CPC",
-                            "OTHER LRP CONCERNS"
-                        ];
-                        reports.forEach(report => {
-                            document.write(`
-                                <div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg flex flex-col justify-between hover:bg-surface-container-high transition-colors">
-                                    <div class="flex items-start justify-between mb-sm">
-                                        <div class="bg-secondary-container/20 p-xs rounded-lg">
-                                            <span class="material-symbols-outlined text-secondary" style="font-size: 32px;">description</span>
-                                        </div>
-                                        <span class="bg-primary-fixed text-on-primary-fixed-variant px-xs py-1 rounded text-[10px] font-bold uppercase tracking-tight">78 Schools Aggregated • Live</span>
-                                    </div>
-                                    <h4 class="font-label-md text-label-md text-primary mb-md line-clamp-2 min-h-[40px]">Division Consolidated Report on ${report}.xlsx</h4>
-                                    <button class="w-full flex items-center justify-center gap-xs border-2 border-secondary text-secondary px-md py-xs rounded font-label-md text-label-md hover:bg-secondary hover:text-white transition-all">
-                                        <span class="material-symbols-outlined">download</span>
-                                        Download Excel (.xlsx)
-                                    </button>
-                                </div>
-                            `);
-                        });
-                    </script>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
+<select id="report-category-select" class="bg-surface border border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md text-on-surface focus:ring-2 focus:ring-secondary/20 min-w-[240px]">
+<option value="BULLYING">Bullying</option>
+<option value="CHILD ABUSE">Child Abuse</option>
+<option value="CHILDREN IN CONFLICT WITH THE LAW">Children in Conflict with the Law</option>
+<option value="CHILDREN-AT-RISK">Children-at-Risk</option>
+<option value="CP POLICY / ANTI-BULLYING / CPC">CP Policy / Anti-Bullying / CPC</option>
+<option value="OTHER LRP CONCERNS">Other LRP Concerns</option>
+</select>
+<button onclick="(function(){ var sel = document.getElementById('report-category-select'); alert('Downloading: Division Consolidated Report on ' + sel.value + '.xlsx'); })()" class="flex items-center justify-center gap-xs bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:opacity-90 transition-all shadow-sm active:opacity-80 whitespace-nowrap">
+<span class="material-symbols-outlined">download</span>
+Download Excel
+</button>
+</div>
 </div>
 </section>
 <!-- Section 3: Master Aggregated Live Data Table -->
-<div class="max-w-xl mx-auto">
-<section class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm">
+<div class="max-w-7xl mx-auto px-md">
+<section class="bg-surface-container-lowest border border-black/60 rounded-lg overflow-hidden shadow-sm">
 <!-- Filter Bar -->
-<div class="p-md border-b border-outline-variant flex flex-col lg:flex-row gap-md items-center justify-between">
+<div class="p-md border-b border-black/60 flex flex-col lg:flex-row gap-md items-center justify-between">
 <div class="relative w-full lg:w-96">
 <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
 <input class="w-full pl-xl pr-md py-sm rounded-lg border-outline-variant focus:border-secondary focus:ring-2 focus:ring-secondary/20 bg-surface" placeholder="Search ID..." type="text" id="reports-search"/>
@@ -249,13 +219,13 @@
 <div class="overflow-x-auto" id="table-container">
 <table class="w-full text-left border-collapse" id="reports-table">
 <thead>
-<tr class="bg-primary text-on-primary">
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">School Name &amp; ID</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Category</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Incident Summary</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-right">Case Count</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Submission Date</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Action Status</th>
+<tr class="bg-surface-container-low border-b-2 border-outline-variant">
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Category</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Incident Summary</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Case Count</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Date</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Action Status</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-outline-variant" id="reports-tbody">
@@ -386,16 +356,19 @@
                 var schoolName = r.school_name || '—';
                 var schoolId = r.school_id || r.report_data?.metadata?.schoolId || '—';
                 var module = r.module || r.report_data?.module || '—';
-                var summary = r.report_data?.data?.categories ? Object.keys(r.report_data.data.categories).length + ' categories' : 'Report data';
-                var caseCount = r.report_data?.data?.categories ? Object.keys(r.report_data.data.categories).length : 1;
+                var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
+                var catKeys = Object.keys(cats);
+                var summary = catKeys.length + ' categor' + (catKeys.length !== 1 ? 'ies' : 'y');
+                var caseCount = catKeys.length || 1;
                 var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
                 var status = r.status || 'pending';
                 var statusColor = status === 'submitted' || status === 'sent' ? 'text-emerald-600' : status === 'pending' ? 'text-orange-600' : 'text-blue-600';
                 var statusDot = status === 'submitted' || status === 'sent' ? 'bg-emerald-600' : status === 'pending' ? 'bg-orange-600' : 'bg-blue-600';
                 var statusLabel = status === 'submitted' || status === 'sent' ? 'Submitted' : status === 'pending' ? 'Pending' : status;
                 var categoryBadge = module === 'A' ? 'Bullying' : module === 'B' ? 'Behavioral' : module === 'C' ? 'CAR' : module === 'D' ? 'CICL' : module === 'E' ? 'Other' : module;
-                var badgeBg = module === 'A' ? 'bg-error-container text-on-error-container' : module === 'B' ? 'bg-secondary-container text-on-secondary-container' : module === 'C' ? 'bg-primary-container text-on-primary-container' : module === 'D' ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-outline-variant text-on-surface-variant';
-                return '<tr class="hover:bg-surface-container-high transition-colors ' + bg + '">' +
+                var badgeBg = module === 'A' ? 'bg-red-100 text-red-800' : module === 'B' ? 'bg-orange-100 text-orange-800' : module === 'C' ? 'bg-blue-100 text-blue-900' : module === 'D' ? 'bg-purple-100 text-purple-900' : 'bg-gray-100 text-gray-700';
+                var rowIdx = start + i;
+                return '<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ' + bg + '" onclick="showReportDetail(' + rowIdx + ')">' +
                     '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(schoolName) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(String(schoolId)) + '</div></td>' +
                     '<td class="px-md py-md"><span class="' + badgeBg + ' px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">' + categoryBadge + '</span></td>' +
                     '<td class="px-md py-md text-body-md max-w-xs truncate">' + escHtml(summary) + '</td>' +
@@ -463,25 +436,223 @@
             document.getElementById('view-raw').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
             document.getElementById('view-status').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
             // Change thead back to report columns
+            document.querySelector('#reports-table thead tr').className = 'bg-surface-container-low border-b-2 border-outline-variant';
             document.querySelector('#reports-table thead tr').innerHTML =
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">School Name &amp; ID</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Category</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Incident Summary</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-right">Case Count</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Submission Date</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Action Status</th>';
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Category</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Incident Summary</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Case Count</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Date</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Action Status</th>';
             showRawData();
         });
         document.getElementById('view-status').addEventListener('click', function() {
             document.getElementById('view-status').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
             document.getElementById('view-raw').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+            document.querySelector('#reports-table thead tr').className = 'bg-surface-container-low border-b-2 border-outline-variant';
             document.querySelector('#reports-table thead tr').innerHTML =
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">School Name &amp; ID</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">District</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider">Submission Status</th>';
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">District</th>' +
+                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Status</th>';
             showSchoolStatus();
         });
     </script>
+<!-- Detail Modal -->
+<div id="detail-modal" class="fixed inset-0 z-50 hidden bg-black/40 flex items-center justify-center p-md" onclick="if(event.target===this)closeDetail()">
+<div class="bg-surface-container-lowest rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+<div class="flex items-center justify-between p-md border-b border-black/60">
+<h2 class="font-display text-display text-on-surface" id="detail-title">Report Details</h2>
+<button onclick="closeDetail()" class="material-symbols-outlined text-on-surface-variant hover:text-on-surface text-2xl">close</button>
+</div>
+<div class="overflow-auto p-md" id="detail-body"></div>
+</div>
+</div>
+<script>
+function showReportDetail(idx) {
+    var r = reportsData[idx];
+    if (!r) return;
+    var meta = r.report_data || {};
+    var md = meta.metadata || {};
+    var mod = (meta.module || r.module || '').toUpperCase();
+    document.getElementById('detail-title').textContent = 'Report: ' + (r.reference_number || '—');
+    var html = '';
+    // Metadata section
+    html += '<div class="grid grid-cols-2 md:grid-cols-4 gap-sm mb-md p-sm bg-surface-container-low rounded-lg">';
+    html += '<div><div class="text-caption text-on-surface-variant">School</div><div class="font-bold">' + escHtml(r.school_name || md.schoolName || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">School ID</div><div class="font-bold">' + escHtml(r.school_id || md.schoolId || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Annex</div><div class="font-bold">' + escHtml(annexLabel(mod)) + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Year</div><div class="font-bold">' + escHtml(md.reportingYear || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Classification</div><div class="font-bold">' + escHtml(md.classification || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Level</div><div class="font-bold">' + escHtml(md.level || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Address</div><div class="font-bold">' + escHtml(md.address || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Overall Status</div><div class="font-bold">' + escHtml(r.status || '—') + '</div></div>';
+    html += '</div>';
+    // Get sections — Module B uses 'data', all others use 'data.categories'
+    var sections = {};
+    if (mod === 'B' && meta.data) { sections['_data'] = meta.data; }
+    else {
+        var cats = meta.data?.categories || meta.categories || {};
+        Object.keys(cats).forEach(function(k) { sections[k] = cats[k]; });
+    }
+    var sectionKeys = Object.keys(sections);
+    sectionKeys.forEach(function(key) {
+        var section = sections[key];
+        if (mod === 'B') {
+            html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+            html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">Incident Report</div>';
+            html += '<table class="w-full text-left border-collapse">';
+            var fields = flattenDetail(section, mod, key);
+            fields.forEach(function(f, i) {
+                var bg = i % 2 === 0 ? 'bg-surface-container-low' : '';
+                html += '<tr class="' + bg + '"><td class="px-md py-sm font-bold text-on-surface-variant text-sm w-1/3 align-top">' + f.label + '</td><td class="px-md py-sm text-on-surface text-sm whitespace-pre-wrap">' + f.value + '</td></tr>';
+            });
+            html += '</table></div>';
+        } else {
+            html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+            html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">' + escHtml(categoryTitle(key, mod)) + '</div>';
+            html += '<table class="w-full text-left border-collapse">';
+            var fields = flattenDetail(section, mod, key);
+            fields.forEach(function(f, i) {
+                var bg = i % 2 === 0 ? 'bg-surface-container-low' : '';
+                html += '<tr class="' + bg + '"><td class="px-md py-sm font-bold text-on-surface-variant text-sm w-1/3 align-top">' + f.label + '</td><td class="px-md py-sm text-on-surface text-sm whitespace-pre-wrap">' + f.value + '</td></tr>';
+            });
+            html += '</table></div>';
+        }
+    });
+    if (!sectionKeys.length) html += '<div class="text-center text-on-surface-variant py-lg">No category data</div>';
+    document.getElementById('detail-body').innerHTML = html;
+    document.getElementById('detail-modal').classList.remove('hidden');
+}
+function closeDetail() { document.getElementById('detail-modal').classList.add('hidden'); }
+function annexLabel(mod) {
+    return mod === 'A' ? 'Annex A (Bullying)' : mod === 'B' ? 'Annex B (Child Abuse)' : mod === 'C' ? 'Annex C (CAR)' : mod === 'D' ? 'Annex D (CICL)' : mod === 'E' ? 'Annex E (Other Rights)' : mod;
+}
+function categoryTitle(key, mod) {
+    if (mod === 'A') return 'Form of Bullying: ' + key;
+    if (mod === 'B') return 'Incident Report';
+    if (mod === 'C') return 'Risk Factor: ' + key;
+    if (mod === 'D') return 'CICL Case: ' + key;
+    if (mod === 'E') return 'Type of Concern: ' + key;
+    return 'Section: ' + key;
+}
+function readLabel(field, mod) {
+    var M = {
+        // Common across modules
+        name: 'Name', age: 'Age', gender: 'Gender', status: 'Status',
+        disability: 'Learner with Disability',
+        actionsTaken: 'Action/s Taken',
+        enrollmentStatus: 'Enrollment Status',
+        performanceBefore: 'Academic Performance (Before)',
+        performanceAfter: 'Academic Performance (After)',
+        incidentDate: 'Date of Incident', incidentPlace: 'Place of Incident',
+        // Module A - Bullying (Annex A)
+        motives: 'Motives/Nature', affectedStudents: 'Victim', initiatingParty: 'Bully',
+        impacts: 'Effect/s to Learner-Victims',
+        // Module B - Child Abuse (Annex B)
+        nature: 'Nature of Child Abuse', victims: 'Victim',
+        perpetrators: 'Perpetrator', relationship: 'Relationship to the Victim',
+        // Module C - CAR (Annex C)
+        individuals: 'Child at Risk', riskFactors: 'Risk Factors',
+        location: 'Community Context', intervention: 'Action Taken',
+        dateIdentified: 'Date Identified', familyContexts: 'Family Context',
+        // Module D - CICL (Annex D)
+        offenseDate: 'Date of Offense', violations: 'Case/Violation',
+        subjects: 'CICL', programs: 'Intervention/Diversion Program',
+        narrative: 'Concrete Description of Intervention',
+        identificationRef: "Learner's Reference Number (LRN)",
+        // Module E - Other Rights (Annex E)
+        concerns: 'Type of Concern', victims: 'Victim',
+        perpetrator: 'Perpetrator', respondent: 'Respondent',
+        designation: 'Designation',
+        categories: 'Behavioral Concern Categories'
+    };
+    return M[field] || field.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, function(s) { return s.toUpperCase(); });
+}
+function decodeCode(code, fieldHint, mod) {
+    if (!code || typeof code !== 'string') return code;
+    var codeMap = {
+        // Module A - Motives (from Annex A: Social, Gender-based)
+        'M-1': 'Social', 'M-2': 'Gender-based',
+        // Impacts already have text after colon: "E-1: Emotional Damage"
+        // Module B - Nature of Child Abuse (from Annex B)
+        'N-1': 'Physical Abuse', 'N-2': 'Sexual Abuse',
+        'N-3': 'Verbal Abuse', 'N-4': 'Psychological Abuse',
+        // Module C - Risk Factors (from Annex C, items 1-10)
+        'R-1': 'Dysfunctional family / without parent or guardian',
+        'R-2': 'Being a member of a gang',
+        'R-3': 'Community with high criminality',
+        'R-4': 'Living in situation of armed conflict',
+        'R-5': 'Status offense under Sec 57 of RA 9344',
+        'R-6': 'Mendicant under PD 1563',
+        'R-7': 'Solvent / Rugby user',
+        'R-8': 'Marijuana / Drug use / Dependency',
+        'R-9': 'User of cigarettes, vape, tobacco',
+        'R-10': 'Involved in gambling activities',
+        // Family context (Annex C context)
+        'F-1': 'Dysfunctional family',
+        'F-2': 'Without parent or guardian',
+        // Module D - CICL Violations (from Annex D)
+        'V-01': 'Physical altercation / Fistfight',
+        'V-1': 'Physical altercation / Fistfight',
+        'V-2': 'Theft / Robbery', 'V-3': 'Vandalism',
+        'V-4': 'Threat / Intimidation', 'V-5': 'Drug-related offense',
+        'V-6': 'Curfew violation', 'V-7': 'Truancy / Habitual absenteeism',
+        // Module D - CICL Intervention Programs (from Annex D)
+        'P-1': 'Diversion program under LSWDO',
+        'P-2': 'School-based peer mediation',
+        'P-3': 'Family counseling / Parenting seminar',
+        'P-4': 'Psychological assessment / Therapy',
+        'P-5': 'Community service',
+        // Module E - Type of Concern (from Annex E)
+        'EC-1': 'Child Labor', 'EC-2': 'Child Trafficking',
+        'EC-3': 'Corporal Punishment', 'EC-4': 'Child Marriage',
+        'EC-5': 'Grave Child Rights Violation',
+        'EC-6': 'OSAEC', 'EC-7': 'Gender-based Violence',
+        'EC-8': 'Gender-based Sexual Harassment', 'EC-9': 'Rape Cases'
+    };
+    return codeMap[code] || code;
+}
+function flattenDetail(obj, mod, sectionKey) {
+    var result = [];
+    var keys = Object.keys(obj);
+    keys.forEach(function(k) {
+        var v = obj[k];
+        var label = readLabel(k, mod);
+        if (v === null || v === undefined) { result.push({ label: label, value: '—' }); }
+        else if (Array.isArray(v)) {
+            if (v.length === 0) { result.push({ label: label, value: 'None' }); }
+            else if (typeof v[0] === 'object') {
+                v.forEach(function(item, idx) {
+                    var singular = readLabel(k, mod);
+                    var arrLabel = singular + ' ' + (idx + 1);
+                    if (typeof item === 'object' && item !== null) {
+                        var subKeys = Object.keys(item);
+                        subKeys.forEach(function(sk) {
+                            var sv = item[sk];
+                            var subLabel = readLabel(sk, mod);
+                            if (Array.isArray(sv)) {
+                                var decoded = sv.map(function(c) { return decodeCode(c, sk, mod); }).join(', ');
+                                result.push({ label: arrLabel + ' — ' + subLabel, value: decoded || '—' });
+                            } else {
+                                result.push({ label: arrLabel + ' — ' + subLabel, value: String(sv || '—') });
+                            }
+                        });
+                    } else { result.push({ label: arrLabel, value: String(item) }); }
+                });
+            } else {
+                var decoded = v.map(function(c) { return decodeCode(c, k, mod); }).join(', ');
+                result.push({ label: label, value: decoded });
+            }
+        }
+        else if (typeof v === 'object') {
+            var sub = flattenDetail(v, mod, sectionKey);
+            result = result.concat(sub);
+        }
+        else { result.push({ label: label, value: String(v) }); }
+    });
+    return result;
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
 <script src="sidebar.js"></script>

@@ -148,9 +148,7 @@
     </script>
 </head>
 <body class="bg-background text-on-surface">
-<div class="fixed top-0 left-0 w-full h-full z-[-1] overflow-hidden pointer-events-none">
-<img alt="Background" class="w-full h-full object-cover opacity-[0.18] blur-[4px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRPcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
-</div>
+
 <!-- TopNavBar -->
 <header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
 <div class="flex items-center gap-sm">
@@ -165,12 +163,9 @@
 <div class="flex justify-between items-end mb-lg">
 <div>
 <h1 class="font-headline-lg text-headline-lg text-primary mb-xs">Operational Overview</h1>
-<p class="font-body-md text-body-md text-on-surface-variant">Real-time status of Ormoc City Division LRP submissions across regional schools.</p>
+<p class="font-body-md text-body-md text-on-surface" style="font-size:15px;">Real-time status of Ormoc City Division LRP submissions across regional schools.</p>
 </div>
-<button class="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg flex items-center gap-xs hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer active:opacity-80">
-<span class="material-symbols-outlined">download</span>
-                    Download Consolidated Excel
-                </button>
+
 </div>
 <!-- Stats Bento Grid -->
 <div class="bento-grid mb-lg">
@@ -206,11 +201,11 @@
 
 <div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-400">
 <div class="flex justify-between items-start">
-<span class="material-symbols-outlined text-primary text-3xl">pending</span>
+<span class="material-symbols-outlined text-primary text-3xl">school</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-red-700 uppercase tracking-wider">Pending</p>
-<p class="font-display text-display text-red-600" id="stat-pending">—</p>
+<p class="font-label-md text-label-md text-blue-700 uppercase tracking-wider">Schools</p>
+<p class="font-display text-display text-blue-600" id="stat-pending">—</p>
 </div>
 </div>
 
@@ -354,8 +349,8 @@
 
       document.getElementById('stat-districts').textContent = totalDistricts;
       document.getElementById('stat-schools').textContent = totalSchools;
-      document.getElementById('stat-submitted').textContent = submittedCount;
-      document.getElementById('stat-pending').textContent = totalSchools - submittedCount;
+      document.getElementById('stat-submitted').textContent = stats.total;
+      document.getElementById('stat-pending').textContent = submittedCount + ' / ' + totalSchools;
       document.getElementById('stat-rate').textContent = pct + '%';
       document.getElementById('stat-progress').style.width = pct + '%';
 
@@ -378,7 +373,7 @@ function renderTable() {
           html += '<td class="p-md font-bold">' + s.name + '</td>';
           html += '<td class="p-md text-on-surface-variant">' + s.psds + '</td>';
           html += '<td class="p-md text-on-surface-variant">' + s.district + '</td>';
-          html += '<td class="p-md"><span class="px-xs py-1 rounded font-bold text-caption uppercase ' + (submittedMap[s.name] ? 'bg-green-100 text-green-800' : 'bg-surface-variant text-on-surface-variant') + '">' + (submittedMap[s.name] ? 'Submitted' : 'Not Yet Submitted') + '</span></td>';
+          html += '<td class="p-md">' + (submittedMap[s.name] ? '<span class="px-xs py-1 rounded font-bold text-caption uppercase bg-green-100 text-green-800">Submitted</span>' : '<span class="text-caption text-on-surface-variant">Not yet submitted</span>') + '</td>';
           html += '</tr>';
         }
 tbody.innerHTML = html;

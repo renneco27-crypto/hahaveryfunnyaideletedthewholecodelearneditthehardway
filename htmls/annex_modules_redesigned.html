@@ -179,6 +179,20 @@ button,input,select,textarea { font:inherit; }
 @keyframes slideInUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
 .slide-in { animation:slideInUp .5s ease-out forwards; opacity:0; }
 
+@keyframes successFlash {
+  0% { box-shadow: 0 0 0 0 rgba(22,163,74,.5); }
+  50% { box-shadow: 0 0 0 20px rgba(22,163,74,.2); }
+  100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+}
+@keyframes checkBounce {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.success-flash { animation: successFlash .8s ease-out; border-color: #16a34a !important; background: #f0fdf4 !important; }
+.success-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 999px; background: #16a34a; color: #fff; font-weight: 800; font-size: 13px; letter-spacing: .04em; }
+.success-badge .check-icon { animation: checkBounce .4s ease-out; }
+
 /* ── Responsive ── */
 @media (max-width:900px) { .panel-grid, .counter-row { grid-template-columns:1fr; } }
 </style>
@@ -275,7 +289,9 @@ const ModuleAReportingPanel = () => {
     'A-2': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
     'A-3': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
     'A-4': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
-    'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' }
+    'A-5': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-6': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' },
+    'A-7': { incidentDate: '', incidentPlace: '', motives: [], affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }], initiatingParty: [{ name: '', age: '', gender: 'M' }], actionsTaken: '', status: '' }
   });
 
   const [preparedBy, setPreparedBy] = useState({ name: '', designation: '', date: '' });
@@ -309,6 +325,10 @@ const ModuleAReportingPanel = () => {
 
   function parseDateParts(val) {
     if (!val || typeof val !== 'string') return { m: '', d: '', y: '' };
+    if (val.indexOf('::') === 0) {
+      var m = val.match(/::y:([^|]*)\|m:([^|]*)\|d:(.*)/);
+      if (m) return { y: m[1] || '', m: m[2] || '', d: m[3] || '' };
+    }
     var p = val.split('-');
     return { y: p[0] || '', m: p[1] || '', d: p[2] || '' };
   }
@@ -317,8 +337,11 @@ const ModuleAReportingPanel = () => {
     var parts = parseDateParts(props.value);
     function onChange(part, v) {
       var np = Object.assign({}, parts, part);
-      var composed = np.y && np.m && np.d ? np.y + '-' + np.m + '-' + np.d : '';
-      props.onChange({ target: { value: composed } });
+      if (np.y && np.m && np.d) {
+        props.onChange({ target: { value: np.y + '-' + np.m + '-' + np.d } });
+      } else {
+        props.onChange({ target: { value: '::y:' + (np.y || '') + '|m:' + (np.m || '') + '|d:' + (np.d || '') } });
+      }
     }
     return React.createElement('div', { style: { display: 'flex', gap: '4px' } },
       React.createElement('select', { value: parts.m, onChange: function(e) { onChange({ m: e.target.value }, null); }, className: 'field-input date-select', style: { flex: '1', minWidth: '0' } },
@@ -336,161 +359,112 @@ const ModuleAReportingPanel = () => {
     );
   }
 
+  const [submitting, setSubmitting] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [reportPayload, setReportPayload] = useState(null);
+  const submitRef = useRef(null);
   const [activeModule, setActiveModule] = useState('A');
-  const [activeCRiskCategory, setActiveCRiskCategory] = useState('C-1');
   const visited = useRef({ A: true });
-  const moduleCCategories = [
-    { id: 'C-1', label: 'Category C-1' },
-    { id: 'C-2', label: 'Category C-2' },
-    { id: 'C-3', label: 'Category C-3' },
-    { id: 'C-4', label: 'Category C-4' },
-    { id: 'C-5', label: 'Category C-5' },
-    { id: 'C-6', label: 'Category C-6' },
-    { id: 'C-7', label: 'Category C-7' },
-    { id: 'C-8', label: 'Category C-8' }
+  const cClassificationOptions = [
+    { id: '1', label: '1 - Dysfunctional family / Without parent or guardian' },
+    { id: '2', label: '2 - Member of a gang' },
+    { id: '3', label: '3 - Community with high criminality' },
+    { id: '4', label: '4 - Living in situation of armed conflict' },
+    { id: '5', label: '5 - Status offense under Sec 57 of RA 9344' },
+    { id: '6', label: '6 - Mendicant under PD 1563' },
+    { id: '7', label: '7 - Solvent / Rugby user' },
+    { id: '8', label: '8 - Marijuana / Drug use / Dependency' },
+    { id: '9', label: '9 - User of cigarettes, vape, tobacco' },
+    { id: '10', label: '10 - Involved in gambling activities' }
   ];
-  const riskFactorOptions = [
-    { id: 'R-1', label: 'Risk Factor R-1' },
-    { id: 'R-2', label: 'Risk Factor R-2' },
-    { id: 'R-3', label: 'Risk Factor R-3' },
-    { id: 'R-4', label: 'Risk Factor R-4' }
-  ];
-  const familyContextOptions = [
-    { id: 'F-1', label: 'Context F-1' },
-    { id: 'F-2', label: 'Context F-2' },
-    { id: 'F-3', label: 'Context F-3' },
-    { id: 'F-4', label: 'Context F-4' }
-  ];
-  const cEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
-  const cStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
-  const makeCIndividual = () => ({ name: '', age: '', gender: 'M', disability: 'No', familyContexts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' });
-  const makeCCategoryData = () => ({ dateIdentified: '', location: '', riskFactors: [], individuals: [makeCIndividual()], intervention: '', status: '' });
+  const cStatusOptions = ['Resolved', 'On-going intervention', 'Referred to Government Agencies', 'Referred to Non-Government Organizations'];
+  const makeCChild = () => ({ name: '', gender: 'M', disability: 'No', classification: '', actionTaken: '', status: '' });
 
   const [moduleCData, setModuleCData] = useState(null);
+  const [periodCovered, setPeriodCovered] = useState('');
+  const [totalStudents, setTotalStudents] = useState('');
+  const [cNarrative, setCNarrative] = useState('');
+  const [resolvedCount, setResolvedCount] = useState('');
+  const [ongoingCount, setOngoingCount] = useState('');
+  const [referredGovCount, setReferredGovCount] = useState('');
+  const [referredNGOCount, setReferredNGOCount] = useState('');
 
-  const moduleDCategories = [
-    { id: 'D-1', label: 'Category D-1' },
-    { id: 'D-2', label: 'Category D-2' },
-    { id: 'D-3', label: 'Category D-3' },
-    { id: 'D-4', label: 'Category D-4' },
-    { id: 'D-5', label: 'Category D-5' },
-    { id: 'D-6', label: 'Category D-6' }
-  ];
-  const violationOptions = [
-    { id: 'V-1', label: 'Violation V-1' },
-    { id: 'V-2', label: 'Violation V-2' },
-    { id: 'V-3', label: 'Violation V-3' },
-    { id: 'V-4', label: 'Violation V-4' },
-    { id: 'V-5', label: 'Violation V-5' },
-    { id: 'V-6', label: 'Violation V-6' }
-  ];
-  const programOptions = [
-    { id: 'P-1', label: 'Program P-1' },
-    { id: 'P-2', label: 'Program P-2' },
-    { id: 'P-3', label: 'Program P-3' },
-    { id: 'P-4', label: 'Program P-4' }
-  ];
-  const dEnrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred to other school'];
-  const dStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
-  const makeDSubject = () => ({ identificationRef: '', age: '', gender: 'M', disability: 'No' });
-  const makeDCategoryData = () => ({ offenseDate: '', location: '', violations: [], subjects: [makeDSubject()], programs: [], narrative: '', enrollmentStatus: '', performanceBefore: '', performanceAfter: '', status: '' });
+  const dStatusOptions = ['Resolved', 'With on-going intervention', 'Referred to other Government Agencies', 'Referred to other Non Government Organizations'];
+  const genderOptionsD = ['M', 'F', 'LGBTQIA+'];
+  const makeDCICL = () => ({ lrn: '', age: '', gender: 'M', disability: 'No', caseViolation: '', actionsTaken: '', status: '' });
 
   const [moduleDData, setModuleDData] = useState(null);
 
-  const moduleECategories = [
-    { id: 'E-1', label: 'Category E-1' },
-    { id: 'E-2', label: 'Category E-2' },
-    { id: 'E-3', label: 'Category E-3' },
-    { id: 'E-4', label: 'Category E-4' },
-    { id: 'E-5', label: 'Category E-5' },
-    { id: 'E-6', label: 'Category E-6' },
-    { id: 'E-7', label: 'Category E-7' },
-    { id: 'E-8', label: 'Category E-8' },
-    { id: 'E-9', label: 'Category E-9' }
+  const eConcernTypes = [
+    { id: 'E-1', label: 'Child Labor — Any work or economic activity performed by a child that subjects him/her to exploitation or is harmful to health/safety (DOLE Order 149, s. 2016)' },
+    { id: 'E-2', label: 'Child Trafficking — Recruitment, transportation, harboring, or receipt of children for exploitation, sexual services, forced labor, or organ removal' },
+    { id: 'E-3', label: 'Corporal Punishment — Punishment/penalty imposed for discipline/control by teachers, staff, or adults involving physical, humiliating, or degrading acts' },
+    { id: 'E-4', label: 'Child Marriage — Marriage/informal union/cohabitation involving a child solemnized in civil, church, traditional, or customary proceedings' },
+    { id: 'E-5', label: 'Grave Child Rights Violation (GCRV) — Flagrant violations including killing/maiming, recruitment of CIAC, rape, abduction, attacks on schools/hospitals, or denial of humanitarian access' },
+    { id: 'E-6', label: 'Online Sexual Abuse and Exploitation of Children (OSAEC / OCSEA) — Use of ICT/electronic means to sexually abuse or exploit children (grooming, extortion, image sharing, live-streaming)' },
+    { id: 'E-7', label: 'Gender-based Violence (GBV) — Any act of violence directed against an individual based on their actual or perceived gender identity' },
+    { id: 'E-8', label: 'Gender-based Sexual Harassment — Verbal, non-verbal, psychological, or physical harassment based on sexual orientation, gender identity, or expression' },
+    { id: 'E-9', label: 'Rape Cases — Sexual assault/rape cases involving a learner' }
   ];
-  const eConcernOptions = [
-    { id: 'EC-1', label: 'Concern C-1' },
-    { id: 'EC-2', label: 'Concern C-2' },
-    { id: 'EC-3', label: 'Concern C-3' },
-    { id: 'EC-4', label: 'Concern C-4' },
-    { id: 'EC-5', label: 'Concern C-5' },
-    { id: 'EC-6', label: 'Concern C-6' },
-    { id: 'EC-7', label: 'Concern C-7' },
-    { id: 'EC-8', label: 'Concern C-8' },
-    { id: 'EC-9', label: 'Concern C-9' }
-  ];
-  const eStatusOptions = ['Status 1: Resolved', 'Status 2: On-going intervention', 'Status 3: Referred to Government Agencies', 'Status 4: Referred to Non-Government Organizations'];
-  const makeEVictim = () => ({ name: '', age: '', gender: 'M', disability: 'No' });
-  const makeERespondent = () => ({ name: '', designation: '', age: '', gender: 'M' });
-  const makeECategoryData = () => ({ incidentDate: '', incidentPlace: '', concerns: [], victims: [makeEVictim()], respondents: [makeERespondent()], actionsTaken: '', status: '' });
-
+  const eStatusOptions = ['Resolved', 'On-going intervention', 'Referred to Government Agencies', 'Referred to Non-Government Organizations'];
+  const makeEVictim = () => ({ name: '', sexGender: 'M', age: '', disability: '0' });
+  const makeERow = () => ({ concernType: '', perpetratorName: '', perpetratorAge: '', victims: [makeEVictim()], incidentDate: '', incidentPlace: '', actionsTaken: '', status: '' });
   const [moduleEData, setModuleEData] = useState(null);
+  const [eResolvedCount, setEResolvedCount] = useState('');
+  const [eOngoingCount, setEOngoingCount] = useState('');
+  const [eReferredGovCount, setEReferredGovCount] = useState('');
+  const [eReferredNGOCount, setEReferredNGOCount] = useState('');
 
   const [moduleBData, setModuleBData] = useState(null);
 
   const currentCategoryData = categoryData[activeCategory];
 
   const categoryOptions = [
-    { id: 'A-1', label: 'Category A-1: Physical Abuse' },
-    { id: 'A-2', label: 'Category A-2: Psychological Abuse' },
-    { id: 'A-3', label: 'Category A-3: Sexual Abuse' },
-    { id: 'A-4', label: 'Category A-4: Neglect' },
-    { id: 'A-5', label: 'Category A-5: Other Concerns' }
+    { id: 'A-1', label: 'A-1: Physical Bullying (Unwanted physical contact: punching, shoving, kicking, headlocks, etc.)' },
+    { id: 'A-2', label: 'A-2: Verbal Bullying (Acts/words debasing, degrading, or demeaning human dignity)' },
+    { id: 'A-3', label: 'A-3: Social Bullying (Acts to hurt, belittle, or reinforce social exclusion)' },
+    { id: 'A-4', label: 'A-4: Gender-based Bullying (Humiliates/excludes based on perceived or actual SOGI)' },
+    { id: 'A-5', label: 'A-5: Cyberbullying (Bullying through technology/electronic means: texting, email, chat, online games)' },
+    { id: 'A-6', label: 'A-6: Bullying in Written Form (Derogatory remarks written in notebooks, walls, lockers, etc.)' },
+    { id: 'A-7', label: 'A-7: Retaliation (Acts against a person who reports, provides info, or witnesses bullying)' }
   ];
 
   const motiveOptions = [
-    { id: 'M-1', label: 'Motive M-1' },
-    { id: 'M-2', label: 'Motive M-2' }
+    { id: 'M-1', label: 'M-1: Social (To hurt, belittle, or reinforce social exclusion)' },
+    { id: 'M-2', label: 'M-2: Gender-based (Humiliates/excludes based on perceived or actual SOGI)' }
   ];
 
-  const impactFlags = ['Impact E-1', 'Impact E-2', 'Impact E-3', 'Impact E-4', 'Impact E-5', 'Impact E-6'];
+  const impactFlags = ['E-1: Emotional Damage', 'E-2: Physical Harm', 'E-3: Attempted Suicide', 'E-4: Suicide Death', 'E-5: Death', 'E-6: Psychological / Emotional (Sadness, anxiety, mood swings, overthinking, trauma)'];
   const enrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred'];
   const performanceOptions = ['Advanced', 'Proficient', 'Developing', 'Beginning'];
   const statusOptions = ['Resolved', 'Ongoing Intervention', 'Referred to Government Agencies', 'Referred to NGO'];
   const genderOptions = ['M', 'F', 'LGBTQIA+'];
 
-  const moduleBCategories = [
-    { id: 'B-1', label: 'Category B-1: Bullying/Harassment' },
-    { id: 'B-2', label: 'Category B-2: Violence/Assault' },
-    { id: 'B-3', label: 'Category B-3: Threat/Intimidation' },
-    { id: 'B-4', label: 'Category B-4: Discrimination' },
-    { id: 'B-5', label: 'Category B-5: Other Behavioral Concern' }
-  ];
   const natureOptions = [
-    { id: 'N-1', label: 'Nature N-1: Physical' },
-    { id: 'N-2', label: 'Nature N-2: Verbal' },
-    { id: 'N-3', label: 'Nature N-3: Cyberbullying' }
+    { id: 'N-1', label: 'N-1: Physical Abuse (Acts that inflict bodily harm or subject children to hazardous tasks)' },
+    { id: 'N-2', label: 'N-2: Sexual Abuse (Acts of sexual nature: rape, harassment, demeaning remarks, obscene shows)' },
+    { id: 'N-3', label: 'N-3: Verbal Abuse (Acts or words debasing, degrading, or demeaning human worth/dignity)' },
+    { id: 'N-4', label: 'N-4: Psychological Abuse (Intimidation, stalking, public ridicule, grade threats, repeated verbal abuse)' }
   ];
   const affiliationOptions = ['School Personnel', 'Teacher', 'Non-Teaching Staff', 'Student', 'Parent/Guardian', 'Outside Community Member'];
-  const currentCData = moduleCData && moduleCData[activeCRiskCategory];
-  const [activeDCategory, setActiveDCategory] = useState('D-1');
-  const currentDData = moduleDData && moduleDData[activeDCategory];
-  const [activeECategory, setActiveECategory] = useState('E-1');
-  const currentEData = moduleEData && moduleEData[activeECategory];
 
   useEffect(() => {
     if (activeModule === 'B' && !moduleBData) {
       setModuleBData({
-        incidentDate: '', incidentPlace: '', incidentNature: [],
-        affectedStudents: [{ name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }],
-        respondents: [{ name: '', affiliation: '', age: '', gender: 'M' }],
+        incidentDate: '', incidentPlace: '', nature: [],
+        victims: [{ name: '', age: '', gender: '', disability: '' }],
+        perpetrators: [{ name: '', gender: '', age: '', relationship: '' }],
         actionsTaken: '', status: ''
       });
     }
     if (activeModule === 'C' && !moduleCData) {
-      const init = {};
-      moduleCCategories.forEach(cat => { init[cat.id] = makeCCategoryData(); });
-      setModuleCData(init);
+      setModuleCData({ children: [makeCChild()] });
     }
     if (activeModule === 'D' && !moduleDData) {
-      const init = {};
-      moduleDCategories.forEach(cat => { init[cat.id] = makeDCategoryData(); });
-      setModuleDData(init);
+      setModuleDData({ ciclList: [makeDCICL()], interventionNarrative: '', periodCovered: '' });
     }
     if (activeModule === 'E' && !moduleEData) {
-      const init = {};
-      moduleECategories.forEach(cat => { init[cat.id] = makeECategoryData(); });
-      setModuleEData(init);
+      setModuleEData({ rows: [makeERow()] });
     }
   }, [activeModule]);
 
@@ -509,25 +483,25 @@ const ModuleAReportingPanel = () => {
       if (moduleBData.status === 'Referred to Government Agencies') counts.external += 1;
       if (moduleBData.status === 'Referred to NGO') counts.ngo += 1;
     } else if (activeModule === 'C' && moduleCData) {
-      Object.values(moduleCData).forEach(cat => {
-        if (cat.status === 'Status 1: Resolved') counts.resolved += 1;
-        if (cat.status === 'Status 2: On-going intervention') counts.ongoing += 1;
-        if (cat.status === 'Status 3: Referred to Government Agencies') counts.external += 1;
-        if (cat.status === 'Status 4: Referred to Non-Government Organizations') counts.ngo += 1;
+      (moduleCData.children || []).forEach(child => {
+        if (child.status === 'Resolved') counts.resolved += 1;
+        if (child.status === 'On-going intervention') counts.ongoing += 1;
+        if (child.status === 'Referred to Government Agencies') counts.external += 1;
+        if (child.status === 'Referred to Non-Government Organizations') counts.ngo += 1;
       });
     } else if (activeModule === 'D' && moduleDData) {
-      Object.values(moduleDData).forEach(cat => {
-        if (cat.status === 'Status 1: Resolved') counts.resolved += 1;
-        if (cat.status === 'Status 2: On-going intervention') counts.ongoing += 1;
-        if (cat.status === 'Status 3: Referred to Government Agencies') counts.external += 1;
-        if (cat.status === 'Status 4: Referred to Non-Government Organizations') counts.ngo += 1;
+      (moduleDData.ciclList || []).forEach(c => {
+        if (c.status === 'Resolved') counts.resolved += 1;
+        if (c.status === 'With on-going intervention') counts.ongoing += 1;
+        if (c.status === 'Referred to other Government Agencies') counts.external += 1;
+        if (c.status === 'Referred to other Non Government Organizations') counts.ngo += 1;
       });
     } else if (activeModule === 'E' && moduleEData) {
-      Object.values(moduleEData).forEach(cat => {
-        if (cat.status === 'Status 1: Resolved') counts.resolved += 1;
-        if (cat.status === 'Status 2: On-going intervention') counts.ongoing += 1;
-        if (cat.status === 'Status 3: Referred to Government Agencies') counts.external += 1;
-        if (cat.status === 'Status 4: Referred to Non-Government Organizations') counts.ngo += 1;
+      (moduleEData.rows || []).forEach(row => {
+        if (row.status === 'Resolved') counts.resolved += 1;
+        if (row.status === 'On-going intervention') counts.ongoing += 1;
+        if (row.status === 'Referred to Government Agencies') counts.external += 1;
+        if (row.status === 'Referred to Non-Government Organizations') counts.ngo += 1;
       });
     }
     return counts;
@@ -584,114 +558,77 @@ const ModuleAReportingPanel = () => {
     setModuleBData(prev => ({ ...prev, [field]: value }));
   };
   const toggleModuleBNature = (natureId) => {
-    const current = moduleBData.incidentNature;
-    updateModuleBField('incidentNature', current.includes(natureId) ? current.filter(n => n !== natureId) : [...current, natureId]);
+    const current = moduleBData.nature || [];
+    updateModuleBField('nature', current.includes(natureId) ? current.filter(n => n !== natureId) : [...current, natureId]);
   };
-  const updateModuleBStudent = (index, field, value) => {
-    const updated = [...moduleBData.affectedStudents];
+  const updateModuleBVictim = (index, field, value) => {
+    const updated = [...moduleBData.victims];
     updated[index] = { ...updated[index], [field]: value };
-    updateModuleBField('affectedStudents', updated);
+    updateModuleBField('victims', updated);
   };
-  const toggleModuleBStudentImpact = (index, impact) => {
-    const updated = [...moduleBData.affectedStudents];
-    const current = updated[index].impacts || [];
-    updated[index].impacts = current.includes(impact) ? current.filter(i => i !== impact) : [...current, impact];
-    updateModuleBField('affectedStudents', updated);
+  const addModuleBVictim = () => {
+    updateModuleBField('victims', [...moduleBData.victims, { name: '', age: '', gender: '', disability: '' }]);
   };
-  const addModuleBStudent = () => {
-    updateModuleBField('affectedStudents', [...moduleBData.affectedStudents, { name: '', age: '', gender: 'M', disability: 'No', impacts: [], enrollmentStatus: '', performanceBefore: '', performanceAfter: '' }]);
+  const removeModuleBVictim = (index) => {
+    updateModuleBField('victims', moduleBData.victims.filter((_, i) => i !== index));
   };
-  const removeModuleBStudent = (index) => {
-    updateModuleBField('affectedStudents', moduleBData.affectedStudents.filter((_, i) => i !== index));
-  };
-  const updateModuleBRespondent = (index, field, value) => {
-    const updated = [...moduleBData.respondents];
+  const updateModuleBPerpetrator = (index, field, value) => {
+    const updated = [...moduleBData.perpetrators];
     updated[index] = { ...updated[index], [field]: value };
-    updateModuleBField('respondents', updated);
+    updateModuleBField('perpetrators', updated);
   };
-  const addModuleBRespondent = () => {
-    updateModuleBField('respondents', [...moduleBData.respondents, { name: '', affiliation: '', age: '', gender: 'M' }]);
+  const addModuleBPerpetrator = () => {
+    updateModuleBField('perpetrators', [...moduleBData.perpetrators, { name: '', gender: '', age: '', relationship: '' }]);
   };
-  const removeModuleBRespondent = (index) => {
-    updateModuleBField('respondents', moduleBData.respondents.filter((_, i) => i !== index));
+  const removeModuleBPerpetrator = (index) => {
+    updateModuleBField('perpetrators', moduleBData.perpetrators.filter((_, i) => i !== index));
   };
 
-  const updateCField = (field, value) => {
-    setModuleCData(prev => ({ ...prev, [activeCRiskCategory]: { ...prev[activeCRiskCategory], [field]: value } }));
+  const updateCField = (idx, field, value) => {
+    setModuleCData(prev => ({ ...prev, children: prev.children.map((c, i) => i === idx ? { ...c, [field]: value } : c) }));
   };
-  const toggleCRiskFactor = (rid) => {
-    const current = currentCData.riskFactors;
-    updateCField('riskFactors', current.includes(rid) ? current.filter(r => r !== rid) : [...current, rid]);
+  const addCChild = () => {
+    setModuleCData(prev => ({ ...prev, children: [...prev.children, makeCChild()] }));
   };
-  const updateCIndividual = (index, field, value) => {
-    const updated = [...currentCData.individuals];
-    updated[index] = { ...updated[index], [field]: value };
-    updateCField('individuals', updated);
-  };
-  const toggleCFamilyContext = (index, fid) => {
-    const updated = [...currentCData.individuals];
-    const current = updated[index].familyContexts || [];
-    updated[index].familyContexts = current.includes(fid) ? current.filter(f => f !== fid) : [...current, fid];
-    updateCField('individuals', updated);
-  };
-  const addCIndividual = () => {
-    updateCField('individuals', [...currentCData.individuals, makeCIndividual()]);
-  };
-  const removeCIndividual = (index) => {
-    updateCField('individuals', currentCData.individuals.filter((_, i) => i !== index));
+  const removeCChild = (idx) => {
+    setModuleCData(prev => ({ ...prev, children: prev.children.filter((_, i) => i !== idx) }));
   };
 
-  const updateDField = (field, value) => {
-    setModuleDData(prev => ({ ...prev, [activeDCategory]: { ...prev[activeDCategory], [field]: value } }));
+  const updateERow = (idx, field, value) => {
+    setModuleEData(prev => {
+      const rows = [...(prev.rows || [])];
+      rows[idx] = { ...rows[idx], [field]: value };
+      return { ...prev, rows };
+    });
   };
-  const toggleDViolation = (vid) => {
-    const current = currentDData.violations;
-    updateDField('violations', current.includes(vid) ? current.filter(v => v !== vid) : [...current, vid]);
+  const addERow = () => {
+    setModuleEData(prev => ({ ...prev, rows: [...(prev.rows || []), makeERow()] }));
   };
-  const toggleDProgram = (pid) => {
-    const current = currentDData.programs;
-    updateDField('programs', current.includes(pid) ? current.filter(p => p !== pid) : [...current, pid]);
+  const removeERow = (idx) => {
+    setModuleEData(prev => ({ ...prev, rows: (prev.rows || []).filter((_, i) => i !== idx) }));
   };
-  const updateDSubject = (index, field, value) => {
-    const updated = [...currentDData.subjects];
-    updated[index] = { ...updated[index], [field]: value };
-    updateDField('subjects', updated);
+  const updateERowVictim = (rowIdx, vicIdx, field, value) => {
+    setModuleEData(prev => {
+      const rows = [...(prev.rows || [])];
+      const victims = [...(rows[rowIdx].victims || [])];
+      victims[vicIdx] = { ...victims[vicIdx], [field]: value };
+      rows[rowIdx] = { ...rows[rowIdx], victims };
+      return { ...prev, rows };
+    });
   };
-  const addDSubject = () => {
-    updateDField('subjects', [...currentDData.subjects, makeDSubject()]);
+  const addERowVictim = (rowIdx) => {
+    setModuleEData(prev => {
+      const rows = [...(prev.rows || [])];
+      rows[rowIdx] = { ...rows[rowIdx], victims: [...(rows[rowIdx].victims || []), makeEVictim()] };
+      return { ...prev, rows };
+    });
   };
-  const removeDSubject = (index) => {
-    updateDField('subjects', currentDData.subjects.filter((_, i) => i !== index));
-  };
-
-  const updateEField = (field, value) => {
-    setModuleEData(prev => ({ ...prev, [activeECategory]: { ...prev[activeECategory], [field]: value } }));
-  };
-  const toggleEConcern = (cid) => {
-    const current = currentEData.concerns;
-    updateEField('concerns', current.includes(cid) ? current.filter(c => c !== cid) : [...current, cid]);
-  };
-  const updateEVictim = (index, field, value) => {
-    const updated = [...currentEData.victims];
-    updated[index] = { ...updated[index], [field]: value };
-    updateEField('victims', updated);
-  };
-  const addEVictim = () => {
-    updateEField('victims', [...currentEData.victims, makeEVictim()]);
-  };
-  const removeEVictim = (index) => {
-    updateEField('victims', currentEData.victims.filter((_, i) => i !== index));
-  };
-  const updateERespondent = (index, field, value) => {
-    const updated = [...currentEData.respondents];
-    updated[index] = { ...updated[index], [field]: value };
-    updateEField('respondents', updated);
-  };
-  const addERespondent = () => {
-    updateEField('respondents', [...currentEData.respondents, makeERespondent()]);
-  };
-  const removeERespondent = (index) => {
-    updateEField('respondents', currentEData.respondents.filter((_, i) => i !== index));
+  const removeERowVictim = (rowIdx, vicIdx) => {
+    setModuleEData(prev => {
+      const rows = [...(prev.rows || [])];
+      rows[rowIdx] = { ...rows[rowIdx], victims: (rows[rowIdx].victims || []).filter((_, i) => i !== vicIdx) };
+      return { ...prev, rows };
+    });
   };
 
   const validateForm = () => {
@@ -700,125 +637,337 @@ const ModuleAReportingPanel = () => {
     if (!schoolMetadata.schoolId.trim()) errors.schoolId = 'Required';
     if (!schoolMetadata.reportingYear.trim()) errors.reportingYear = 'Required';
     if (!schoolMetadata.address.trim()) errors.address = 'Required';
+    if (!schoolMetadata.classification) errors.classification = 'Required';
+    if (!schoolMetadata.level) errors.level = 'Required';
     
     if (activeModule === 'A') {
       if (!currentCategoryData.incidentDate) errors.incidentDate = 'Required';
       if (!currentCategoryData.incidentPlace.trim()) errors.incidentPlace = 'Required';
+      if (!currentCategoryData.motives || currentCategoryData.motives.length === 0) errors.motives = 'Required';
       
       currentCategoryData.affectedStudents.forEach((student, idx) => {
         if (!student.name.trim()) errors[`student${idx}Name`] = 'Required';
         if (!student.age) errors[`student${idx}Age`] = 'Required';
+        if (!student.gender) errors[`student${idx}Gender`] = 'Required';
+        if (!student.disability) errors[`student${idx}Disability`] = 'Required';
+        if (!student.impacts || student.impacts.length === 0) errors[`student${idx}Impacts`] = 'Required';
+        if (!student.enrollmentStatus) errors[`student${idx}Enrollment`] = 'Required';
+        if (!student.performanceBefore) errors[`student${idx}PerfBefore`] = 'Required';
+        if (!student.performanceAfter) errors[`student${idx}PerfAfter`] = 'Required';
       });
 
       currentCategoryData.initiatingParty.forEach((party, idx) => {
         if (!party.name.trim()) errors[`party${idx}Name`] = 'Required';
+        if (!party.age) errors[`party${idx}Age`] = 'Required';
+        if (!party.gender) errors[`party${idx}Gender`] = 'Required';
       });
 
       if (!currentCategoryData.actionsTaken.trim()) errors.actionsTaken = 'Required';
+      if (!currentCategoryData.status) errors.caseStatus = 'Required';
     }
 
     if (activeModule === 'B') {
       if (!moduleBData.incidentDate) errors.bIncidentDate = 'Required';
       if (!moduleBData.incidentPlace.trim()) errors.bIncidentPlace = 'Required';
-      moduleBData.affectedStudents.forEach((student, idx) => {
-        if (!student.name.trim()) errors['bStudent' + idx + 'Name'] = 'Required';
-        if (!student.age) errors['bStudent' + idx + 'Age'] = 'Required';
+      if (!moduleBData.nature || moduleBData.nature.length === 0) errors.bNature = 'Required';
+      moduleBData.victims.forEach((victim, idx) => {
+        if (!victim.name.trim()) errors['bVictim' + idx + 'Name'] = 'Required';
+        if (!victim.age) errors['bVictim' + idx + 'Age'] = 'Required';
+        if (!victim.gender) errors['bVictim' + idx + 'Gender'] = 'Required';
+        if (!victim.disability) errors['bVictim' + idx + 'Disability'] = 'Required';
       });
-      moduleBData.respondents.forEach((resp, idx) => {
-        if (!resp.name.trim()) errors['bRespond' + idx + 'Name'] = 'Required';
-        if (!resp.affiliation) errors['bRespond' + idx + 'Aff'] = 'Required';
+      moduleBData.perpetrators.forEach((perp, idx) => {
+        if (!perp.name.trim()) errors['bPerp' + idx + 'Name'] = 'Required';
+        if (!perp.gender) errors['bPerp' + idx + 'Gender'] = 'Required';
+        if (!perp.age) errors['bPerp' + idx + 'Age'] = 'Required';
+        if (!perp.relationship.trim()) errors['bPerp' + idx + 'Rel'] = 'Required';
       });
       if (!moduleBData.actionsTaken.trim()) errors.bActionsTaken = 'Required';
+      if (!moduleBData.status) errors.bCaseStatus = 'Required';
     }
 
     if (activeModule === 'C') {
-      const catId = activeCRiskCategory;
-      const cat = currentCData;
-      if (!cat.dateIdentified) errors['c' + catId + 'Date'] = 'Required';
-      if (!cat.location.trim()) errors['c' + catId + 'Loc'] = 'Required';
-      cat.individuals.forEach((ind, idx) => {
-        if (!ind.name.trim()) errors['c' + catId + 'Ind' + idx + 'Name'] = 'Required';
-        if (!ind.age) errors['c' + catId + 'Ind' + idx + 'Age'] = 'Required';
+      if (!periodCovered.trim()) errors.cPeriodCovered = 'Required';
+      if (!totalStudents) errors.cTotalStudents = 'Required';
+      (moduleCData?.children || []).forEach((child, idx) => {
+        if (!child.name.trim()) errors['cChild' + idx + 'Name'] = 'Required';
+        if (!child.gender) errors['cChild' + idx + 'Gender'] = 'Required';
+        if (!child.disability) errors['cChild' + idx + 'Disability'] = 'Required';
+        if (!child.classification) errors['cChild' + idx + 'Class'] = 'Required';
+        if (!child.actionTaken.trim()) errors['cChild' + idx + 'Action'] = 'Required';
+        if (!child.status) errors['cChild' + idx + 'Status'] = 'Required';
       });
-      if (!cat.intervention.trim()) errors['c' + catId + 'Int'] = 'Required';
+      if (!cNarrative.trim()) errors.cNarrative = 'Required';
     }
 
     if (activeModule === 'D') {
-      const catId = activeDCategory;
-      const cat = currentDData;
-      if (!cat.offenseDate) errors['d' + catId + 'Date'] = 'Required';
-      if (!cat.location.trim()) errors['d' + catId + 'Loc'] = 'Required';
-      cat.subjects.forEach((sub, idx) => {
-        if (!sub.identificationRef.trim()) errors['d' + catId + 'Sub' + idx + 'Ref'] = 'Required';
+      if (!moduleDData?.periodCovered?.trim()) errors.dPeriodCovered = 'Required';
+      (moduleDData?.ciclList || []).forEach(function(c, idx) {
+        if (!c.lrn.trim()) errors['dLRN' + idx] = 'Required';
+        if (!c.age) errors['dAge' + idx] = 'Required';
+        if (!c.caseViolation.trim()) errors['dCase' + idx] = 'Required';
       });
-      if (!cat.narrative.trim()) errors['d' + catId + 'Narr'] = 'Required';
+      if (!moduleDData?.interventionNarrative?.trim()) errors.dInterventionNarrative = 'Required';
     }
 
     if (activeModule === 'E') {
-      const catId = activeECategory;
-      const cat = currentEData;
-      if (!cat.incidentDate) errors['e' + catId + 'Date'] = 'Required';
-      if (!cat.incidentPlace.trim()) errors['e' + catId + 'Place'] = 'Required';
-      cat.victims.forEach((vic, idx) => {
-        if (!vic.name.trim()) errors['e' + catId + 'Vic' + idx + 'Name'] = 'Required';
-        if (!vic.age) errors['e' + catId + 'Vic' + idx + 'Age'] = 'Required';
+      (moduleEData?.rows || []).forEach((row, idx) => {
+        if (!row.concernType) errors['eRow' + idx + 'Concern'] = 'Required';
+        if (!row.perpetratorName.trim()) errors['eRow' + idx + 'PerpName'] = 'Required';
+        if (!row.perpetratorAge) errors['eRow' + idx + 'PerpAge'] = 'Required';
+        if (!row.incidentDate) errors['eRow' + idx + 'Date'] = 'Required';
+        if (!row.incidentPlace.trim()) errors['eRow' + idx + 'Place'] = 'Required';
+        (row.victims || []).forEach((vic, vicIdx) => {
+          if (!vic.name.trim()) errors['eRow' + idx + 'Vic' + vicIdx + 'Name'] = 'Required';
+          if (!vic.age) errors['eRow' + idx + 'Vic' + vicIdx + 'Age'] = 'Required';
+          if (!vic.sexGender) errors['eRow' + idx + 'Vic' + vicIdx + 'Sex'] = 'Required';
+        });
+        if (!row.actionsTaken.trim()) errors['eRow' + idx + 'Act'] = 'Required';
+        if (!row.status) errors['eRow' + idx + 'Status'] = 'Required';
       });
-      cat.respondents.forEach((resp, idx) => {
-        if (!resp.name.trim()) errors['e' + catId + 'Resp' + idx + 'Name'] = 'Required';
-      });
-      if (!cat.actionsTaken.trim()) errors['e' + catId + 'Act'] = 'Required';
     }
 
     if (!preparedBy.name.trim()) errors.preparedName = 'Required';
+    if (!preparedBy.designation.trim()) errors.preparedDesignation = 'Required';
     if (!preparedBy.date) errors.preparedDate = 'Required';
     if (!validatedBy.name.trim()) errors.validatedName = 'Required';
+    if (!validatedBy.designation.trim()) errors.validatedDesignation = 'Required';
     if (!validatedBy.date) errors.validatedDate = 'Required';
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (validateForm()) {
-      try {
-        const reportPayload = {
-          referenceNumber: `LRP-${Date.now()}`,
-          module: activeModule,
-          metadata: schoolMetadata,
-          preparedBy,
-          validatedBy,
-          userEmail: window.__user?.email,
-          data: activeModule === 'A' ? { categories: categoryData } :
-                activeModule === 'B' ? moduleBData :
-                activeModule === 'C' ? { categories: moduleCData } :
-                activeModule === 'D' ? { categories: moduleDData } :
-                { categories: moduleEData }
-        };
-        const res = await fetch('http://localhost:5000/api/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reportPayload)
-        });
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
-        setFormState('submitted');
-        localStorage.setItem('lastSubmission', JSON.stringify({
-          date: new Date().toISOString(),
-          referenceNumber: reportPayload.referenceNumber,
-          module: activeModule
-        }));
-      } catch (err) {
-        console.error('Submission failed:', err);
-        alert('Submission failed. Please try again.');
-        return;
+  // Check if a Module A category object has any meaningful data filled in
+  function isCategoryEmpty(cat) {
+    if (!cat) return true;
+    if (cat.incidentDate || cat.incidentPlace || cat.actionsTaken || cat.status) return false;
+    if (cat.motives && cat.motives.length > 0) return false;
+    var hasStudent = cat.affectedStudents && cat.affectedStudents.some(function(s) { return s.name || s.age; });
+    var hasParty = cat.initiatingParty && cat.initiatingParty.some(function(p) { return p.name || p.age; });
+    if (hasStudent || hasParty) return false;
+    return true;
+  }
+
+  // Module C is never empty — it's a flat structure
+  function isModuleCEmpty(data) {
+    if (!data) return true;
+    return !data.children || data.children.length === 0 || data.children.every(function(c) { return !c.name.trim(); });
+  }
+
+  // Filter out empty categories from an object like { 'A-1': {...}, 'A-2': {...} }
+  function filterEmptyCategories(cats) {
+    var result = {};
+    Object.keys(cats).forEach(function(k) {
+      if (!isCategoryEmpty(cats[k])) result[k] = cats[k];
+    });
+    return result;
+  }
+
+  // ── Summary review helpers (mirrors reports page format) ──
+  function annexLabel(mod) {
+    return mod === 'A' ? 'Annex A (Bullying)' : mod === 'B' ? 'Annex B (Child Abuse)' : mod === 'C' ? 'Annex C (CAR)' : mod === 'D' ? 'Annex D (CICL)' : mod === 'E' ? 'Annex E (Other Rights)' : mod;
+  }
+  function categoryTitle(key, mod) {
+    if (mod === 'A') return 'Form of Bullying: ' + key;
+    if (mod === 'B') return 'Incident Report';
+    if (mod === 'C') return 'Children at Risk Registry';
+    if (mod === 'D') return 'CICL Case: ' + key;
+    if (mod === 'E') return 'Concern Type: ' + key;
+    return 'Section: ' + key;
+  }
+  function readLabel(field) {
+    var M = {
+      name: 'Name', age: 'Age', gender: 'Gender', status: 'Status',
+      disability: 'Learner with Disability', actionsTaken: 'Action/s Taken',
+      enrollmentStatus: 'Enrollment Status',
+      performanceBefore: 'Academic Performance (Before)',
+      performanceAfter: 'Academic Performance (After)',
+      incidentDate: 'Date of Incident', incidentPlace: 'Place of Incident',
+      motives: 'Motives/Nature', affectedStudents: 'Victim', initiatingParty: 'Bully',
+      impacts: 'Effect/s to Learner-Victims',
+      nature: 'Nature of Child Abuse', victims: 'Victim',
+      perpetrators: 'Perpetrator', relationship: 'Relationship to the Victim',
+      individuals: 'Child at Risk', riskFactors: 'Risk Factors',
+      location: 'Community Context', intervention: 'Action Taken',
+      dateIdentified: 'Date Identified', familyContexts: 'Family Context',
+      offenseDate: 'Date of Offense', violations: 'Case/Violation',
+      subjects: 'CICL', programs: 'Intervention/Diversion Program',
+      narrative: 'Concrete Description of Intervention',
+      identificationRef: "Learner's Reference Number (LRN)",
+      concerns: 'Type of Concern', victims: 'Victim',
+      perpetrator: 'Perpetrator', respondent: 'Respondent',
+      designation: 'Designation', classification: 'Classification',
+      concernType: 'Type of Concern', perpetratorName: 'Perpetrator Name',
+      perpetratorAge: 'Perpetrator Age', sexGender: 'Sex/Gender',
+      rows: 'Concern Rows',
+      level: 'Level', categories: 'Behavioral Concern Categories',
+      periodCovered: 'Period Covered', totalStudents: 'Total Number of Students',
+      children: 'Children at Risk', narrative: 'Narrative Summary',
+      actionTaken: 'Action/s Taken', summaryCounts: 'Summary Counts',
+      resolved: 'Resolved', ongoing: 'On-going Intervention',
+      referredGov: 'Referred to Government Agencies',
+      referredNGO: 'Referred to Non-Government Organizations'
+    };
+    return M[field] || field.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, function(s) { return s.toUpperCase(); });
+  }
+  function flattenDetail(obj, mod, sectionKey) {
+    var result = [];
+    var keys = Object.keys(obj);
+    keys.forEach(function(k) {
+      var v = obj[k];
+      var label = readLabel(k);
+      if (v === null || v === undefined) { result.push({ label: label, value: '—' }); }
+      else if (Array.isArray(v)) {
+        if (v.length === 0) { result.push({ label: label, value: 'None' }); }
+        else if (typeof v[0] === 'object') {
+          v.forEach(function(item, idx) {
+            var singular = readLabel(k);
+            var arrLabel = singular + ' ' + (idx + 1);
+            if (typeof item === 'object' && item !== null) {
+              var subKeys = Object.keys(item);
+              subKeys.forEach(function(sk) {
+                var sv = item[sk];
+                var subLabel = readLabel(sk);
+                if (Array.isArray(sv)) {
+                  result.push({ label: arrLabel + ' — ' + subLabel, value: sv.join(', ') || '—' });
+                } else {
+                  result.push({ label: arrLabel + ' — ' + subLabel, value: String(sv || '—') });
+                }
+              });
+            } else { result.push({ label: arrLabel, value: String(item) }); }
+          });
+        } else {
+          result.push({ label: label, value: v.join(', ') });
+        }
       }
-      setTimeout(() => {
+      else if (typeof v === 'object') {
+        var sub = flattenDetail(v, mod, sectionKey);
+        result = result.concat(sub);
+      }
+      else { result.push({ label: label, value: String(v) }); }
+    });
+    return result;
+  }
+  function buildSummaryHTML(payload) {
+    var mod = payload.module;
+    var md = payload.metadata || {};
+    var html = '';
+    // Metadata section
+    html += '<div class="grid grid-cols-2 md:grid-cols-4 gap-sm mb-md p-sm bg-surface-container-low rounded-lg">';
+    html += '<div><div class="text-caption text-on-surface-variant">School</div><div class="font-bold">' + (md.schoolName || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">School ID</div><div class="font-bold">' + (md.schoolId || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Annex</div><div class="font-bold">' + annexLabel(mod) + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Year</div><div class="font-bold">' + (md.reportingYear || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Classification</div><div class="font-bold">' + (md.classification || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Level</div><div class="font-bold">' + (md.level || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Address</div><div class="font-bold">' + (md.address || '—') + '</div></div>';
+    html += '<div><div class="text-caption text-on-surface-variant">Overall Status</div><div class="font-bold">Submitted</div></div>';
+    html += '</div>';
+    // Sections
+    var sections = {};
+    if (mod === 'B' && payload.data) { sections['_data'] = payload.data; }
+    else if (mod === 'C' && payload.data) { sections['_data'] = payload.data; }
+    else if (mod === 'E' && payload.data) { sections['_data'] = payload.data; }
+    else {
+      var cats = payload.data?.categories || {};
+      Object.keys(cats).forEach(function(k) { sections[k] = cats[k]; });
+    }
+    var sectionKeys = Object.keys(sections);
+    sectionKeys.forEach(function(key) {
+      var section = sections[key];
+      html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+      html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">' + categoryTitle(key, mod) + '</div>';
+      html += '<table class="w-full text-left border-collapse">';
+      var fields = flattenDetail(section, mod, key);
+      fields.forEach(function(f, i) {
+        var bg = i % 2 === 0 ? 'bg-surface-container-low' : '';
+        html += '<tr class="' + bg + '"><td class="px-md py-sm font-bold text-on-surface-variant text-sm w-1/3 align-top">' + f.label + '</td><td class="px-md py-sm text-on-surface text-sm whitespace-pre-wrap">' + f.value + '</td></tr>';
+      });
+      html += '</table></div>';
+    });
+    if (!sectionKeys.length) html += '<div class="text-center text-on-surface-variant py-lg">No category data</div>';
+    return html;
+  }
+
+  const handleSubmit = async () => {
+    if (!validateForm() || submitting) return;
+    var filteredData;
+    if (activeModule === 'A') filteredData = { categories: filterEmptyCategories(categoryData) };
+    else if (activeModule === 'B') filteredData = moduleBData;
+    else if (activeModule === 'C') filteredData = {
+      periodCovered: periodCovered,
+      totalStudents: totalStudents,
+      children: (moduleCData?.children || []).filter(function(c) { return c.name.trim(); }),
+      narrative: cNarrative,
+      summaryCounts: {
+        resolved: resolvedCount,
+        ongoing: ongoingCount,
+        referredGov: referredGovCount,
+        referredNGO: referredNGOCount
+      }
+    };
+    else if (activeModule === 'D') filteredData = {
+      periodCovered: moduleDData?.periodCovered || '',
+      ciclList: (moduleDData?.ciclList || []).filter(function(c) { return c.lrn.trim(); }),
+      interventionNarrative: moduleDData?.interventionNarrative || ''
+    };
+    else if (activeModule === 'E') filteredData = {
+      rows: (moduleEData?.rows || []).filter(function(r) { return r.concernType; }),
+      summaryCounts: {
+        resolved: eResolvedCount,
+        ongoing: eOngoingCount,
+        referredGov: eReferredGovCount,
+        referredNGO: eReferredNGOCount
+      }
+    };
+
+    var payload = {
+      referenceNumber: `LRP-${Date.now()}`,
+      module: activeModule,
+      metadata: schoolMetadata,
+      preparedBy: preparedBy,
+      validatedBy: validatedBy,
+      userEmail: window.__user?.email,
+      data: filteredData
+    };
+    setReportPayload(payload);
+    // Build and show summary
+    setTimeout(function() {
+      document.getElementById('summary-body').innerHTML = buildSummaryHTML(payload);
+      setShowSummary(true);
+    }, 50);
+  };
+
+  const confirmSubmit = async () => {
+    if (!reportPayload || submitting) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch('http://localhost:5000/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reportPayload)
+      });
+      if (!res.ok) throw new Error('Server returned ' + res.status);
+      setFormState('submitted');
+      setShowSummary(false);
+      localStorage.setItem('lastSubmission', JSON.stringify({
+        date: new Date().toISOString(),
+        referenceNumber: reportPayload.referenceNumber,
+        module: activeModule
+      }));
+      setTimeout(function() {
         window.location.href = '/analytics';
-      }, 1500);
+      }, 800);
+    } catch (err) {
+      console.error('Submission failed:', err);
+      alert('Submission failed. Please try again.');
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="page">
+    <div className={`page ${formState === 'submitted' ? 'success-flash' : ''}`} ref={submitRef}>
       <div className="flex justify-between items-start mb-sm" style={{ gap: '16px' }}>
         <div style={{ flex: '1 1 0%', minWidth: 0 }}>
           <div style={{ fontSize: '11px', fontWeight: '800', color: '#74777f', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -826,7 +975,7 @@ const ModuleAReportingPanel = () => {
             Official Compliance Report
           </div>
           <div style={{ fontSize: '20px', fontWeight: '800', color: '#002046', fontFamily: "'Atkinson Hyperlegible Next', sans-serif", wordBreak: 'break-word' }}>
-            Annex A — Module {activeModule}{activeModule === 'A' ? ' — Incident Report' : activeModule === 'B' ? ' — Behavioral Report' : activeModule === 'C' ? ' — Risk Registry' : activeModule === 'D' ? ' — School-Based Incident' : ' — Welfare Concern'}
+            Annex {activeModule}{activeModule === 'A' ? ' — School-Based Incident Report on Bullying' : activeModule === 'B' ? ' — School-Based Incident Report on Child Abuse' : activeModule === 'C' ? ' — Risk Registry Report' : activeModule === 'D' ? ' — School-Based Consolidated Report on Incidents of Children in Conflict with the Law (CICL)' : ' — School-Based Consolidated Report on Other Learner Rights and Protection Concerns'}
           </div>
         </div>
         <div style={{ display: 'flex', background: '#dfe9fa', borderRadius: '999px', padding: '4px', gap: '4px', flexShrink: 0 }}>
@@ -847,7 +996,7 @@ const ModuleAReportingPanel = () => {
                 color: activeModule === mod ? '#ffffff' : '#44474e',
                 boxShadow: activeModule === mod ? '0 2px 8px rgba(0,32,70,.18)' : 'none',
               }}
-            >Module {mod}</button>
+            >Annex {mod}</button>
           ))}
         </div>
       </div>
@@ -882,10 +1031,13 @@ const ModuleAReportingPanel = () => {
       </div>
 
       {formState === 'submitted' && (
-        <div className="success-card">
-          <div className="success-text" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '6px' }}>Submission Complete</div>
+        <div className="success-card slide-in">
+          <div className="success-badge" style={{ marginBottom: '10px' }}>
+            <span className="material-symbols-outlined check-icon" style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            Successfully Submitted
+          </div>
           <div style={{ fontSize: '22px', fontWeight: '800', color: '#002046', marginBottom: '8px' }}>Reference: LRP-2026-0810</div>
-          <div style={{ fontSize: '13px', color: '#44474e' }}>Report submitted successfully and stored for review.</div>
+          <div style={{ fontSize: '13px', color: '#44474e' }}>Report submitted successfully and stored for review. Redirecting to analytics...</div>
         </div>
       )}
 
@@ -908,7 +1060,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Santiago Elementary" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -918,7 +1070,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -928,7 +1083,7 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Classification <span className="required">*</span></label>
-                <div className="radio-group">
+                <div className={`radio-group ${validationErrors.classification ? 'field-error' : ''}`}>
                   {['Public', 'Private'].map(opt => (
                     <label key={opt} className="radio-option">
                       <input type="radio" name="classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
@@ -936,10 +1091,11 @@ const ModuleAReportingPanel = () => {
                     </label>
                   ))}
                 </div>
+                {validationErrors.classification && <div className="error-text">{validationErrors.classification}</div>}
               </div>
               <div>
                 <label className="field-label">Level <span className="required">*</span></label>
-                <div className="radio-group">
+                <div className={`radio-group ${validationErrors.level ? 'field-error' : ''}`}>
                   {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
                     <label key={opt} className="radio-option">
                       <input type="radio" name="level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
@@ -947,6 +1103,7 @@ const ModuleAReportingPanel = () => {
                     </label>
                   ))}
                 </div>
+                {validationErrors.level && <div className="error-text">{validationErrors.level}</div>}
               </div>
             </div>
           </div>
@@ -956,7 +1113,7 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Incident Categories</div>
-                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+                <div className="card-header-subtitle">OFFENSE &amp; VIOLATION DETAILS</div>
               </div>
             </div>
             <div className="category-pills">
@@ -974,13 +1131,15 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Incident Details</div>
-                <div className="card-header-subtitle">SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 3: INCIDENT DETAILS</div>
               </div>
             </div>
             <div className="panel-grid">
               <div>
                 <label className="field-label">Date of Incident <span className="required">*</span></label>
-                <DateInput value={currentCategoryData.incidentDate} onChange={e => updateCategoryField('incidentDate', e.target.value)} />
+                <div className={`${validationErrors.incidentDate ? 'field-error' : ''}`} style={validationErrors.incidentDate ? { padding: '4px', borderRadius: '4px' } : {}}>
+                  <DateInput value={currentCategoryData.incidentDate} onChange={e => updateCategoryField('incidentDate', e.target.value)} />
+                </div>
                 {validationErrors.incidentDate && <div className="error-text">{validationErrors.incidentDate}</div>}
               </div>
               <div>
@@ -991,8 +1150,8 @@ const ModuleAReportingPanel = () => {
             </div>
 
             <div style={{ marginTop: '16px' }}>
-              <label className="field-label">Motive Tags</label>
-              <div className="chip-list">
+              <label className="field-label">Motive Tags <span className="required">*</span></label>
+              <div className={`chip-list ${validationErrors.motives ? 'field-error' : ''}`}>
                 {motiveOptions.map(motive => (
                   <label key={motive.id} className="checkbox-chip">
                     <input type="checkbox" checked={currentCategoryData.motives.includes(motive.id)} onChange={() => toggleMotive(motive.id)} />
@@ -1000,6 +1159,7 @@ const ModuleAReportingPanel = () => {
                   </label>
                 ))}
               </div>
+              {validationErrors.motives && <div className="error-text">{validationErrors.motives}</div>}
             </div>
           </div>
 
@@ -1024,22 +1184,24 @@ const ModuleAReportingPanel = () => {
                     <input type="number" min="1" max="100" className={`field-input ${validationErrors[`student${idx}Age`] ? 'field-error' : ''}`} value={student.age} onChange={e => updateAffectedStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
                   </div>
                   <div>
-                    <label className="field-label">Gender</label>
-                    <select className="field-select" value={student.gender} onChange={e => updateAffectedStudent(idx, 'gender', e.target.value)}>
+                    <label className="field-label">Gender <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors[`student${idx}Gender`] ? 'field-error' : ''}`} value={student.gender} onChange={e => updateAffectedStudent(idx, 'gender', e.target.value)}>
                       {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
                     </select>
+                    {validationErrors[`student${idx}Gender`] && <div className="error-text">{validationErrors[`student${idx}Gender`]}</div>}
                   </div>
                   <div>
-                    <label className="field-label">Learner with Disability</label>
-                    <select className="field-select" value={student.disability} onChange={e => updateAffectedStudent(idx, 'disability', e.target.value)}>
+                    <label className="field-label">Learner with Disability <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors[`student${idx}Disability`] ? 'field-error' : ''}`} value={student.disability} onChange={e => updateAffectedStudent(idx, 'disability', e.target.value)}>
                       {['Yes', 'No'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
+                    {validationErrors[`student${idx}Disability`] && <div className="error-text">{validationErrors[`student${idx}Disability`]}</div>}
                   </div>
                 </div>
 
                 <div style={{ marginTop: '12px' }}>
-                  <label className="field-label">Recorded Impact Flags</label>
-                  <div className="chip-list">
+                  <label className="field-label">Recorded Impact Flags <span className="required">*</span></label>
+                  <div className={`chip-list ${validationErrors[`student${idx}Impacts`] ? 'field-error' : ''}`}>
                     {impactFlags.map(impact => (
                       <label key={impact} className="checkbox-chip">
                         <input type="checkbox" checked={student.impacts?.includes(impact)} onChange={() => toggleImpact(idx, impact)} />
@@ -1047,29 +1209,33 @@ const ModuleAReportingPanel = () => {
                       </label>
                     ))}
                   </div>
+                  {validationErrors[`student${idx}Impacts`] && <div className="error-text">{validationErrors[`student${idx}Impacts`]}</div>}
                 </div>
 
                 <div className="panel-grid" style={{ marginTop: '12px' }}>
                   <div>
-                    <label className="field-label">Enrollment Status After</label>
-                    <select className="field-select" value={student.enrollmentStatus} onChange={e => updateAffectedStudent(idx, 'enrollmentStatus', e.target.value)}>
+                    <label className="field-label">Enrollment Status After <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors[`student${idx}Enrollment`] ? 'field-error' : ''}`} value={student.enrollmentStatus} onChange={e => updateAffectedStudent(idx, 'enrollmentStatus', e.target.value)}>
                       <option value="">Select</option>
                       {enrollmentOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
+                    {validationErrors[`student${idx}Enrollment`] && <div className="error-text">{validationErrors[`student${idx}Enrollment`]}</div>}
                   </div>
                   <div>
-                    <label className="field-label">Performance Before</label>
-                    <select className="field-select" value={student.performanceBefore} onChange={e => updateAffectedStudent(idx, 'performanceBefore', e.target.value)}>
+                    <label className="field-label">Performance Before <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors[`student${idx}PerfBefore`] ? 'field-error' : ''}`} value={student.performanceBefore} onChange={e => updateAffectedStudent(idx, 'performanceBefore', e.target.value)}>
                       <option value="">Select</option>
                       {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
+                    {validationErrors[`student${idx}PerfBefore`] && <div className="error-text">{validationErrors[`student${idx}PerfBefore`]}</div>}
                   </div>
                   <div>
-                    <label className="field-label">Performance After</label>
-                    <select className="field-select" value={student.performanceAfter} onChange={e => updateAffectedStudent(idx, 'performanceAfter', e.target.value)}>
+                    <label className="field-label">Performance After <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors[`student${idx}PerfAfter`] ? 'field-error' : ''}`} value={student.performanceAfter} onChange={e => updateAffectedStudent(idx, 'performanceAfter', e.target.value)}>
                       <option value="">Select</option>
                       {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
+                    {validationErrors[`student${idx}PerfAfter`] && <div className="error-text">{validationErrors[`student${idx}PerfAfter`]}</div>}
                   </div>
                 </div>
               </div>
@@ -1082,9 +1248,9 @@ const ModuleAReportingPanel = () => {
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
-              <div className="card-header-text">
+<div className="card-header-text">
                 <div className="card-header-title">Initiating Party</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 5: INITIATING PARTY [SUB-SECTION]</div>
               </div>
             </div>
             {currentCategoryData.initiatingParty.map((party, idx) => (
@@ -1096,14 +1262,16 @@ const ModuleAReportingPanel = () => {
                     <input className={`field-input ${validationErrors[`party${idx}Name`] ? 'field-error' : ''}`} value={party.name} onChange={e => updateInitiatingParty(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
                   </div>
                   <div>
-                    <label className="field-label">Age</label>
-                    <input type="number" min="1" max="100" value={party.age} onChange={e => updateInitiatingParty(idx, 'age', e.target.value)} placeholder="e.g., 38" className="field-input" />
+                    <label className="field-label">Age <span className="required">*</span></label>
+                    <input type="number" min="1" max="100" value={party.age} onChange={e => updateInitiatingParty(idx, 'age', e.target.value)} placeholder="e.g., 38" className={`field-input ${validationErrors[`party${idx}Age`] ? 'field-error' : ''}`} />
+                    {validationErrors[`party${idx}Age`] && <div className="error-text">{validationErrors[`party${idx}Age`]}</div>}
                   </div>
                   <div>
-                    <label className="field-label">Gender</label>
-                    <select className="field-select" value={party.gender} onChange={e => updateInitiatingParty(idx, 'gender', e.target.value)}>
+                    <label className="field-label">Gender <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors[`party${idx}Gender`] ? 'field-error' : ''}`} value={party.gender} onChange={e => updateInitiatingParty(idx, 'gender', e.target.value)}>
                       {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
                     </select>
+                    {validationErrors[`party${idx}Gender`] && <div className="error-text">{validationErrors[`party${idx}Gender`]}</div>}
                   </div>
                 </div>
               </div>
@@ -1129,10 +1297,11 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Case Status <span className="required">*</span></label>
-                <select className="field-select" value={currentCategoryData.status} onChange={e => updateCategoryField('status', e.target.value)}>
+                <select className={`field-select ${validationErrors.caseStatus ? 'field-error' : ''}`} value={currentCategoryData.status} onChange={e => updateCategoryField('status', e.target.value)}>
                   <option value="">Select Status</option>
                   {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
+                {validationErrors.caseStatus && <div className="error-text">{validationErrors.caseStatus}</div>}
               </div>
             </div>
           </div>
@@ -1152,7 +1321,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Santiago Elementary" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1162,7 +1331,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -1172,7 +1344,7 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Classification <span className="required">*</span></label>
-                <div className="radio-group">
+                <div className={`radio-group ${validationErrors.classification ? 'field-error' : ''}`}>
                   {['Public', 'Private'].map(opt => (
                     <label key={opt} className="radio-option">
                       <input type="radio" name="classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
@@ -1180,10 +1352,11 @@ const ModuleAReportingPanel = () => {
                     </label>
                   ))}
                 </div>
+                {validationErrors.classification && <div className="error-text">{validationErrors.classification}</div>}
               </div>
               <div>
                 <label className="field-label">Level <span className="required">*</span></label>
-                <div className="radio-group">
+                <div className={`radio-group ${validationErrors.level ? 'field-error' : ''}`}>
                   {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
                     <label key={opt} className="radio-option">
                       <input type="radio" name="level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
@@ -1191,6 +1364,7 @@ const ModuleAReportingPanel = () => {
                     </label>
                   ))}
                 </div>
+                {validationErrors.level && <div className="error-text">{validationErrors.level}</div>}
               </div>
             </div>
           </div>
@@ -1199,18 +1373,19 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Behavior Categories</div>
-                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+                <div className="card-header-title">Nature of Child Abuse</div>
+                <div className="card-header-subtitle">TYPE OF ABUSE</div>
               </div>
             </div>
-            <div className="category-pills">
-              {moduleBCategories.map(cat => (
-                <button key={cat.id} className={`category-btn`} onClick={() => {}}>
-                  {cat.id}
-                </button>
+            <div className={`chip-list ${validationErrors.bNature ? 'field-error' : ''}`}>
+              {natureOptions.map(n => (
+                <label key={n.id} className="checkbox-chip">
+                  <input type="checkbox" checked={moduleBData.nature?.includes(n.id)} onChange={() => toggleModuleBNature(n.id)} />
+                  <span>{n.label}</span>
+                </label>
               ))}
             </div>
-            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>Behavioral concern categories under Module B</div>
+            {validationErrors.bNature && <div className="error-text">{validationErrors.bNature}</div>}
           </div>
 
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
@@ -1218,13 +1393,15 @@ const ModuleAReportingPanel = () => {
               <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
               <div className="card-header-text">
                 <div className="card-header-title">Incident Details</div>
-                <div className="card-header-subtitle">SECTION DETAILS</div>
+                <div className="card-header-subtitle">SECTION 3: INCIDENT DETAILS</div>
               </div>
             </div>
             <div className="panel-grid">
               <div>
                 <label className="field-label">Date of Incident <span className="required">*</span></label>
-                <DateInput value={moduleBData.incidentDate} onChange={e => updateModuleBField('incidentDate', e.target.value)} />
+                <div className={`${validationErrors.bIncidentDate ? 'field-error' : ''}`} style={validationErrors.bIncidentDate ? { padding: '4px', borderRadius: '4px' } : {}}>
+                  <DateInput value={moduleBData.incidentDate} onChange={e => updateModuleBField('incidentDate', e.target.value)} />
+                </div>
                 {validationErrors.bIncidentDate && <div className="error-text">{validationErrors.bIncidentDate}</div>}
               </div>
               <div>
@@ -1234,92 +1411,50 @@ const ModuleAReportingPanel = () => {
               </div>
             </div>
 
-            <div style={{ marginTop: '16px' }}>
-              <label className="field-label">Nature of Incident</label>
-              <div className="chip-list">
-                {natureOptions.map(n => (
-                  <label key={n.id} className="checkbox-chip">
-                    <input type="checkbox" checked={moduleBData.incidentNature.includes(n.id)} onChange={() => toggleModuleBNature(n.id)} />
-                    <span>{n.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
           </div>
 
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Affected Student(s)</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Victim(s)</div>
+                <div className="card-header-subtitle">SECTION 4: VICTIM(S)</div>
               </div>
             </div>
-            {moduleBData.affectedStudents.map((student, idx) => (
+            {moduleBData.victims.map((victim, idx) => (
               <div key={idx} className="row-card">
-                <button className="remove-btn" type="button" onClick={() => removeModuleBStudent(idx)} title="Remove">✕</button>
+                <button className="remove-btn" type="button" onClick={() => removeModuleBVictim(idx)} title="Remove">✕</button>
                 <div className="panel-grid">
                   <div>
                     <label className="field-label">Name <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['bStudent' + idx + 'Name'] ? 'field-error' : ''}`} value={student.name} onChange={e => updateModuleBStudent(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                    <input className={`field-input ${validationErrors['bVictim' + idx + 'Name'] ? 'field-error' : ''}`} value={victim.name} onChange={e => updateModuleBVictim(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
                   </div>
                   <div>
                     <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['bStudent' + idx + 'Age'] ? 'field-error' : ''}`} value={student.age} onChange={e => updateModuleBStudent(idx, 'age', e.target.value)} placeholder="e.g., 12" />
+                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['bVictim' + idx + 'Age'] ? 'field-error' : ''}`} value={victim.age} onChange={e => updateModuleBVictim(idx, 'age', e.target.value)} placeholder="e.g., 12" />
                   </div>
                   <div>
-                    <label className="field-label">Gender</label>
-                    <select className="field-select" value={student.gender} onChange={e => updateModuleBStudent(idx, 'gender', e.target.value)}>
+                    <label className="field-label">Gender <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors['bVictim' + idx + 'Gender'] ? 'field-error' : ''}`} value={victim.gender} onChange={e => updateModuleBVictim(idx, 'gender', e.target.value)}>
+                      <option value="">Select</option>
                       {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
                     </select>
+                    {validationErrors['bVictim' + idx + 'Gender'] && <div className="error-text">{validationErrors['bVictim' + idx + 'Gender']}</div>}
                   </div>
                   <div>
-                    <label className="field-label">Learner with Disability</label>
-                    <select className="field-select" value={student.disability} onChange={e => updateModuleBStudent(idx, 'disability', e.target.value)}>
-                      {['Yes', 'No'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '12px' }}>
-                  <label className="field-label">Recorded Impact Flags</label>
-                  <div className="chip-list">
-                    {impactFlags.map(impact => (
-                      <label key={impact} className="checkbox-chip">
-                        <input type="checkbox" checked={student.impacts?.includes(impact)} onChange={() => toggleModuleBStudentImpact(idx, impact)} />
-                        <span>{impact}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="panel-grid" style={{ marginTop: '12px' }}>
-                  <div>
-                    <label className="field-label">Enrollment Status After</label>
-                    <select className="field-select" value={student.enrollmentStatus} onChange={e => updateModuleBStudent(idx, 'enrollmentStatus', e.target.value)}>
+                    <label className="field-label">Learner with Disability <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors['bVictim' + idx + 'Disability'] ? 'field-error' : ''}`} value={victim.disability} onChange={e => updateModuleBVictim(idx, 'disability', e.target.value)}>
                       <option value="">Select</option>
-                      {enrollmentOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                      <option value="Yes">Yes (1)</option>
+                      <option value="No">No (0)</option>
                     </select>
-                  </div>
-                  <div>
-                    <label className="field-label">Performance Before</label>
-                    <select className="field-select" value={student.performanceBefore} onChange={e => updateModuleBStudent(idx, 'performanceBefore', e.target.value)}>
-                      <option value="">Select</option>
-                      {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="field-label">Performance After</label>
-                    <select className="field-select" value={student.performanceAfter} onChange={e => updateModuleBStudent(idx, 'performanceAfter', e.target.value)}>
-                      <option value="">Select</option>
-                      {performanceOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
+                    {validationErrors['bVictim' + idx + 'Disability'] && <div className="error-text">{validationErrors['bVictim' + idx + 'Disability']}</div>}
                   </div>
                 </div>
               </div>
             ))}
-            <button className="add-btn" type="button" onClick={addModuleBStudent}>
-              <span style={{ fontSize: '16px' }}>+</span> Add Student
+            <button className="add-btn" type="button" onClick={addModuleBVictim}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Victim
             </button>
           </div>
 
@@ -1327,40 +1462,47 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Respondents</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Perpetrator(s)</div>
+                <div className="card-header-subtitle">SECTION 5: PERPETRATOR(S)</div>
               </div>
             </div>
-            {moduleBData.respondents.map((resp, idx) => (
+            {moduleBData.perpetrators.map((perp, idx) => (
               <div key={idx} className="row-card">
-                <button className="remove-btn" type="button" onClick={() => removeModuleBRespondent(idx)} title="Remove">✕</button>
+                <button className="remove-btn" type="button" onClick={() => removeModuleBPerpetrator(idx)} title="Remove">✕</button>
                 <div className="panel-grid">
                   <div>
                     <label className="field-label">Name <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['bRespond' + idx + 'Name'] ? 'field-error' : ''}`} value={resp.name} onChange={e => updateModuleBRespondent(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                    <input className={`field-input ${validationErrors['bPerp' + idx + 'Name'] ? 'field-error' : ''}`} value={perp.name} onChange={e => updateModuleBPerpetrator(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
                   </div>
                   <div>
-                    <label className="field-label">Affiliation <span className="required">*</span></label>
-                    <select className="field-select" value={resp.affiliation} onChange={e => updateModuleBRespondent(idx, 'affiliation', e.target.value)}>
+                    <label className="field-label">Gender <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors['bPerp' + idx + 'Gender'] ? 'field-error' : ''}`} value={perp.gender} onChange={e => updateModuleBPerpetrator(idx, 'gender', e.target.value)}>
                       <option value="">Select</option>
-                      {affiliationOptions.map(a => <option key={a} value={a}>{a}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="field-label">Age</label>
-                    <input type="number" min="1" max="100" value={resp.age} onChange={e => updateModuleBRespondent(idx, 'age', e.target.value)} placeholder="e.g., 30" className="field-input" />
-                  </div>
-                  <div>
-                    <label className="field-label">Gender</label>
-                    <select className="field-select" value={resp.gender} onChange={e => updateModuleBRespondent(idx, 'gender', e.target.value)}>
                       {genderOptions.map(g => <option key={g} value={g}>{g}</option>)}
                     </select>
+                    {validationErrors['bPerp' + idx + 'Gender'] && <div className="error-text">{validationErrors['bPerp' + idx + 'Gender']}</div>}
+                  </div>
+                  <div>
+                    <label className="field-label">Age <span className="required">*</span></label>
+                    <input type="number" min="1" max="100" value={perp.age} onChange={e => updateModuleBPerpetrator(idx, 'age', e.target.value)} placeholder="e.g., 30" className={`field-input ${validationErrors['bPerp' + idx + 'Age'] ? 'field-error' : ''}`} />
+                    {validationErrors['bPerp' + idx + 'Age'] && <div className="error-text">{validationErrors['bPerp' + idx + 'Age']}</div>}
+                  </div>
+                  <div>
+                    <label className="field-label">Relationship to the Victim <span className="required">*</span></label>
+                    <select className={`field-select ${validationErrors['bPerp' + idx + 'Rel'] ? 'field-error' : ''}`} value={perp.relationship} onChange={e => updateModuleBPerpetrator(idx, 'relationship', e.target.value)}>
+                      <option value="">Select</option>
+                      <option value="Relatives">Relatives</option>
+                      <option value="DepEd Teaching Personnel">DepEd Teaching Personnel</option>
+                      <option value="DepEd Non-Teaching Personnel">DepEd Non-Teaching Personnel</option>
+                      <option value="Not related to the victim">Not related to the victim</option>
+                    </select>
+                    {validationErrors['bPerp' + idx + 'Rel'] && <div className="error-text">{validationErrors['bPerp' + idx + 'Rel']}</div>}
                   </div>
                 </div>
               </div>
             ))}
-            <button className="add-btn" type="button" onClick={addModuleBRespondent}>
-              <span style={{ fontSize: '16px' }}>+</span> Add Respondent
+            <button className="add-btn" type="button" onClick={addModuleBPerpetrator}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Perpetrator
             </button>
           </div>
 
@@ -1368,8 +1510,8 @@ const ModuleAReportingPanel = () => {
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Actions & Status</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Actions &amp; Status</div>
+                <div className="card-header-subtitle">SECTION 6: ACTIONS &amp; STATUS</div>
               </div>
             </div>
             <div className="panel-grid-1">
@@ -1379,11 +1521,15 @@ const ModuleAReportingPanel = () => {
                 {validationErrors.bActionsTaken && <div className="error-text">{validationErrors.bActionsTaken}</div>}
               </div>
               <div>
-                <label className="field-label">Case Status <span className="required">*</span></label>
-                <select className="field-select" value={moduleBData.status} onChange={e => updateModuleBField('status', e.target.value)}>
+                <label className="field-label">Status <span className="required">*</span></label>
+                <select className={`field-select ${validationErrors.bCaseStatus ? 'field-error' : ''}`} value={moduleBData.status} onChange={e => updateModuleBField('status', e.target.value)}>
                   <option value="">Select Status</option>
-                  {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  <option value="Resolved">Resolved</option>
+                  <option value="With ongoing intervention">With ongoing intervention</option>
+                  <option value="Referred to other Government Agencies">Referred to other Government Agencies</option>
+                  <option value="Referred to other Non-Government Organizations">Referred to other Non-Government Organizations</option>
                 </select>
+                {validationErrors.bCaseStatus && <div className="error-text">{validationErrors.bCaseStatus}</div>}
               </div>
             </div>
           </div>
@@ -1392,6 +1538,7 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'C' && moduleCData && (
         <>
+          {/* School Metadata — same as other modules */}
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
@@ -1403,7 +1550,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1413,7 +1560,10 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
                 {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
               </div>
               <div>
@@ -1423,7 +1573,7 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Classification <span className="required">*</span></label>
-                <div className="radio-group">
+                <div className={`radio-group ${validationErrors.classification ? 'field-error' : ''}`}>
                   {['Public', 'Private'].map(opt => (
                     <label key={opt} className="radio-option">
                       <input type="radio" name="c-classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
@@ -1431,175 +1581,165 @@ const ModuleAReportingPanel = () => {
                     </label>
                   ))}
                 </div>
+                {validationErrors.classification && <div className="error-text">{validationErrors.classification}</div>}
               </div>
               <div>
                 <label className="field-label">Level <span className="required">*</span></label>
-                <div className="radio-group">
-                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                <div className={`radio-group ${validationErrors.level ? 'field-error' : ''}`}>
+                  {['Kindergarten', 'Elementary', 'Junior High School', 'Senior High School'].map(opt => (
                     <label key={opt} className="radio-option">
                       <input type="radio" name="c-level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
                       <span style={{ fontSize: '12px' }}>{opt}</span>
                     </label>
                   ))}
                 </div>
+                {validationErrors.level && <div className="error-text">{validationErrors.level}</div>}
               </div>
             </div>
           </div>
 
+          {/* Period Covered & Total Students */}
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-icon"><span className="material-symbols-outlined">calendar_month</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Risk Classification Categories</div>
-                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
-              </div>
-            </div>
-            <div className="category-pills">
-              {moduleCCategories.map(cat => (
-                <button key={cat.id} className={`category-btn ${activeCRiskCategory === cat.id ? 'active' : ''}`} onClick={() => setActiveCRiskCategory(cat.id)}>
-                  {cat.id}
-                </button>
-              ))}
-            </div>
-            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleCCategories.find(c => c.id === activeCRiskCategory)?.label}</div>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">event_note</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Risk Record — <strong>{activeCRiskCategory}</strong></div>
-                <div className="card-header-subtitle">LOCATION & TIMELINE DETAILS</div>
+                <div className="card-header-title">Reporting Period</div>
+                <div className="card-header-subtitle">COVERAGE & POPULATION</div>
               </div>
             </div>
             <div className="panel-grid">
               <div>
-                <label className="field-label">Date Identified <span className="required">*</span></label>
-                <DateInput value={currentCData.dateIdentified} onChange={e => updateCField('dateIdentified', e.target.value)} />
-                {validationErrors['c' + activeCRiskCategory + 'Date'] && <div className="error-text">{validationErrors['c' + activeCRiskCategory + 'Date']}</div>}
+                <label className="field-label">Period Covered <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.cPeriodCovered ? 'field-error' : ''}`} value={periodCovered} onChange={e => setPeriodCovered(e.target.value)} placeholder="e.g., SY 2024-2025, 1st Quarter" />
+                {validationErrors.cPeriodCovered && <div className="error-text">{validationErrors.cPeriodCovered}</div>}
               </div>
               <div>
-                <label className="field-label">Location / Environment <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Loc'] ? 'field-error' : ''}`} value={currentCData.location} onChange={e => updateCField('location', e.target.value)} placeholder="e.g., Community Environment / Near School Grounds" />
-                {validationErrors['c' + activeCRiskCategory + 'Loc'] && <div className="error-text">{validationErrors['c' + activeCRiskCategory + 'Loc']}</div>}
-              </div>
-            </div>
-
-            <div style={{ marginTop: '16px' }}>
-              <label className="field-label">Contributing Risk Factors</label>
-              <div className="chip-list">
-                {riskFactorOptions.map(rf => (
-                  <label key={rf.id} className="checkbox-chip">
-                    <input type="checkbox" checked={currentCData.riskFactors.includes(rf.id)} onChange={() => toggleCRiskFactor(rf.id)} />
-                    <span>{rf.label}</span>
-                  </label>
-                ))}
+                <label className="field-label">Total Number of Students <span className="required">*</span></label>
+                <input type="number" min="0" className={`field-input ${validationErrors.cTotalStudents ? 'field-error' : ''}`} value={totalStudents} onChange={e => setTotalStudents(e.target.value)} placeholder="e.g., 1500" />
+                {validationErrors.cTotalStudents && <div className="error-text">{validationErrors.cTotalStudents}</div>}
               </div>
             </div>
           </div>
 
+          {/* Children at Risk Table */}
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
+              <div className="card-header-icon"><span className="material-symbols-outlined">group</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Individual at Risk</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Children at Risk Registry</div>
+                <div className="card-header-subtitle">SECTION I: LIST OF CHILDREN AT RISK</div>
               </div>
             </div>
-            {currentCData.individuals.map((ind, idx) => (
-              <div key={idx} className="row-card">
-                {currentCData.individuals.length > 1 && <button className="remove-btn" type="button" onClick={() => removeCIndividual(idx)} title="Remove">✕</button>}
-                <div className="panel-grid">
-                  <div>
-                    <label className="field-label">Name <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Ind' + idx + 'Name'] ? 'field-error' : ''}`} value={ind.name} onChange={e => updateCIndividual(idx, 'name', e.target.value)} placeholder="Last, First, M.I." />
-                  </div>
-                  <div>
-                    <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['c' + activeCRiskCategory + 'Ind' + idx + 'Age'] ? 'field-error' : ''}`} value={ind.age} onChange={e => updateCIndividual(idx, 'age', e.target.value)} placeholder="e.g., 11" />
-                  </div>
-                  <div>
-                    <label className="field-label">Gender</label>
-                    <div className="radio-group">
-                      {['M', 'F', 'LGBTQIA+'].map(g => (
-                        <label key={g} className="radio-option">
-                          <input type="radio" name={'c-gender-' + idx} value={g} checked={ind.gender === g} onChange={e => updateCIndividual(idx, 'gender', e.target.value)} />
-                          <span>{g}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="field-label">Learner with Disability</label>
-                    <div className="chip-list" style={{ marginTop: '4px' }}>
-                      {['Yes', 'No'].map(opt => (
-                        <label key={opt} className={`radio-option ${ind.disability === opt ? 'active' : ''}`} style={{ padding: '6px 12px', cursor: 'pointer' }}>
-                          <input type="radio" name={'c-disability-' + idx} value={opt} checked={ind.disability === opt} onChange={e => updateCIndividual(idx, 'disability', e.target.value)} />
-                          <span>{opt}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <label className="field-label">Family Background Context</label>
-                    <div className="chip-list">
-                      {familyContextOptions.map(fc => (
-                        <label key={fc.id} className="checkbox-chip">
-                          <input type="checkbox" checked={(ind.familyContexts || []).includes(fc.id)} onChange={() => toggleCFamilyContext(idx, fc.id)} />
-                          <span>{fc.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="field-label">Enrollment Status After Intervention</label>
-                    <select className="field-select" value={ind.enrollmentStatus} onChange={e => updateCIndividual(idx, 'enrollmentStatus', e.target.value)}>
-                      <option value="">Select</option>
-                      {cEnrollmentOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="field-label">Performance Before Intervention</label>
-                    <select className="field-select" value={ind.performanceBefore} onChange={e => updateCIndividual(idx, 'performanceBefore', e.target.value)}>
-                      <option value="">Select</option>
-                      {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="field-label">Performance After Intervention</label>
-                    <select className="field-select" value={ind.performanceAfter} onChange={e => updateCIndividual(idx, 'performanceAfter', e.target.value)}>
-                      <option value="">Select</option>
-                      {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button className="add-btn" type="button" onClick={addCIndividual}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse" style={{ minWidth: '900px' }}>
+                <thead>
+                  <tr className="bg-surface-container-high text-on-surface text-sm">
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '40px' }}>#</th>
+                    <th className="px-sm py-xs border border-outline-variant">Name of Child</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '70px' }}>Sex</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '90px' }}>Disability</th>
+                    <th className="px-sm py-xs border border-outline-variant">Classification</th>
+                    <th className="px-sm py-xs border border-outline-variant">Action/s Taken</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '130px' }}>Status</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '40px' }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(moduleCData.children || []).map((child, idx) => (
+                    <tr key={idx} className="border-b border-outline-variant">
+                      <td className="px-sm py-xs border border-outline-variant text-center text-sm text-on-surface-variant">{idx + 1}</td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <input className={`field-input text-sm ${validationErrors['cChild' + idx + 'Name'] ? 'field-error' : ''}`} value={child.name} onChange={e => updateCField(idx, 'name', e.target.value)} placeholder="Last, First, M.I." />
+                        {validationErrors['cChild' + idx + 'Name'] && <div className="error-text">{validationErrors['cChild' + idx + 'Name']}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <select className={`field-select text-sm ${validationErrors['cChild' + idx + 'Gender'] ? 'field-error' : ''}`} value={child.gender} onChange={e => updateCField(idx, 'gender', e.target.value)}>
+                          <option value="M">M</option>
+                          <option value="F">F</option>
+                        </select>
+                        {validationErrors['cChild' + idx + 'Gender'] && <div className="error-text">{validationErrors['cChild' + idx + 'Gender']}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <select className={`field-select text-sm ${validationErrors['cChild' + idx + 'Disability'] ? 'field-error' : ''}`} value={child.disability} onChange={e => updateCField(idx, 'disability', e.target.value)}>
+                          <option value="No">No</option>
+                          <option value="Yes">Yes</option>
+                        </select>
+                        {validationErrors['cChild' + idx + 'Disability'] && <div className="error-text">{validationErrors['cChild' + idx + 'Disability']}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <select className={`field-select text-sm ${validationErrors['cChild' + idx + 'Class'] ? 'field-error' : ''}`} value={child.classification} onChange={e => updateCField(idx, 'classification', e.target.value)}>
+                          <option value="">Select</option>
+                          {cClassificationOptions.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
+                        </select>
+                        {validationErrors['cChild' + idx + 'Class'] && <div className="error-text">{validationErrors['cChild' + idx + 'Class']}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <input className={`field-input text-sm ${validationErrors['cChild' + idx + 'Action'] ? 'field-error' : ''}`} value={child.actionTaken} onChange={e => updateCField(idx, 'actionTaken', e.target.value)} placeholder="e.g., Counseling" />
+                        {validationErrors['cChild' + idx + 'Action'] && <div className="error-text">{validationErrors['cChild' + idx + 'Action']}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <select className={`field-select text-sm ${validationErrors['cChild' + idx + 'Status'] ? 'field-error' : ''}`} value={child.status} onChange={e => updateCField(idx, 'status', e.target.value)}>
+                          <option value="">Select</option>
+                          {cStatusOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                        </select>
+                        {validationErrors['cChild' + idx + 'Status'] && <div className="error-text">{validationErrors['cChild' + idx + 'Status']}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant text-center">
+                        <button className="remove-btn-sm" type="button" onClick={() => removeCChild(idx)} title="Remove" style={{ fontSize: '14px', padding: '2px 6px' }}>✕</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button className="add-btn mt-sm" type="button" onClick={addCChild}>
               <span style={{ fontSize: '16px' }}>+</span> Add Row
             </button>
           </div>
 
+          {/* Section II: Narrative */}
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">shield</span></div>
+              <div className="card-header-icon"><span className="material-symbols-outlined">description</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Protective & Diversion Intervention</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
+                <div className="card-header-title">Narrative Summary</div>
+                <div className="card-header-subtitle">SECTION II: NARRATIVE SUMMARY OF INTERVENTIONS</div>
               </div>
             </div>
             <div className="panel-grid-1">
               <div>
-                <label className="field-label">Immediate Intervention Applied <span className="required">*</span></label>
-                <textarea className={`field-textarea ${validationErrors['c' + activeCRiskCategory + 'Int'] ? 'field-error' : ''}`} value={currentCData.intervention} onChange={e => updateCField('intervention', e.target.value)} placeholder="Describe counseling, home visits, or community intervention..." />
-                {validationErrors['c' + activeCRiskCategory + 'Int'] && <div className="error-text">{validationErrors['c' + activeCRiskCategory + 'Int']}</div>}
+                <label className="field-label">Narrative <span className="required">*</span></label>
+                <textarea className={`field-textarea ${validationErrors.cNarrative ? 'field-error' : ''}`} value={cNarrative} onChange={e => setCNarrative(e.target.value)} placeholder="Describe the interventions, referrals, and actions taken for the children at risk..." rows={5} />
+                {validationErrors.cNarrative && <div className="error-text">{validationErrors.cNarrative}</div>}
+              </div>
+            </div>
+          </div>
+
+          {/* Summary Counts */}
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">summarize</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Summary of Cases</div>
+                <div className="card-header-subtitle">BREAKDOWN BY STATUS</div>
+              </div>
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">Resolved</label>
+                <input type="number" min="0" className="field-input" value={resolvedCount} onChange={e => setResolvedCount(e.target.value)} placeholder="0" />
               </div>
               <div>
-                <label className="field-label">Status <span className="required">*</span></label>
-                <select className="field-select" value={currentCData.status} onChange={e => updateCField('status', e.target.value)}>
-                  <option value="">Select Status</option>
-                  {cStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
+                <label className="field-label">On-going Intervention</label>
+                <input type="number" min="0" className="field-input" value={ongoingCount} onChange={e => setOngoingCount(e.target.value)} placeholder="0" />
+              </div>
+              <div>
+                <label className="field-label">Referred to Government Agencies</label>
+                <input type="number" min="0" className="field-input" value={referredGovCount} onChange={e => setReferredGovCount(e.target.value)} placeholder="0" />
+              </div>
+              <div>
+                <label className="field-label">Referred to Non-Government Organizations</label>
+                <input type="number" min="0" className="field-input" value={referredNGOCount} onChange={e => setReferredNGOCount(e.target.value)} placeholder="0" />
               </div>
             </div>
           </div>
@@ -1609,33 +1749,40 @@ const ModuleAReportingPanel = () => {
       {activeModule === 'D' && moduleDData && (
         <>
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="flex items-center gap-sm mb-md" style={{ color: '#ba1a1a' }}>
+              <span className="material-symbols-outlined msf" style={{ fontSize: '16px' }}>lock</span>
+              <span className="font-label-md text-label-md font-bold">CONFIDENTIAL</span>
+            </div>
+            <h3 className="font-headline-md text-headline-md font-bold text-primary mb-md">School-Based Consolidated Report on Incidents of Children in Conflict with the Law (CICL)</h3>
+            <div className="panel-grid" style={{ maxWidth: '400px' }}>
+              <div>
+                <label className="field-label">School Year <span className="required">*</span></label>
+                <input className="field-input" value={moduleDData.schoolYear || ''} onChange={e => setModuleDData(p => ({ ...p, schoolYear: e.target.value }))} placeholder="e.g., 2025-2026" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">School Metadata</div>
+                <div className="card-header-title">School Information</div>
                 <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
               </div>
             </div>
             <div className="panel-grid">
               <div>
-                <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
-                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
+                <label className="field-label">School</label>
+                <input className="field-input" value={schoolMetadata.schoolName} readOnly />
               </div>
               <div>
-                <label className="field-label">Center ID <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-10293" />
-                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
+                <label className="field-label">Period Covered <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.dPeriodCovered ? 'field-error' : ''}`} value={moduleDData.periodCovered || ''} onChange={e => setModuleDData(p => ({ ...p, periodCovered: e.target.value }))} placeholder="e.g., SY 2024-2025, 1st Quarter" />
+                {validationErrors.dPeriodCovered && <div className="error-text">{validationErrors.dPeriodCovered}</div>}
               </div>
               <div>
-                <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
-                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
-              </div>
-              <div>
-                <label className="field-label">Address <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="Full street address" />
-                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
+                <label className="field-label">School ID</label>
+                <input className="field-input" value={schoolMetadata.schoolId} readOnly />
               </div>
               <div>
                 <label className="field-label">Classification <span className="required">*</span></label>
@@ -1651,7 +1798,7 @@ const ModuleAReportingPanel = () => {
               <div>
                 <label className="field-label">Level <span className="required">*</span></label>
                 <div className="radio-group">
-                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                  {['Kindergarten', 'Elementary', 'Junior High School', 'Senior High School'].map(opt => (
                     <label key={opt} className="radio-option">
                       <input type="radio" name="d-level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
                       <span style={{ fontSize: '12px' }}>{opt}</span>
@@ -1664,161 +1811,89 @@ const ModuleAReportingPanel = () => {
 
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-icon"><span className="material-symbols-outlined">group</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Offense & Incident Classification Categories</div>
-                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+                <div className="card-header-title">A. Consolidated Report on Incidents of Children in Conflict with the Law (CICL)</div>
+                <div className="card-header-subtitle">SECTION A: CICL INCIDENT RECORDS</div>
               </div>
             </div>
-            <div className="category-pills">
-              {moduleDCategories.map(cat => (
-                <button key={cat.id} className={`category-btn ${activeDCategory === cat.id ? 'active' : ''}`} onClick={() => setActiveDCategory(cat.id)}>
-                  {cat.id}
-                </button>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse" style={{ minWidth: '1000px' }}>
+                <thead>
+                  <tr className="bg-surface-container-high text-on-surface text-sm">
+                    <th className="px-sm py-xs border border-outline-variant">Learner's Reference Number (LRN)</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '60px' }}>Age</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '110px' }}>Gender</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '100px' }}>Learner with disability</th>
+                    <th className="px-sm py-xs border border-outline-variant">Case/Violation</th>
+                    <th className="px-sm py-xs border border-outline-variant">Action/s Taken</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '200px' }}>Status</th>
+                    <th className="px-sm py-xs border border-outline-variant" style={{ width: '40px' }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(moduleDData.ciclList || []).map((c, idx) => (
+                    <tr key={idx} className="border-b border-outline-variant">
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <input className={`field-input text-sm ${validationErrors['dLRN' + idx] ? 'field-error' : ''}`} value={c.lrn} onChange={e => { var list = [...moduleDData.ciclList]; list[idx] = { ...list[idx], lrn: e.target.value }; setModuleDData(p => ({ ...p, ciclList: list })); }} placeholder="e.g., LRN-10928301293" />
+                        {validationErrors['dLRN' + idx] && <div className="error-text">{validationErrors['dLRN' + idx]}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <input type="number" min="1" max="100" className={`field-input text-sm ${validationErrors['dAge' + idx] ? 'field-error' : ''}`} value={c.age} onChange={e => { var list = [...moduleDData.ciclList]; list[idx] = { ...list[idx], age: e.target.value }; setModuleDData(p => ({ ...p, ciclList: list })); }} placeholder="e.g., 15" />
+                        {validationErrors['dAge' + idx] && <div className="error-text">{validationErrors['dAge' + idx]}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <select className="field-select text-sm" value={c.gender} onChange={e => { var list = [...moduleDData.ciclList]; list[idx] = { ...list[idx], gender: e.target.value }; setModuleDData(p => ({ ...p, ciclList: list })); }}>
+                          <option value="M">M</option>
+                          <option value="F">F</option>
+                          <option value="LGBTQIA+">LGBTQIA+</option>
+                        </select>
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <select className="field-select text-sm" value={c.disability} onChange={e => { var list = [...moduleDData.ciclList]; list[idx] = { ...list[idx], disability: e.target.value }; setModuleDData(p => ({ ...p, ciclList: list })); }}>
+                          <option value="No">No</option>
+                          <option value="Yes">Yes</option>
+                        </select>
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <input className={`field-input text-sm ${validationErrors['dCase' + idx] ? 'field-error' : ''}`} value={c.caseViolation} onChange={e => { var list = [...moduleDData.ciclList]; list[idx] = { ...list[idx], caseViolation: e.target.value }; setModuleDData(p => ({ ...p, ciclList: list })); }} placeholder="e.g., Theft" />
+                        {validationErrors['dCase' + idx] && <div className="error-text">{validationErrors['dCase' + idx]}</div>}
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <input className="field-input text-sm" value={c.actionsTaken} onChange={e => { var list = [...moduleDData.ciclList]; list[idx] = { ...list[idx], actionsTaken: e.target.value }; setModuleDData(p => ({ ...p, ciclList: list })); }} placeholder="e.g., Counseling" />
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant">
+                        <select className="field-select text-sm" value={c.status} onChange={e => { var list = [...moduleDData.ciclList]; list[idx] = { ...list[idx], status: e.target.value }; setModuleDData(p => ({ ...p, ciclList: list })); }}>
+                          <option value="">Select</option>
+                          {dStatusOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                        </select>
+                      </td>
+                      <td className="px-sm py-xs border border-outline-variant text-center">
+                        <button className="remove-btn-sm" type="button" onClick={() => { var list = moduleDData.ciclList.filter((_, i) => i !== idx); setModuleDData(p => ({ ...p, ciclList: list })); }} title="Remove" style={{ fontSize: '14px', padding: '2px 6px' }}>✕</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleDCategories.find(c => c.id === activeDCategory)?.label}</div>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">event_note</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Incident Record — <strong>{activeDCategory}</strong></div>
-                <div className="card-header-subtitle">LOCATION & TIMELINE DETAILS</div>
-              </div>
-            </div>
-            <div className="panel-grid">
-              <div>
-                <label className="field-label">Date of Offense / Incident <span className="required">*</span></label>
-                <DateInput value={currentDData.offenseDate} onChange={e => updateDField('offenseDate', e.target.value)} />
-                {validationErrors['d' + activeDCategory + 'Date'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Date']}</div>}
-              </div>
-              <div>
-                <label className="field-label">Location <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors['d' + activeDCategory + 'Loc'] ? 'field-error' : ''}`} value={currentDData.location} onChange={e => updateDField('location', e.target.value)} placeholder="e.g., Off-Campus / School Perimeter" />
-                {validationErrors['d' + activeDCategory + 'Loc'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Loc']}</div>}
-              </div>
-            </div>
-
-            <div style={{ marginTop: '16px' }}>
-              <label className="field-label">Specific Violation Classification</label>
-              <div className="chip-list">
-                {violationOptions.map(v => (
-                  <label key={v.id} className="checkbox-chip">
-                    <input type="checkbox" checked={currentDData.violations.includes(v.id)} onChange={() => toggleDViolation(v.id)} />
-                    <span>{v.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Primary Subject Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
-              </div>
-            </div>
-            {currentDData.subjects.map((sub, idx) => (
-              <div key={idx} className="row-card">
-                {currentDData.subjects.length > 1 && <button className="remove-btn" type="button" onClick={() => removeDSubject(idx)} title="Remove">✕</button>}
-                <div className="panel-grid">
-                  <div>
-                    <label className="field-label">Identification Reference <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref'] ? 'field-error' : ''}`} value={sub.identificationRef} onChange={e => updateDSubject(idx, 'identificationRef', e.target.value)} placeholder="e.g., LRN-10928301293" />
-                    {validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Sub' + idx + 'Ref']}</div>}
-                  </div>
-                  <div>
-                    <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['d' + activeDCategory + 'Sub' + idx + 'Age'] ? 'field-error' : ''}`} value={sub.age} onChange={e => updateDSubject(idx, 'age', e.target.value)} placeholder="e.g., 15" />
-                  </div>
-                  <div>
-                    <label className="field-label">Gender</label>
-                    <div className="radio-group">
-                      {['M', 'F', 'LGBTQIA+'].map(g => (
-                        <label key={g} className="radio-option">
-                          <input type="radio" name={'d-gender-' + idx} value={g} checked={sub.gender === g} onChange={e => updateDSubject(idx, 'gender', e.target.value)} />
-                          <span>{g}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="field-label">Learner with Disability</label>
-                    <div className="chip-list" style={{ marginTop: '4px' }}>
-                      {['Yes', 'No'].map(opt => (
-                        <label key={opt} className={`radio-option ${sub.disability === opt ? 'active' : ''}`} style={{ padding: '6px 12px', cursor: 'pointer' }}>
-                          <input type="radio" name={'d-disability-' + idx} value={opt} checked={sub.disability === opt} onChange={e => updateDSubject(idx, 'disability', e.target.value)} />
-                          <span>{opt}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button className="add-btn" type="button" onClick={addDSubject}>
+            <button className="add-btn mt-sm" type="button" onClick={() => setModuleDData(p => ({ ...p, ciclList: [...(p.ciclList || []), makeDCICL()] }))}>
               <span style={{ fontSize: '16px' }}>+</span> Add Row
             </button>
           </div>
 
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">shield</span></div>
+              <div className="card-header-icon"><span className="material-symbols-outlined">description</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Rehabilitation & Diversion Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
-              </div>
-            </div>
-            <div style={{ marginBottom: '16px' }}>
-              <label className="field-label">Diversion / Intervention Program Type</label>
-              <div className="chip-list">
-                {programOptions.map(p => (
-                  <label key={p.id} className="checkbox-chip">
-                    <input type="checkbox" checked={currentDData.programs.includes(p.id)} onChange={() => toggleDProgram(p.id)} />
-                    <span>{p.label}</span>
-                  </label>
-                ))}
+                <div className="card-header-title">B. Concrete descriptions of any intervention program or diversion program</div>
+                <div className="card-header-subtitle">SECTION B: INTERVENTION / DIVERSION PROGRAM NARRATIVE</div>
               </div>
             </div>
             <div className="panel-grid-1">
               <div>
-                <label className="field-label">Program Narrative Description <span className="required">*</span></label>
-                <textarea className={`field-textarea ${validationErrors['d' + activeDCategory + 'Narr'] ? 'field-error' : ''}`} value={currentDData.narrative} onChange={e => updateDField('narrative', e.target.value)} placeholder="Describe community reintegration or school-initiated rehabilitation plans..." />
-                {validationErrors['d' + activeDCategory + 'Narr'] && <div className="error-text">{validationErrors['d' + activeDCategory + 'Narr']}</div>}
-              </div>
-              <div>
-                <label className="field-label">Enrollment Status After Intervention</label>
-                <select className="field-select" value={currentDData.enrollmentStatus} onChange={e => updateDField('enrollmentStatus', e.target.value)}>
-                  <option value="">Select</option>
-                  {dEnrollmentOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-              <div className="panel-grid">
-                <div>
-                  <label className="field-label">Performance Before Intervention</label>
-                  <select className="field-select" value={currentDData.performanceBefore} onChange={e => updateDField('performanceBefore', e.target.value)}>
-                    <option value="">Select</option>
-                    {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="field-label">Performance After Intervention</label>
-                  <select className="field-select" value={currentDData.performanceAfter} onChange={e => updateDField('performanceAfter', e.target.value)}>
-                    <option value="">Select</option>
-                    {performanceOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="field-label">Status <span className="required">*</span></label>
-                <select className="field-select" value={currentDData.status} onChange={e => updateDField('status', e.target.value)}>
-                  <option value="">Select Status</option>
-                  {dStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
+                <label className="field-label">Narrative <span className="required">*</span></label>
+                <textarea className={`field-textarea ${validationErrors.dInterventionNarrative ? 'field-error' : ''}`} value={moduleDData.interventionNarrative || ''} onChange={e => setModuleDData(p => ({ ...p, interventionNarrative: e.target.value }))} placeholder="Describe the interventions, referrals, and actions taken for CICL..." rows={5} />
+                {validationErrors.dInterventionNarrative && <div className="error-text">{validationErrors.dInterventionNarrative}</div>}
               </div>
             </div>
           </div>
@@ -1829,230 +1904,151 @@ const ModuleAReportingPanel = () => {
         <>
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
+              <div className="card-header-icon"><span className="material-symbols-outlined">table_chart</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">School Metadata</div>
-                <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
+                <div className="card-header-title">Consolidated Report on Other Learner Rights and Protection Concerns</div>
+                <div className="card-header-subtitle">SCHOOL-BASED CONSOLIDATED REPORT — ANNEX E</div>
               </div>
             </div>
-            <div className="panel-grid">
-              <div>
-                <label className="field-label">Center Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Central Elementary School" />
-                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
-              </div>
-              <div>
-                <label className="field-label">Center ID <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-10293" />
-                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
-              </div>
-              <div>
-                <label className="field-label">Reporting Year <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))} placeholder="e.g., 2023-2024" />
-                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
-              </div>
-              <div>
-                <label className="field-label">Address <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="Full street address" />
-                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
-              </div>
-              <div>
-                <label className="field-label">Classification <span className="required">*</span></label>
-                <div className="radio-group">
-                  {['Public', 'Private'].map(opt => (
-                    <label key={opt} className="radio-option">
-                      <input type="radio" name="e-classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
-                      <span>{opt}</span>
-                    </label>
+            <p style={{ fontSize: '13px', color: '#44474e', marginBottom: '12px' }}>
+              This is a consolidated table. Each row represents one concern type. Add as many rows as needed.
+            </p>
+            <div style={{ overflowX: 'auto' }}>
+              <table className="w-full text-left border-collapse" style={{ minWidth: '1200px', fontSize: '13px' }}>
+                <thead>
+                  <tr style={{ background: '#002046', color: '#fff' }}>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '160px' }}>Type of Concern</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '140px' }}>Perpetrator (Name)</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '80px' }}>Perpetrator (Age)</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '140px' }}>Victim (Name)</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '70px' }}>Sex/Gender</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '60px' }}>Age</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '70px' }}>Disability (1/0)</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '100px' }}>Date of Incident</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '120px' }}>Place of Incident</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '160px' }}>Action/s Taken</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '120px' }}>Status</th>
+                    <th style={{ padding: '10px 8px', border: '1px solid #9ca3af', width: '40px' }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {moduleEData.rows.map((row, rowIdx) => (
+                    <tr key={rowIdx} style={{ background: rowIdx % 2 === 0 ? '#f9fafb' : '#fff' }}>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }}>
+                        <select className={`field-select ${validationErrors['eRow' + rowIdx + 'Concern'] ? 'field-error' : ''}`} value={row.concernType} onChange={e => updateERow(rowIdx, 'concernType', e.target.value)} style={{ fontSize: '12px', padding: '4px 6px' }}>
+                          <option value="">Select</option>
+                          {eConcernTypes.map(ct => <option key={ct.id} value={ct.id}>{ct.id}: {ct.label.substring(0, 40)}...</option>)}
+                        </select>
+                        {validationErrors['eRow' + rowIdx + 'Concern'] && <div className="error-text">Required</div>}
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }}>
+                        <input className={`field-input ${validationErrors['eRow' + rowIdx + 'PerpName'] ? 'field-error' : ''}`} value={row.perpetratorName} onChange={e => updateERow(rowIdx, 'perpetratorName', e.target.value)} placeholder="Name" style={{ fontSize: '12px', padding: '4px 6px' }} />
+                        {validationErrors['eRow' + rowIdx + 'PerpName'] && <div className="error-text">Required</div>}
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }}>
+                        <input type="number" min="1" max="120" className={`field-input ${validationErrors['eRow' + rowIdx + 'PerpAge'] ? 'field-error' : ''}`} value={row.perpetratorAge} onChange={e => updateERow(rowIdx, 'perpetratorAge', e.target.value)} placeholder="Age" style={{ fontSize: '12px', padding: '4px 6px', width: '60px' }} />
+                        {validationErrors['eRow' + rowIdx + 'PerpAge'] && <div className="error-text">Required</div>}
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }} colSpan={4}>
+                        {(row.victims || []).map((vic, vicIdx) => (
+                          <div key={vicIdx} style={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: vicIdx < (row.victims || []).length - 1 ? '4px' : '0' }}>
+                            <input className={`field-input ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Name'] ? 'field-error' : ''}`} value={vic.name} onChange={e => updateERowVictim(rowIdx, vicIdx, 'name', e.target.value)} placeholder="Name" style={{ fontSize: '12px', padding: '4px 6px', width: '130px' }} />
+                            <select className={`field-select ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Sex'] ? 'field-error' : ''}`} value={vic.sexGender} onChange={e => updateERowVictim(rowIdx, vicIdx, 'sexGender', e.target.value)} style={{ fontSize: '12px', padding: '4px 6px', width: '70px' }}>
+                              <option value="">Sex</option>
+                              <option value="M">M</option>
+                              <option value="F">F</option>
+                              <option value="LGBTQIA+">LGBTQIA+</option>
+                            </select>
+                            <input type="number" min="1" max="100" className={`field-input ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Age'] ? 'field-error' : ''}`} value={vic.age} onChange={e => updateERowVictim(rowIdx, vicIdx, 'age', e.target.value)} placeholder="Age" style={{ fontSize: '12px', padding: '4px 6px', width: '55px' }} />
+                            <select value={vic.disability} onChange={e => updateERowVictim(rowIdx, vicIdx, 'disability', e.target.value)} style={{ fontSize: '12px', padding: '4px 6px', width: '65px' }}>
+                              <option value="0">No (0)</option>
+                              <option value="1">Yes (1)</option>
+                            </select>
+                            {vicIdx > 0 && <button type="button" onClick={() => removeERowVictim(rowIdx, vicIdx)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: '14px', padding: '2px' }} title="Remove victim">✕</button>}
+                          </div>
+                        ))}
+                        <button type="button" onClick={() => addERowVictim(rowIdx)} style={{ fontSize: '11px', color: '#1261a3', background: 'none', border: '1px dashed #9ca3af', borderRadius: '4px', padding: '2px 8px', cursor: 'pointer', marginTop: '2px' }}>+ Add Victim</button>
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }}>
+                        <DateInput value={row.incidentDate} onChange={e => updateERow(rowIdx, 'incidentDate', e.target.value)} />
+                        {validationErrors['eRow' + rowIdx + 'Date'] && <div className="error-text">Required</div>}
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }}>
+                        <input className={`field-input ${validationErrors['eRow' + rowIdx + 'Place'] ? 'field-error' : ''}`} value={row.incidentPlace} onChange={e => updateERow(rowIdx, 'incidentPlace', e.target.value)} placeholder="Place" style={{ fontSize: '12px', padding: '4px 6px' }} />
+                        {validationErrors['eRow' + rowIdx + 'Place'] && <div className="error-text">Required</div>}
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }}>
+                        <textarea className={`field-textarea ${validationErrors['eRow' + rowIdx + 'Act'] ? 'field-error' : ''}`} value={row.actionsTaken} onChange={e => updateERow(rowIdx, 'actionsTaken', e.target.value)} placeholder="Actions taken..." style={{ fontSize: '12px', padding: '4px 6px', minHeight: '50px' }} />
+                        {validationErrors['eRow' + rowIdx + 'Act'] && <div className="error-text">Required</div>}
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db' }}>
+                        <select className={`field-select ${validationErrors['eRow' + rowIdx + 'Status'] ? 'field-error' : ''}`} value={row.status} onChange={e => updateERow(rowIdx, 'status', e.target.value)} style={{ fontSize: '12px', padding: '4px 6px' }}>
+                          <option value="">Select</option>
+                          {eStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        {validationErrors['eRow' + rowIdx + 'Status'] && <div className="error-text">Required</div>}
+                      </td>
+                      <td style={{ padding: '6px 8px', border: '1px solid #d1d5db', textAlign: 'center' }}>
+                        {(moduleEData.rows || []).length > 1 && (
+                          <button type="button" onClick={() => removeERow(rowIdx)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: '16px' }} title="Remove row">✕</button>
+                        )}
+                      </td>
+                    </tr>
                   ))}
-                </div>
+                </tbody>
+              </table>
+            </div>
+            <button className="add-btn" type="button" onClick={addERow} style={{ marginTop: '12px' }}>
+              <span style={{ fontSize: '16px' }}>+</span> Add Row
+            </button>
+          </div>
+
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">summarize</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Summary Counts</div>
+                <div className="card-header-subtitle">CONSOLIDATED TOTALS</div>
               </div>
-              <div>
-                <label className="field-label">Level <span className="required">*</span></label>
-                <div className="radio-group">
-                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
-                    <label key={opt} className="radio-option">
-                      <input type="radio" name="e-level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
-                      <span style={{ fontSize: '12px' }}>{opt}</span>
-                    </label>
-                  ))}
-                </div>
+            </div>
+            <div className="counter-row">
+              <div className="counter-pill resolved">
+                <div className="counter-icon"><span className="material-symbols-outlined">check_circle</span></div>
+                <input type="number" min="0" className="counter-num-input" value={eResolvedCount} onChange={e => setEResolvedCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
+                <div className="counter-label">Resolved</div>
+              </div>
+              <div className="counter-pill ongoing">
+                <div className="counter-icon"><span className="material-symbols-outlined">pending_actions</span></div>
+                <input type="number" min="0" className="counter-num-input" value={eOngoingCount} onChange={e => setEOngoingCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
+                <div className="counter-label">On-going intervention</div>
+              </div>
+              <div className="counter-pill external">
+                <div className="counter-icon"><span className="material-symbols-outlined">account_balance</span></div>
+                <input type="number" min="0" className="counter-num-input" value={eReferredGovCount} onChange={e => setEReferredGovCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
+                <div className="counter-label">Referred to Gov Agencies</div>
+              </div>
+              <div className="counter-pill ngo">
+                <div className="counter-icon"><span className="material-symbols-outlined">corporate_fare</span></div>
+                <input type="number" min="0" className="counter-num-input" value={eReferredNGOCount} onChange={e => setEReferredNGOCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
+                <div className="counter-label">Referred to NGO</div>
               </div>
             </div>
           </div>
 
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">fact_check</span></div>
+              <div className="card-header-icon"><span className="material-symbols-outlined">info</span></div>
               <div className="card-header-text">
-                <div className="card-header-title">Concern Categories</div>
-                <div className="card-header-subtitle">OFFENSE & VIOLATION DETAILS</div>
+                <div className="card-header-title">Definitions</div>
+                <div className="card-header-subtitle">CONCERN TYPE DEFINITIONS</div>
               </div>
             </div>
-            <div className="category-pills">
-              {moduleECategories.map(cat => (
-                <button key={cat.id} className={`category-btn ${activeECategory === cat.id ? 'active' : ''}`} onClick={() => setActiveECategory(cat.id)}>
-                  {cat.id}
-                </button>
+            <div style={{ fontSize: '13px', color: '#44474e', lineHeight: '1.6' }}>
+              {eConcernTypes.map(ct => (
+                <div key={ct.id} style={{ marginBottom: '8px' }}>
+                  <strong>{ct.id}:</strong> {ct.label}
+                </div>
               ))}
-            </div>
-            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{moduleECategories.find(c => c.id === activeECategory)?.label}</div>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">event_note</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Incident Details — <strong>{activeECategory}</strong></div>
-                <div className="card-header-subtitle">LOCATION & TIMELINE DETAILS</div>
-              </div>
-            </div>
-            <div className="panel-grid">
-              <div>
-                <label className="field-label">Date of Incident <span className="required">*</span></label>
-                <DateInput value={currentEData.incidentDate} onChange={e => updateEField('incidentDate', e.target.value)} />
-                {validationErrors['e' + activeECategory + 'Date'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Date']}</div>}
-              </div>
-              <div>
-                <label className="field-label">Place of Incident <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors['e' + activeECategory + 'Place'] ? 'field-error' : ''}`} value={currentEData.incidentPlace} onChange={e => updateEField('incidentPlace', e.target.value)} placeholder="e.g., Off-Campus, Online Platform" />
-                {validationErrors['e' + activeECategory + 'Place'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Place']}</div>}
-              </div>
-            </div>
-
-            <div style={{ marginTop: '16px' }}>
-              <label className="field-label">Specific Concern Classification</label>
-              <div className="chip-list">
-                {eConcernOptions.map(c => (
-                  <label key={c.id} className="checkbox-chip">
-                    <input type="checkbox" checked={currentEData.concerns.includes(c.id)} onChange={() => toggleEConcern(c.id)} />
-                    <span>{c.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">person</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Affected Student / Victim Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
-              </div>
-            </div>
-            {currentEData.victims.map((vic, idx) => (
-              <div key={idx} className="row-card">
-                {currentEData.victims.length > 1 && <button className="remove-btn" type="button" onClick={() => removeEVictim(idx)} title="Remove">✕</button>}
-                <div className="panel-grid">
-                  <div>
-                    <label className="field-label">Name <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['e' + activeECategory + 'Vic' + idx + 'Name'] ? 'field-error' : ''}`} value={vic.name} onChange={e => updateEVictim(idx, 'name', e.target.value)} placeholder="Last, First, M.I." />
-                    {validationErrors['e' + activeECategory + 'Vic' + idx + 'Name'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Vic' + idx + 'Name']}</div>}
-                  </div>
-                  <div>
-                    <label className="field-label">Age <span className="required">*</span></label>
-                    <input type="number" min="1" max="100" className={`field-input ${validationErrors['e' + activeECategory + 'Vic' + idx + 'Age'] ? 'field-error' : ''}`} value={vic.age} onChange={e => updateEVictim(idx, 'age', e.target.value)} placeholder="e.g., 13" />
-                    {validationErrors['e' + activeECategory + 'Vic' + idx + 'Age'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Vic' + idx + 'Age']}</div>}
-                  </div>
-                  <div>
-                    <label className="field-label">Gender</label>
-                    <div className="radio-group">
-                      {['M', 'F', 'LGBTQIA+'].map(g => (
-                        <label key={g} className="radio-option">
-                          <input type="radio" name={'e-vic-gender-' + idx} value={g} checked={vic.gender === g} onChange={e => updateEVictim(idx, 'gender', e.target.value)} />
-                          <span>{g}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="field-label">Learner with Disability</label>
-                    <div className="chip-list" style={{ marginTop: '4px' }}>
-                      {['Yes', 'No'].map(opt => (
-                        <label key={opt} className={`radio-option ${vic.disability === opt ? 'active' : ''}`} style={{ padding: '6px 12px', cursor: 'pointer' }}>
-                          <input type="radio" name={'e-vic-disability-' + idx} value={opt} checked={vic.disability === opt} onChange={e => updateEVictim(idx, 'disability', e.target.value)} />
-                          <span>{opt}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button className="add-btn" type="button" onClick={addEVictim}>
-              <span style={{ fontSize: '16px' }}>+</span> Add Row
-            </button>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">groups</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Subject / Respondent Details</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
-              </div>
-            </div>
-            {currentEData.respondents.map((resp, idx) => (
-              <div key={idx} className="row-card">
-                {currentEData.respondents.length > 1 && <button className="remove-btn" type="button" onClick={() => removeERespondent(idx)} title="Remove">✕</button>}
-                <div className="panel-grid">
-                  <div>
-                    <label className="field-label">Name <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['e' + activeECategory + 'Resp' + idx + 'Name'] ? 'field-error' : ''}`} value={resp.name} onChange={e => updateERespondent(idx, 'name', e.target.value)} placeholder="Last, First, M.I." />
-                    {validationErrors['e' + activeECategory + 'Resp' + idx + 'Name'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Resp' + idx + 'Name']}</div>}
-                  </div>
-                  <div>
-                    <label className="field-label">Designation / Relationship</label>
-                    <select className="field-select" value={resp.designation} onChange={e => updateERespondent(idx, 'designation', e.target.value)}>
-                      <option value="">Select</option>
-                      {affiliationOptions.map(a => <option key={a} value={a}>{a}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="field-label">Age</label>
-                    <input type="number" min="1" max="100" className="field-input" value={resp.age} onChange={e => updateERespondent(idx, 'age', e.target.value)} placeholder="e.g., 28" />
-                  </div>
-                  <div>
-                    <label className="field-label">Gender</label>
-                    <div className="radio-group">
-                      {['M', 'F', 'LGBTQIA+'].map(g => (
-                        <label key={g} className="radio-option">
-                          <input type="radio" name={'e-resp-gender-' + idx} value={g} checked={resp.gender === g} onChange={e => updateERespondent(idx, 'gender', e.target.value)} />
-                          <span>{g}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button className="add-btn" type="button" onClick={addERespondent}>
-              <span style={{ fontSize: '16px' }}>+</span> Add Row
-            </button>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">folder</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Actions Taken & Case Status</div>
-                <div className="card-header-subtitle">SUB-SECTION DETAILS</div>
-              </div>
-            </div>
-            <div className="panel-grid-1">
-              <div>
-                <label className="field-label">Actions Taken <span className="required">*</span></label>
-                <textarea className={`field-textarea ${validationErrors['e' + activeECategory + 'Act'] ? 'field-error' : ''}`} value={currentEData.actionsTaken} onChange={e => updateEField('actionsTaken', e.target.value)} placeholder="Describe protection measures or agency referrals..." />
-                {validationErrors['e' + activeECategory + 'Act'] && <div className="error-text">{validationErrors['e' + activeECategory + 'Act']}</div>}
-              </div>
-              <div>
-                <label className="field-label">Status <span className="required">*</span></label>
-                <select className="field-select" value={currentEData.status} onChange={e => updateEField('status', e.target.value)}>
-                  <option value="">Select Status</option>
-                  {eStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
-              </div>
             </div>
           </div>
         </>
@@ -2070,22 +2066,22 @@ const ModuleAReportingPanel = () => {
           <div className="counter-pill resolved">
             <div className="counter-icon"><span className="material-symbols-outlined">check_circle</span></div>
             <div className="counter-num">{counters.resolved}</div>
-            <div className="counter-label">Resolved</div>
+            <div className="counter-label">Resolved Cases</div>
           </div>
           <div className="counter-pill ongoing">
             <div className="counter-icon"><span className="material-symbols-outlined">pending_actions</span></div>
             <div className="counter-num">{counters.ongoing}</div>
-            <div className="counter-label">Ongoing</div>
+            <div className="counter-label">Ongoing Cases</div>
           </div>
           <div className="counter-pill external">
             <div className="counter-icon"><span className="material-symbols-outlined">account_balance</span></div>
             <div className="counter-num">{counters.external}</div>
-            <div className="counter-label">Gov Agency</div>
+            <div className="counter-label">Referred to Gov Agency</div>
           </div>
           <div className="counter-pill ngo">
             <div className="counter-icon"><span className="material-symbols-outlined">corporate_fare</span></div>
             <div className="counter-num">{counters.ngo}</div>
-            <div className="counter-label">NGO</div>
+            <div className="counter-label">Referred to NGO</div>
           </div>
         </div>
       </div>
@@ -2109,12 +2105,16 @@ const ModuleAReportingPanel = () => {
                 <input className={`field-input ${validationErrors.preparedName ? 'field-error' : ''}`} value={preparedBy.name} onChange={e => setPreparedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
               </div>
               <div>
-                <label className="field-label">Designation</label>
-                <input className="field-input" value={preparedBy.designation} onChange={e => setPreparedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., Guidance Counselor" />
+                <label className="field-label">Designation <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.preparedDesignation ? 'field-error' : ''}`} value={preparedBy.designation} onChange={e => setPreparedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., Guidance Counselor" />
+                {validationErrors.preparedDesignation && <div className="error-text">{validationErrors.preparedDesignation}</div>}
               </div>
               <div>
                 <label className="field-label">Date <span className="required">*</span></label>
-                <DateInput value={preparedBy.date} onChange={e => setPreparedBy(p => ({ ...p, date: e.target.value }))} />
+                <div className={`${validationErrors.preparedDate ? 'field-error' : ''}`} style={validationErrors.preparedDate ? { padding: '4px', borderRadius: '4px' } : {}}>
+                  <DateInput value={preparedBy.date} onChange={e => setPreparedBy(p => ({ ...p, date: e.target.value }))} />
+                </div>
+                {validationErrors.preparedDate && <div className="error-text">{validationErrors.preparedDate}</div>}
               </div>
             </div>
           </div>
@@ -2128,20 +2128,45 @@ const ModuleAReportingPanel = () => {
                 <input className={`field-input ${validationErrors.validatedName ? 'field-error' : ''}`} value={validatedBy.name} onChange={e => setValidatedBy(p => ({ ...p, name: e.target.value }))} placeholder="Full Name" />
               </div>
               <div>
-                <label className="field-label">Designation</label>
-                <input className="field-input" value={validatedBy.designation} onChange={e => setValidatedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., School Principal" />
+                <label className="field-label">Designation <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.validatedDesignation ? 'field-error' : ''}`} value={validatedBy.designation} onChange={e => setValidatedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., School Principal" />
+                {validationErrors.validatedDesignation && <div className="error-text">{validationErrors.validatedDesignation}</div>}
               </div>
               <div>
                 <label className="field-label">Date <span className="required">*</span></label>
-                <DateInput value={validatedBy.date} onChange={e => setValidatedBy(p => ({ ...p, date: e.target.value }))} />
+                <div className={`${validationErrors.validatedDate ? 'field-error' : ''}`} style={validationErrors.validatedDate ? { padding: '4px', borderRadius: '4px' } : {}}>
+                  <DateInput value={validatedBy.date} onChange={e => setValidatedBy(p => ({ ...p, date: e.target.value }))} />
+                </div>
+                {validationErrors.validatedDate && <div className="error-text">{validationErrors.validatedDate}</div>}
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Summary Review Modal */}
+      {showSummary && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-md" onClick={e => { if (e.target === e.currentTarget) setShowSummary(false); }}>
+          <div className="bg-surface-container-lowest rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-md border-b border-black/60">
+              <h2 className="font-display text-display text-on-surface">Review: {reportPayload?.referenceNumber || 'Report'}</h2>
+              <button onClick={() => setShowSummary(false)} className="material-symbols-outlined text-on-surface-variant hover:text-on-surface text-2xl">close</button>
+            </div>
+            <div className="overflow-auto p-md" id="summary-body"></div>
+            <div className="flex justify-end gap-sm p-md border-t border-black/60">
+              <button className="secondary-btn" type="button" onClick={() => setShowSummary(false)}>
+                <span className="material-symbols-outlined">edit</span> Edit
+              </button>
+              <button className="primary-btn" type="button" onClick={confirmSubmit} disabled={submitting}>
+                <span className="material-symbols-outlined">check_circle</span> {submitting ? 'Submitting...' : 'Confirm Submit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="sticky-footer">
-        <button className="secondary-btn" type="button" onClick={() => window.location.href = '/dashboard'}>
+        <button className="secondary-btn" type="button" onClick={() => window.location.href = '/submissions'}>
           <span className="material-symbols-outlined">save</span> Save Draft
         </button>
         <button className="primary-btn" type="button" onClick={handleSubmit}>
