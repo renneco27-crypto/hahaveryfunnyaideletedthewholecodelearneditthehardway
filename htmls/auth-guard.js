@@ -20,6 +20,11 @@
       if (parsed.user) {
         window.__user = parsed.user;
         window.__token = parsed.token;
+        // Block non-admin from /admin immediately — no flash
+        if (window.location.pathname === '/admin' && parsed.user.role !== 'admin') {
+          window.location.href = '/analytics';
+          return;
+        }
       }
     } catch (e) {}
   }

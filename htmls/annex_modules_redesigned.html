@@ -852,6 +852,44 @@ const ModuleAReportingPanel = () => {
     };
     return M[field] || field.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, function(s) { return s.toUpperCase(); });
   }
+  function decodeCode(code, fieldHint, mod) {
+    if (!code || typeof code !== 'string') return code;
+    var codeMap = {
+      'M-1': 'Social', 'M-2': 'Gender-based',
+      'N-1': 'Physical Abuse', 'N-2': 'Sexual Abuse',
+      'N-3': 'Verbal Abuse', 'N-4': 'Psychological Abuse',
+      'R-1': 'Dysfunctional family / without parent or guardian',
+      'R-2': 'Being a member of a gang',
+      'R-3': 'Community with high criminality',
+      'R-4': 'Living in situation of armed conflict',
+      'R-5': 'Status offense under Sec 57 of RA 9344',
+      'R-6': 'Mendicant under PD 1563',
+      'R-7': 'Solvent / Rugby user',
+      'R-8': 'Marijuana / Drug use / Dependency',
+      'R-9': 'User of cigarettes, vape, tobacco',
+      'R-10': 'Involved in gambling activities',
+      'F-1': 'Dysfunctional family', 'F-2': 'Without parent or guardian',
+      'V-01': 'Physical altercation / Fistfight',
+      'V-1': 'Physical altercation / Fistfight',
+      'V-2': 'Theft / Robbery', 'V-3': 'Vandalism',
+      'V-4': 'Threat / Intimidation', 'V-5': 'Drug-related offense',
+      'V-6': 'Curfew violation', 'V-7': 'Truancy / Habitual absenteeism',
+      'P-1': 'Diversion program under LSWDO',
+      'P-2': 'School-based peer mediation',
+      'P-3': 'Family counseling / Parenting seminar',
+      'P-4': 'Psychological assessment / Therapy',
+      'P-5': 'Community service',
+      'EC-1': 'Child Labor', 'EC-2': 'Child Trafficking',
+      'EC-3': 'Corporal Punishment', 'EC-4': 'Child Marriage',
+      'EC-5': 'Grave Child Rights Violation',
+      'EC-6': 'OSAEC', 'EC-7': 'Gender-based Violence',
+      'EC-8': 'Gender-based Sexual Harassment', 'EC-9': 'Rape Cases',
+      'E-1': 'Emotional Damage', 'E-2': 'Social Damage',
+      'E-3': 'Physical Injury', 'E-4': 'Academic Decline',
+      'E-5': 'Death', 'E-6': 'Psychological Trauma'
+    };
+    return codeMap[code] || code;
+  }
   function flattenDetail(obj, mod, sectionKey) {
     var result = [];
     var keys = Object.keys(obj);
@@ -879,7 +917,7 @@ const ModuleAReportingPanel = () => {
             } else { result.push({ label: arrLabel, value: String(item) }); }
           });
         } else {
-          result.push({ label: label, value: v.join(', ') });
+          result.push({ label: label, value: v.map(function(c) { return decodeCode(c, k, mod); }).join(', ') });
         }
       }
       else if (typeof v === 'object') {
