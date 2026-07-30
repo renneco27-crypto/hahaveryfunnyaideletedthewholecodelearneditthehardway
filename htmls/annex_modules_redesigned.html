@@ -919,8 +919,15 @@ const ModuleAReportingPanel = () => {
                 var subLabel = readLabel(sk);
                 if (Array.isArray(sv)) {
                   result.push({ label: arrLabel + ' — ' + subLabel, value: sv.join(', ') || '—' });
+                } else if (typeof sv === 'object' && sv !== null) {
+                  Object.keys(sv).forEach(function(ssk) {
+                    result.push({
+                      label: arrLabel + ' — ' + subLabel + ' — ' + readLabel(ssk),
+                      value: String(sv[ssk] || '—')
+                    });
+                  });
                 } else {
-                  result.push({ label: arrLabel + ' — ' + subLabel, value: String(sv || '—') });
+                  result.push({ label: arrLabel + ' — ' + subLabel, value: decodeCode(String(sv || '—'), sk, mod) });
                 }
               });
             } else { result.push({ label: arrLabel, value: String(item) }); }

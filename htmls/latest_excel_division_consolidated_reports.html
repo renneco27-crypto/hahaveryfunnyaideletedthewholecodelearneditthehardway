@@ -760,8 +760,15 @@ function flattenDetail(obj, mod, sectionKey) {
                             if (Array.isArray(sv)) {
                                 var decoded = sv.map(function(c) { return decodeCode(c, sk, mod); }).join(', ');
                                 result.push({ label: arrLabel + ' — ' + subLabel, value: decoded || '—' });
+                            } else if (typeof sv === 'object' && sv !== null) {
+                                Object.keys(sv).forEach(function(ssk) {
+                                    result.push({
+                                        label: arrLabel + ' — ' + subLabel + ' — ' + readLabel(ssk, mod),
+                                        value: String(sv[ssk] || '—')
+                                    });
+                                });
                             } else {
-                                result.push({ label: arrLabel + ' — ' + subLabel, value: String(sv || '—') });
+                                result.push({ label: arrLabel + ' — ' + subLabel, value: decodeCode(String(sv || '—'), sk, mod) });
                             }
                         });
                     } else { result.push({ label: arrLabel, value: String(item) }); }
