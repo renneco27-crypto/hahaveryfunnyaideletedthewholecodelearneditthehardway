@@ -292,7 +292,7 @@ const ModuleAReportingPanel = () => {
   const [schoolMetadata, setSchoolMetadata] = useState(savedMeta || {
     schoolName: '',
     schoolId: '',
-    reportingYear: '',
+    reportingYear: String(new Date().getFullYear()) + '-' + String(new Date().getFullYear() + 1),
     address: '',
     classification: 'Public',
     level: 'Elementary'
@@ -348,16 +348,8 @@ const ModuleAReportingPanel = () => {
           if (d.periodCovered) setPeriodCovered(d.periodCovered);
           if (d.totalStudents) setTotalStudents(d.totalStudents);
           if (d.cNarrative) setCNarrative(d.cNarrative);
-          if (d.resolvedCount) setResolvedCount(d.resolvedCount);
-          if (d.ongoingCount) setOngoingCount(d.ongoingCount);
-          if (d.referredGovCount) setReferredGovCount(d.referredGovCount);
-          if (d.referredNGOCount) setReferredNGOCount(d.referredNGOCount);
           if (d.moduleDData) setModuleDData(d.moduleDData);
           if (d.moduleEData) setModuleEData(d.moduleEData);
-          if (d.eResolvedCount) setEResolvedCount(d.eResolvedCount);
-          if (d.eOngoingCount) setEOngoingCount(d.eOngoingCount);
-          if (d.eReferredGovCount) setEReferredGovCount(d.eReferredGovCount);
-          if (d.eReferredNGOCount) setEReferredNGOCount(d.eReferredNGOCount);
         })
         .catch(function(e) { console.error('Failed to load draft:', e); });
     }
@@ -442,10 +434,7 @@ const ModuleAReportingPanel = () => {
   const [periodCovered, setPeriodCovered] = useState('');
   const [totalStudents, setTotalStudents] = useState('');
   const [cNarrative, setCNarrative] = useState('');
-  const [resolvedCount, setResolvedCount] = useState('');
-  const [ongoingCount, setOngoingCount] = useState('');
-  const [referredGovCount, setReferredGovCount] = useState('');
-  const [referredNGOCount, setReferredNGOCount] = useState('');
+
 
   const dStatusOptions = ['Resolved', 'With on-going intervention', 'Referred to other Government Agencies', 'Referred to other Non Government Organizations'];
   const genderOptionsD = ['M', 'F', 'LGBTQIA+'];
@@ -468,10 +457,7 @@ const ModuleAReportingPanel = () => {
   const makeEVictim = () => ({ name: '', sexGender: 'M', age: '', disability: '0' });
   const makeERow = () => ({ concernType: '', perpetratorName: '', perpetratorAge: '', victims: [makeEVictim()], incidentDate: '', incidentPlace: '', actionsTaken: '', status: '' });
   const [moduleEData, setModuleEData] = useState(null);
-  const [eResolvedCount, setEResolvedCount] = useState('');
-  const [eOngoingCount, setEOngoingCount] = useState('');
-  const [eReferredGovCount, setEReferredGovCount] = useState('');
-  const [eReferredNGOCount, setEReferredNGOCount] = useState('');
+
 
   const [moduleBData, setModuleBData] = useState(null);
 
@@ -487,10 +473,11 @@ const ModuleAReportingPanel = () => {
 
   const motiveOptions = [
     { id: 'M-1', label: 'M-1: Social (To hurt, belittle, or reinforce social exclusion)' },
-    { id: 'M-2', label: 'M-2: Gender-based (Humiliates/excludes based on perceived or actual SOGI)' }
+    { id: 'M-2', label: 'M-2: Gender-based (Humiliates/excludes based on perceived or actual SOGI)' },
+    { id: 'M-3', label: 'M-3: Emotional Intelligence' }
   ];
 
-  const impactFlags = ['E-1: Emotional Damage', 'E-2: Physical Harm', 'E-3: Attempted Suicide', 'E-4: Suicide Death', 'E-5: Death', 'E-6: Psychological / Emotional (Sadness, anxiety, mood swings, overthinking, trauma)'];
+  const impactFlags = ['E-1: Emotional Damage', 'E-2: Physical Harm', 'E-3: Attempted Suicide', 'E-4: Suicide Death', 'E-5: Death'];
   const enrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred'];
   const performanceOptions = ['Advanced', 'Proficient', 'Developing', 'Beginning'];
   const statusOptions = ['Resolved', 'Ongoing Intervention', 'Referred to Government Agencies', 'Referred to NGO'];
@@ -870,7 +857,7 @@ const ModuleAReportingPanel = () => {
   function decodeCode(code, fieldHint, mod) {
     if (!code || typeof code !== 'string') return code;
     var codeMap = {
-      'M-1': 'Social', 'M-2': 'Gender-based',
+      'M-1': 'Social', 'M-2': 'Gender-based', 'M-3': 'Emotional Intelligence',
       'N-1': 'Physical Abuse', 'N-2': 'Sexual Abuse',
       'N-3': 'Verbal Abuse', 'N-4': 'Psychological Abuse',
       'R-1': 'Dysfunctional family / without parent or guardian',
@@ -901,7 +888,7 @@ const ModuleAReportingPanel = () => {
       'EC-8': 'Gender-based Sexual Harassment', 'EC-9': 'Rape Cases',
       'E-1': 'Emotional Damage', 'E-2': 'Social Damage',
       'E-3': 'Physical Injury', 'E-4': 'Academic Decline',
-      'E-5': 'Death', 'E-6': 'Psychological Trauma'
+      'E-5': 'Death'
     };
     return codeMap[code] || code;
   }
@@ -995,10 +982,10 @@ const ModuleAReportingPanel = () => {
       children: (moduleCData?.children || []).filter(function(c) { return c.name.trim(); }),
       narrative: cNarrative,
       summaryCounts: {
-        resolved: resolvedCount,
-        ongoing: ongoingCount,
-        referredGov: referredGovCount,
-        referredNGO: referredNGOCount
+        resolved: counters.resolved,
+        ongoing: counters.ongoing,
+        referredGov: counters.external,
+        referredNGO: counters.ngo
       }
     };
     else if (activeModule === 'D') filteredData = {
@@ -1009,10 +996,10 @@ const ModuleAReportingPanel = () => {
     else if (activeModule === 'E') filteredData = {
       rows: (moduleEData?.rows || []).filter(function(r) { return r.concernType; }),
       summaryCounts: {
-        resolved: eResolvedCount,
-        ongoing: eOngoingCount,
-        referredGov: eReferredGovCount,
-        referredNGO: eReferredNGOCount
+        resolved: counters.resolved,
+        ongoing: counters.ongoing,
+        referredGov: counters.external,
+        referredNGO: counters.ngo
       }
     };
 
@@ -1058,18 +1045,10 @@ const ModuleAReportingPanel = () => {
     payload.periodCovered = periodCovered;
     payload.totalStudents = totalStudents;
     payload.cNarrative = cNarrative;
-    payload.resolvedCount = resolvedCount;
-    payload.ongoingCount = ongoingCount;
-    payload.referredGovCount = referredGovCount;
-    payload.referredNGOCount = referredNGOCount;
     // Module D
     if (moduleDData) payload.moduleDData = moduleDData;
     // Module E
     if (moduleEData) payload.moduleEData = moduleEData;
-    payload.eResolvedCount = eResolvedCount;
-    payload.eOngoingCount = eOngoingCount;
-    payload.eReferredGovCount = eReferredGovCount;
-    payload.eReferredNGOCount = eReferredNGOCount;
 
     try {
       var res = await fetch('/api/drafts', {
@@ -1874,8 +1853,8 @@ const ModuleAReportingPanel = () => {
                 <input className="field-input" value={schoolMetadata.schoolName} readOnly />
               </div>
               <div>
-                <label className="field-label">School Year <span className="required">*</span></label>
-                <input className="field-input" value={moduleDData.schoolYear || ''} onChange={e => setModuleDData(p => ({ ...p, schoolYear: e.target.value }))} placeholder="e.g., 2025-2026" />
+                <label className="field-label">School Year</label>
+                <input className="field-input" value={schoolMetadata.reportingYear} readOnly />
               </div>
               <div>
                 <label className="field-label">Period Covered <span className="required">*</span></label>
@@ -2102,38 +2081,6 @@ const ModuleAReportingPanel = () => {
             </button>
           </div>
 
-          <div className="annex-e-summary-wrapper">
-            <div className="card-header mb-md">
-              <div className="card-header-icon"><span className="material-symbols-outlined">summarize</span></div>
-              <div className="card-header-text">
-                <div className="card-header-title">Summary Counts</div>
-                <div className="card-header-subtitle">CONSOLIDATED TOTALS</div>
-              </div>
-            </div>
-            <div className="counter-row">
-              <div className="counter-pill resolved">
-                <div className="counter-icon"><span className="material-symbols-outlined">check_circle</span></div>
-                <input type="number" min="0" className="counter-num-input" value={eResolvedCount} onChange={e => setEResolvedCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
-                <div className="counter-label">Resolved</div>
-              </div>
-              <div className="counter-pill ongoing">
-                <div className="counter-icon"><span className="material-symbols-outlined">pending_actions</span></div>
-                <input type="number" min="0" className="counter-num-input" value={eOngoingCount} onChange={e => setEOngoingCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
-                <div className="counter-label">On-going intervention</div>
-              </div>
-              <div className="counter-pill external">
-                <div className="counter-icon"><span className="material-symbols-outlined">account_balance</span></div>
-                <input type="number" min="0" className="counter-num-input" value={eReferredGovCount} onChange={e => setEReferredGovCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
-                <div className="counter-label">Referred to Gov Agencies</div>
-              </div>
-              <div className="counter-pill ngo">
-                <div className="counter-icon"><span className="material-symbols-outlined">corporate_fare</span></div>
-                <input type="number" min="0" className="counter-num-input" value={eReferredNGOCount} onChange={e => setEReferredNGOCount(e.target.value)} placeholder="0" style={{ width: '60px', textAlign: 'center', fontSize: '24px', fontWeight: '800', border: 'none', background: 'transparent', outline: 'none' }} />
-                <div className="counter-label">Referred to NGO</div>
-              </div>
-            </div>
-          </div>
-
           <div className="annex-e-defs-wrapper">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">info</span></div>
@@ -2152,6 +2099,38 @@ const ModuleAReportingPanel = () => {
           </div>
         </>
       )}
+
+      <div className="annex-e-summary-wrapper">
+        <div className="card-header mb-md">
+          <div className="card-header-icon"><span className="material-symbols-outlined">summarize</span></div>
+          <div className="card-header-text">
+            <div className="card-header-title">Summary Counts</div>
+            <div className="card-header-subtitle">CONSOLIDATED TOTALS</div>
+          </div>
+        </div>
+        <div className="counter-row">
+          <div className="counter-pill resolved">
+            <div className="counter-icon"><span className="material-symbols-outlined">check_circle</span></div>
+            <div className="counter-num">{counters.resolved}</div>
+            <div className="counter-label">Resolved</div>
+          </div>
+          <div className="counter-pill ongoing">
+            <div className="counter-icon"><span className="material-symbols-outlined">pending_actions</span></div>
+            <div className="counter-num">{counters.ongoing}</div>
+            <div className="counter-label">On-going intervention</div>
+          </div>
+          <div className="counter-pill external">
+            <div className="counter-icon"><span className="material-symbols-outlined">account_balance</span></div>
+            <div className="counter-num">{counters.external}</div>
+            <div className="counter-label">Referred to Gov Agencies</div>
+          </div>
+          <div className="counter-pill ngo">
+            <div className="counter-icon"><span className="material-symbols-outlined">corporate_fare</span></div>
+            <div className="counter-num">{counters.ngo}</div>
+            <div className="counter-label">Referred to NGO</div>
+          </div>
+        </div>
+      </div>
 
       <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
         <div className="card-header mb-md">
