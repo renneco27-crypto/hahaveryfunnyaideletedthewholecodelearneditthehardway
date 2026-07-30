@@ -497,9 +497,18 @@ function showReportDetail(idx) {
     html += '<div><div class="text-caption text-on-surface-variant">Address</div><div class="font-bold">' + escHtml(md.address || '—') + '</div></div>';
     html += '<div><div class="text-caption text-on-surface-variant">Overall Status</div><div class="font-bold">' + escHtml(r.status || '—') + '</div></div>';
     html += '</div>';
-    // Get sections — Module B uses 'data', Module D uses 'ciclList', all others use 'data.categories'
+    // Get sections — Module B uses 'data', Module C uses 'children', Module D uses 'ciclList', Module E uses 'rows'
     var sections = {};
     if (mod === 'B' && meta.data) { sections['_data'] = meta.data; }
+    else if (mod === 'C' && meta.data) {
+        sections['_c_header'] = { periodCovered: meta.data.periodCovered || '—', totalStudents: meta.data.totalStudents || '—', childrenCount: (meta.data.children || []).length };
+        if (meta.data.children && meta.data.children.length > 0) {
+            sections['_c_list'] = { children: meta.data.children };
+        }
+        if (meta.data.narrative) {
+            sections['_c_narrative'] = { narrative: meta.data.narrative };
+        }
+    }
     else if (mod === 'D' && meta.data) {
         sections['_d_header'] = { periodCovered: meta.data.periodCovered || '—', ciclCount: (meta.data.ciclList || []).length };
         if (meta.data.ciclList && meta.data.ciclList.length > 0) {
@@ -507,6 +516,12 @@ function showReportDetail(idx) {
         }
         if (meta.data.interventionNarrative) {
             sections['_d_narrative'] = { interventionNarrative: meta.data.interventionNarrative };
+        }
+    }
+    else if (mod === 'E' && meta.data) {
+        sections['_e_header'] = { rowsCount: (meta.data.rows || []).length };
+        if (meta.data.rows && meta.data.rows.length > 0) {
+            sections['_e_list'] = { rows: meta.data.rows };
         }
     }
     else {
@@ -526,6 +541,36 @@ function showReportDetail(idx) {
                 html += '<tr class="' + bg + '"><td class="px-md py-sm font-bold text-on-surface-variant text-sm w-1/3 align-top">' + f.label + '</td><td class="px-md py-sm text-on-surface text-sm whitespace-pre-wrap">' + f.value + '</td></tr>';
             });
             html += '</table></div>';
+        } else if (mod === 'C') {
+            if (key === '_c_header') {
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">CAR Summary</div>';
+                html += '<div class="p-md"><span class="text-caption text-on-surface-variant">Period Covered: </span><span class="font-bold">' + escHtml(section.periodCovered) + '</span> &middot; <span class="text-caption text-on-surface-variant">Total Students: </span><span class="font-bold">' + escHtml(section.totalStudents) + '</span> &middot; <span class="text-caption text-on-surface-variant">Children at Risk: </span><span class="font-bold">' + section.childrenCount + '</span></div></div>';
+            } else if (key === '_c_list') {
+                var list = section.children || [];
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">Children at Risk (' + list.length + ')</div>';
+                html += '<table class="w-full text-left border-collapse"><thead><tr class="bg-surface-container-high text-xs uppercase tracking-wider text-on-surface-variant">';
+                html += '<th class="px-md py-sm">Name</th><th class="px-md py-sm">Age</th><th class="px-md py-sm">Gender</th><th class="px-md py-sm">Status</th><th class="px-md py-sm">Risk Factors</th><th class="px-md py-sm">Family Context</th><th class="px-md py-sm">Action Taken</th>';
+                html += '</tr></thead><tbody>';
+                list.forEach(function(c, i) {
+                    var bg = i % 2 === 0 ? '' : 'bg-surface-container-low';
+                    html += '<tr class="' + bg + ' text-sm">';
+                    html += '<td class="px-md py-sm">' + escHtml(c.name || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.age || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.gender || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.status || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml((c.riskFactors || []).join(', ') || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml((c.familyContexts || []).join(', ') || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.intervention || '—') + '</td>';
+                    html += '</tr>';
+                });
+                html += '</tbody></table></div>';
+            } else if (key === '_c_narrative') {
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">Narrative Summary</div>';
+                html += '<div class="p-md text-sm whitespace-pre-wrap">' + escHtml(section.narrative) + '</div></div>';
+            }
         } else if (mod === 'D') {
             if (key === '_d_header') {
                 html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
@@ -556,6 +601,29 @@ function showReportDetail(idx) {
                 html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">Intervention Narrative</div>';
                 html += '<div class="p-md text-sm whitespace-pre-wrap">' + escHtml(section.interventionNarrative) + '</div></div>';
             }
+        } else if (mod === 'E') {
+            if (key === '_e_header') {
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">Other Learner Rights Summary</div>';
+                html += '<div class="p-md"><span class="text-caption text-on-surface-variant">Total Concern Rows: </span><span class="font-bold">' + section.rowsCount + '</span></div></div>';
+            } else if (key === '_e_list') {
+                var list = section.rows || [];
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">Concern Rows (' + list.length + ')</div>';
+                html += '<table class="w-full text-left border-collapse"><thead><tr class="bg-surface-container-high text-xs uppercase tracking-wider text-on-surface-variant">';
+                html += '<th class="px-md py-sm">Concern Type</th><th class="px-md py-sm">Victim</th><th class="px-md py-sm">Perpetrator</th><th class="px-md py-sm">Status</th>';
+                html += '</tr></thead><tbody>';
+                list.forEach(function(r, i) {
+                    var bg = i % 2 === 0 ? '' : 'bg-surface-container-low';
+                    html += '<tr class="' + bg + ' text-sm">';
+                    html += '<td class="px-md py-sm">' + escHtml(r.concernType || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(r.victim || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(r.perpetrator || r.respondent || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(r.status || '—') + '</td>';
+                    html += '</tr>';
+                });
+                html += '</tbody></table></div>';
+            }
         } else {
             html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
             html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">' + escHtml(categoryTitle(key, mod)) + '</div>';
@@ -569,6 +637,16 @@ function showReportDetail(idx) {
         }
     });
     if (!sectionKeys.length) html += '<div class="text-center text-on-surface-variant py-lg">No category data</div>';
+    // Counter pills for Module C and Module E
+    var sc = meta.data?.summaryCounts || meta.summaryCounts;
+    if (sc && (mod === 'C' || mod === 'E')) {
+        html += '<div class="counter-row" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;margin-top:12px">';
+        html += '<div class="counter-pill resolved" style="padding:12px;border-radius:8px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);text-align:center"><div style="font-size:24px;font-weight:700;color:#2e7d32">' + (sc.resolved || 0) + '</div><div style="font-size:12px;color:#1b5e20">Resolved</div></div>';
+        html += '<div class="counter-pill ongoing" style="padding:12px;border-radius:8px;background:linear-gradient(135deg,#fff3e0,#ffe0b2);text-align:center"><div style="font-size:24px;font-weight:700;color:#e65100">' + (sc.ongoing || 0) + '</div><div style="font-size:12px;color:#bf360c">On-going</div></div>';
+        html += '<div class="counter-pill external" style="padding:12px;border-radius:8px;background:linear-gradient(135deg,#e3f2fd,#bbdefb);text-align:center"><div style="font-size:24px;font-weight:700;color:#1565c0">' + (sc.referredGov || 0) + '</div><div style="font-size:12px;color:#0d47a1">Referred (Gov)</div></div>';
+        html += '<div class="counter-pill ngo" style="padding:12px;border-radius:8px;background:linear-gradient(135deg,#f3e5f5,#e1bee7);text-align:center"><div style="font-size:24px;font-weight:700;color:#7b1fa2">' + (sc.referredNGO || 0) + '</div><div style="font-size:12px;color:#4a148c">Referred (NGO)</div></div>';
+        html += '</div>';
+    }
     document.getElementById('detail-body').innerHTML = html;
     document.getElementById('detail-modal').classList.remove('hidden');
 }
