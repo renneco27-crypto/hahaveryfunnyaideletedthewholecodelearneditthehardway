@@ -93,6 +93,19 @@ async function processUserQueue(email) {
       scheduleUserQueue(email, null);
     } else {
       console.log(`Inserted ${inserts.length} reports for ${email}`);
+      // Fire Make.com webhook (fire-and-forget)
+      try {
+        const webhookUrl = 'https://hook.eu1.make.com/9acokbud64bqr23nugs4gfhjvfdzyj8f';
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'INSERT', table: 'bullying_reports', count: inserts.length, email: email })
+        }).catch(function(err) {
+          console.error('Webhook failed:', err.message);
+        });
+      } catch (whErr) {
+        console.error('Webhook error:', whErr.message);
+      }
     }
   }
 }
