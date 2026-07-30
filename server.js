@@ -285,7 +285,7 @@ app.get('/api/stats', async (req, res) => {
     const role = user.app_metadata?.role || profile?.role || 'user';
     const schoolName = profile?.school_name || null;
 
-    let query = supabase.from('bullying_reports').select('*');
+    let query = db.from('bullying_reports').select('*');
     if (role !== 'admin' && schoolName) query = query.eq('school_name', schoolName);
     const { data, error } = await query.order('created_at', { ascending: false });
 
@@ -318,7 +318,8 @@ app.get('/api/stats', async (req, res) => {
 app.delete('/api/reports/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { error } = await supabase.from('bullying_reports').delete().eq('id', id);
+    const db = serviceClient || supabase;
+    const { error } = await db.from('bullying_reports').delete().eq('id', id);
     if (error) throw error;
     res.json({ success: true });
   } catch (error) {
@@ -343,7 +344,7 @@ app.get('/api/reports', async (req, res) => {
     const role = user.app_metadata?.role || profile?.role || 'user';
     const schoolName = profile?.school_name || null;
 
-    let query = supabase.from('bullying_reports').select('*');
+    let query = db.from('bullying_reports').select('*');
     if (role !== 'admin' && schoolName) query = query.eq('school_name', schoolName);
     const { data, error } = await query.order('created_at', { ascending: false });
     if (error) throw error;

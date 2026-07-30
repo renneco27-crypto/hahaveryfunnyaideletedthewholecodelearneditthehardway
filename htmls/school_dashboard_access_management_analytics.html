@@ -434,9 +434,9 @@
       var cfg = STATUS_CONFIG[status] || { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' };
       var alt = idx % 2 === 1 ? 'bg-[#F9FAFB]' : '';
 
-      var actionBtn = isDraft
+      var draftBtn = isDraft
         ? '<a href="/submissions?draft=' + encodeURIComponent(r.reference_number) + '" class="inline-flex items-center gap-xs text-primary hover:underline font-label-md text-label-md"><span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span> Continue</a>'
-        : '<button class="text-primary hover:underline font-label-md text-label-md" onclick="deleteReport(' + r.id + ')">Delete</button>';
+        : '';
 
       return `<tr class="border-b border-outline-variant ${alt} hover:bg-surface-variant transition-colors">
         <td class="p-md">${date}</td>
@@ -451,21 +451,9 @@
             ${status}
           </span>
         </td>
-        <td class="p-md">${actionBtn}</td>
+        <td class="p-md">${draftBtn}</td>
       </tr>`;
     }).join('');
-  }
-
-  async function deleteReport(id) {
-    if (!confirm('Delete this report?')) return;
-    try {
-      const res = await fetch(`${API_BASE}/api/reports/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      await loadAnalytics();
-    } catch (err) {
-      console.error('Delete failed:', err);
-      alert('Failed to delete report.');
-    }
   }
 
   loadAnalytics();
