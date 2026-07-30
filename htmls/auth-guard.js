@@ -50,7 +50,7 @@
     window.__token = session.access_token;
 
     if (window.location.pathname === '/admin' && result.user.role !== 'admin') {
-      window.location.href = '/dashboard';
+      window.location.href = '/analytics';
     }
   } catch (e) {
     console.error('Auth guard error:', e);

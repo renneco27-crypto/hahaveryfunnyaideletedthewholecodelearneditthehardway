@@ -21,7 +21,6 @@
           { label: 'Access Management', icon: 'admin_panel_settings', href: '/access' }
         ]
       : [
-          { label: 'Overview', icon: 'dashboard', href: '/dashboard' },
           { label: 'Submissions', icon: 'description', href: '/submissions' },
           { label: 'Access Management', icon: 'admin_panel_settings', href: '/analytics' }
         ];

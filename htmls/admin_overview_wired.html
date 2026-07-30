@@ -156,9 +156,9 @@
 <div class="flex items-center gap-md"><button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
-<!-- sidebar removed -->
+<div id="sidebar-root"></div>
 <!-- Main Content Area -->
-<main class="flex-1 p-lg max-w-container-max mx-auto overflow-y-auto">
+<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
 <!-- Page Header & Stats -->
 <div class="flex justify-between items-end mb-lg">
 <div>
@@ -404,6 +404,7 @@ document.getElementById('prev-page-btn').addEventListener('click', function() {
   });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="sidebar.js"></script>
 <script src="auth-guard.js"></script>
 </body></html>
 

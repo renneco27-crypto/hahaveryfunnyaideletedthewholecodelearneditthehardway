@@ -254,8 +254,8 @@ tailwind.config = {
 </div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
-<!-- sidebar removed -->
-<main class="flex-1 p-lg max-w-container-max mx-auto overflow-y-auto">
+<div id="sidebar-root"></div>
+<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
 <div id="root"></div>
 </main>
 </div>
@@ -2262,6 +2262,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<ModuleAReportingPan
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
+<script src="sidebar.js"></script>
 </body>
 </html>
 

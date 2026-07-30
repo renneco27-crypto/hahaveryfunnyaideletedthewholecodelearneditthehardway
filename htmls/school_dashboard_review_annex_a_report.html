@@ -156,10 +156,10 @@
 <!-- FIX 5: wrapper uses flex with min-w-0 on children to prevent overflow -->
 <div class="flex min-h-[calc(100vh-4rem)]">
 
-<!-- sidebar removed -->
+<div id="sidebar-root"></div>
 
 <!-- FIX 6: main gets min-w-0 so it truly shrinks inside flex; sidebar margin only at lg+ -->
-<main class="flex-1 min-w-0 p-md md:p-lg">
+<main class="flex-1 min-w-0 lg:ml-64 p-md md:p-lg">
 <div class="max-w-container-max mx-auto space-y-lg">
 
     <!-- Welcome Header -->
@@ -361,6 +361,7 @@
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="sidebar.js"></script>
 <script>
     function getAuthToken() {
         try { return (JSON.parse(sessionStorage.getItem('auth_cache') || '{}')).token || ''; } catch(e) { return ''; }

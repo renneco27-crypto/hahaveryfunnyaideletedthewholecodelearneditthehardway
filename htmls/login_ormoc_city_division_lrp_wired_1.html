@@ -225,7 +225,7 @@
           }
 
           console.log('Logged in as: ' + user.email + ' | Role: ' + role);
-          window.location.href = role === 'admin' ? '/admin' : '/dashboard';
+          window.location.href = role === 'admin' ? '/admin' : '/analytics';
         } catch (e) {
           console.error('checkAuthAndRoute error:', e);
         }
