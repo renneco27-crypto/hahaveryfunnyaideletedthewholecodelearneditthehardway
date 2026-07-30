@@ -46,16 +46,34 @@ async function processUserQueue(email) {
     try {
       const raw = fs.readFileSync(fp, 'utf8');
       const content = JSON.parse(raw);
-      inserts.push({
-        reference_number: path.basename(fp, '.json'),
-        module: content.module,
-        school_id: content.metadata?.schoolId,
-        school_name: content.metadata?.schoolName,
-        prepared_by: content.preparedBy,
-        validated_by: content.validatedBy,
-        status: 'Submitted',
-        report_data: content
-      });
+      // Batch multi-module submission
+      if (content.modules && Array.isArray(content.modules)) {
+        const refNum = content.referenceNumber || path.basename(fp, '.json');
+        content.modules.forEach(modEntry => {
+          inserts.push({
+            reference_number: refNum,
+            module: modEntry.module,
+            school_id: content.metadata?.schoolId,
+            school_name: content.metadata?.schoolName,
+            prepared_by: content.preparedBy,
+            validated_by: content.validatedBy,
+            status: 'Submitted',
+            report_data: { ...content, module: modEntry.module, data: modEntry.data }
+          });
+        });
+      } else {
+        // Legacy single-module submission
+        inserts.push({
+          reference_number: path.basename(fp, '.json'),
+          module: content.module,
+          school_id: content.metadata?.schoolId,
+          school_name: content.metadata?.schoolName,
+          prepared_by: content.preparedBy,
+          validated_by: content.validatedBy,
+          status: 'Submitted',
+          report_data: content
+        });
+      }
     } catch (e) {
       console.error('Queue read error:', fp, e.message);
     }
