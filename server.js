@@ -80,9 +80,15 @@ async function processUserQueue(email) {
   }
   if (inserts.length > 0) {
     const db = serviceClient || supabase;
-    const { error } = await db.from('bullying_reports').insert(inserts);
-    if (error) {
-      console.error(`Batch insert failed for ${email}:`, error.message);
+    let failed = false;
+    for (const row of inserts) {
+      const { error } = await db.from('bullying_reports').insert(row);
+      if (error) {
+        console.error(`Insert failed for ${email} (${row.reference_number}/${row.module}):`, error.message);
+        failed = true;
+      }
+    }
+    if (failed) {
       entry.files.push(...files);
       scheduleUserQueue(email, null);
     } else {
