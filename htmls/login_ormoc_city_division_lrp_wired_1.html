@@ -149,6 +149,7 @@
 <!-- Email Login Form -->
 <div class="mb-md flex flex-col gap-sm">
 <input class="w-full px-md py-sm border border-outline rounded-lg font-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-on-surface" id="emailInput" placeholder="Enter your email" type="email">
+<p id="emailMsg" class="font-body-sm text-body-sm" style="color:red; display:none; margin-top:4px;"></p>
 <button id="emailLoginBtn" class="w-full bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
     Sign In
 </button>
@@ -183,12 +184,6 @@
                         Having trouble signing in?
                     </a>
 </div>
-</div>
-<!-- Additional Links -->
-<div class="mt-md flex justify-center gap-md">
-<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
-<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
-<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Security Standards</a>
 </div>
 </div>
 </main>
@@ -268,9 +263,12 @@
       // Email login
       document.getElementById('emailLoginBtn').addEventListener('click', async function() {
         const email = document.getElementById('emailInput').value.trim().toLowerCase();
-        if (!email) { alert('Please enter your email address.'); return; }
+        const msgEl = document.getElementById('emailMsg');
+        if (!email) { msgEl.style.color = 'red'; msgEl.textContent = 'Please enter your email address.'; msgEl.style.display = ''; return; }
+        msgEl.style.display = 'none';
         const { error } = await supabase.auth.signInWithOtp({ email });
-        if (error) { alert(error.message); } else { alert('Check your email for the magic link.'); }
+        if (error) { msgEl.style.color = 'red'; msgEl.textContent = error.message; msgEl.style.display = ''; }
+        else { msgEl.style.color = 'green'; msgEl.textContent = 'Check your email for the magic link.'; msgEl.style.display = ''; }
       });
 
       // Button hover effects
