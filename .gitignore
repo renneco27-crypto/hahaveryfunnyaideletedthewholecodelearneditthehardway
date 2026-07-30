@@ -7,3 +7,4 @@ dist/
 build/
 *.zip
 tsconfig.tsbuildinfo
+temp_json/
