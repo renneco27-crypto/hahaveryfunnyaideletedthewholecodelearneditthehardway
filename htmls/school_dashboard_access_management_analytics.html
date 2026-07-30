@@ -205,14 +205,14 @@
     </div>
 </header>
 <div class="flex">
-<div id="sidebar-root"></div>
+<!-- sidebar removed -->
 <!-- Main Content Canvas -->
 <main class="w-full lg:ml-64 p-md md:p-lg min-h-screen">
 <div class="max-w-container-max mx-auto">
 <!-- Header -->
 <div class="mb-lg">
 <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-base">Access Management &amp; Analytics</h1>
-<p class="font-body-md text-body-md text-on-surface-variant">Review your school's reporting performance and historical data.</p>
+<p class="font-body-md text-body-md text-on-surface-variant"><span id="school-name-header"></span>Review your school's reporting performance and historical data.</p>
 </div>
 <!-- Hero Metrics -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg">
@@ -291,22 +291,42 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
-<script src="sidebar.js"></script>
 <script>
   const API_BASE = '';
   const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const STATUS_CONFIG = {
     'Submitted': { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' },
-    'Pending Review': { bg: '#FEF7E0', color: '#B06000', icon: 'pending' }
+    'Pending Review': { bg: '#FEF7E0', color: '#B06000', icon: 'pending' },
+    'Draft': { bg: '#E8EAF6', color: '#3F51B5', icon: 'edit_note' }
   };
+
+  function annexLabel(mod) {
+    return mod === 'A' ? 'Annex A — School-Based Incident Report on Bullying' : mod === 'B' ? 'Annex B — School-Based Incident Report on Child Abuse' : mod === 'C' ? 'Annex C — Risk Registry Report' : mod === 'D' ? 'Annex D — School-Based Consolidated Report on Incidents of CICL' : mod === 'E' ? 'Annex E — School-Based Consolidated Report on Other Learner Rights' : mod || '—';
+  }
 
   async function loadAnalytics() {
     try {
-      const school = window.__user?.schoolName;
-      const url = school ? `${API_BASE}/api/stats?schoolName=${encodeURIComponent(school)}` : `${API_BASE}/api/stats`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      const token = window.__token;
+      if (!token) throw new Error('No auth token');
+
+      const statsUrl = `${API_BASE}/api/stats?token=${encodeURIComponent(token)}`;
+      const draftsUrl = `${API_BASE}/api/drafts?token=${encodeURIComponent(token)}`;
+
+      const [statsRes, draftsRes] = await Promise.all([
+        fetch(statsUrl),
+        fetch(draftsUrl)
+      ]);
+
+      if (!statsRes.ok) throw new Error(`Stats HTTP ${statsRes.status}`);
+      const data = await statsRes.json();
+
+      var drafts = [];
+      if (draftsRes.ok) drafts = await draftsRes.json();
+
+      // School header
+      var schoolName = window.__user?.schoolName || '';
+      var schoolEl = document.getElementById('school-name-header');
+      if (schoolEl) schoolEl.textContent = schoolName ? schoolName + ' — ' : '';
 
       // Total incidents
       document.getElementById('total-incidents').textContent = data.total;
@@ -318,8 +338,12 @@
       // Bar chart
       renderChart(data.monthly);
 
-      // History table
-      renderHistory(data.reports);
+      // History table — merge submitted reports + drafts
+      var all = (data.reports || []).concat(drafts || []);
+      all.sort(function(a, b) {
+        return new Date(b.created_at || b.submitted_at) - new Date(a.created_at || a.submitted_at);
+      });
+      renderHistory(all);
     } catch (err) {
       console.error('Failed to load analytics:', err);
       document.getElementById('chart-bars').innerHTML = '<div class="text-caption text-outline w-full text-center py-md">Could not load data</div>';
@@ -356,6 +380,17 @@
     }).join('');
   }
 
+  function getIncidentCount(r) {
+    var mod = (r.module || '').toUpperCase();
+    if (mod === 'D') {
+      var ciclList = r.report_data?.data?.ciclList || r.report_data?.ciclList || [];
+      return ciclList.length;
+    }
+    var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
+    var keys = Object.keys(cats);
+    return keys.length || r.report_data?.data?.length || 0;
+  }
+
   function renderHistory(reports) {
     const tbody = document.getElementById('history-tbody');
     if (!reports || reports.length === 0) {
@@ -364,15 +399,24 @@
     }
 
     tbody.innerHTML = reports.map((r, idx) => {
-      const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const period = r.reporting_year ? (r.module_type ? `${r.module_type} — ${r.reporting_year}` : r.reporting_year) : '—';
-      const incidents = r.report_data?.data?.categories?.length || r.report_data?.data?.length || 0;
-      const status = r.report_status || 'Submitted';
-      const cfg = STATUS_CONFIG[status] || { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' };
-      const alt = idx % 2 === 1 ? 'bg-[#F9FAFB]' : '';
+      var isDraft = r.status === 'Draft' || r.report_data?.status === 'Draft';
+      var date = new Date(r.created_at || r.submitted_at || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      var mod = (r.module || r.report_data?.metadata?.annexType || '').toUpperCase();
+      var period = r.report_data?.metadata?.reportingYear || r.report_data?.schoolMetadata?.reportingYear || '—';
+      var label = annexLabel(mod);
+      var periodDisplay = period !== '—' ? label + ' — ' + period : label;
+      var incidents = getIncidentCount(r);
+      var status = isDraft ? 'Draft' : (r.status || 'Submitted');
+      var cfg = STATUS_CONFIG[status] || { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' };
+      var alt = idx % 2 === 1 ? 'bg-[#F9FAFB]' : '';
+
+      var actionBtn = isDraft
+        ? '<a href="/submissions?draft=' + encodeURIComponent(r.reference_number) + '" class="inline-flex items-center gap-xs text-primary hover:underline font-label-md text-label-md"><span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span> Continue</a>'
+        : '<button class="text-primary hover:underline font-label-md text-label-md" onclick="deleteReport(' + r.id + ')">Delete</button>';
+
       return `<tr class="border-b border-outline-variant ${alt} hover:bg-surface-variant transition-colors">
         <td class="p-md">${date}</td>
-        <td class="p-md text-on-surface-variant">${period}</td>
+        <td class="p-md text-on-surface-variant">${periodDisplay}</td>
         <td class="p-md text-right">${incidents}</td>
         <td class="p-md">
           <span class="inline-flex items-center gap-xs px-2 py-1 rounded" style="background:${cfg.bg};color:${cfg.color};font-size:14px;">
@@ -380,9 +424,7 @@
             ${status}
           </span>
         </td>
-        <td class="p-md">
-          <button class="text-primary hover:underline font-label-md text-label-md" onclick="deleteReport(${r.id})">Delete</button>
-        </td>
+        <td class="p-md">${actionBtn}</td>
       </tr>`;
     }).join('');
   }

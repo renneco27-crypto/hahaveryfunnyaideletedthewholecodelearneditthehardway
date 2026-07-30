@@ -117,6 +117,114 @@ app.post('/api/submit', async (req, res) => {
   }
 });
 
+// Draft API — Save, List, Load, Delete drafts
+app.post('/api/drafts', async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) return res.status(401).json({ error: 'Invalid token' });
+
+    const db = serviceClient || supabase;
+    const { data: profile } = await db
+      .from('profiles').select('role, school_name').eq('id', user.id).maybeSingle();
+    const schoolName = profile?.school_name || null;
+
+    const draftData = req.body;
+    const refNum = draftData.referenceNumber || `DRFT-${Date.now()}`;
+
+    const { data: existing } = await db
+      .from('form_drafts').select('id').eq('reference_number', refNum).maybeSingle();
+
+    if (existing) {
+      await db.from('form_drafts').update({
+        report_data: draftData,
+        updated_at: new Date().toISOString()
+      }).eq('reference_number', refNum);
+    } else {
+      await db.from('form_drafts').insert({
+        reference_number: refNum,
+        school_name: schoolName || draftData.metadata?.schoolName || 'Unknown',
+        school_id: draftData.metadata?.schoolId || null,
+        report_data: draftData
+      });
+    }
+
+    res.json({ success: true, referenceNumber: refNum });
+  } catch (error) {
+    console.error('Save Draft Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/drafts', async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) return res.status(401).json({ error: 'Invalid token' });
+
+    const db = serviceClient || supabase;
+    const { data: profile } = await db
+      .from('profiles').select('role, school_name').eq('id', user.id).maybeSingle();
+    const role = user.app_metadata?.role || profile?.role || 'user';
+    const schoolName = profile?.school_name || null;
+
+    let query = db.from('form_drafts').select('*').eq('status', 'Draft');
+    if (role !== 'admin' && schoolName) query = query.eq('school_name', schoolName);
+    const { data, error } = await query.order('created_at', { ascending: false });
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    console.error('List Drafts Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/drafts/:ref', async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) return res.status(401).json({ error: 'Invalid token' });
+
+    const db = serviceClient || supabase;
+    const { data, error } = await db
+      .from('form_drafts').select('*').eq('reference_number', req.params.ref).maybeSingle();
+
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Draft not found' });
+    res.json(data);
+  } catch (error) {
+    console.error('Load Draft Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/drafts/:ref', async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) return res.status(401).json({ error: 'Invalid token' });
+
+    const db = serviceClient || supabase;
+    const { error } = await db
+      .from('form_drafts').delete().eq('reference_number', req.params.ref);
+
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete Draft Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /api/stats — aggregated analytics (filter by schoolName for non-admin)
 app.get('/api/stats', async (req, res) => {
   try {
@@ -305,7 +413,6 @@ app.get('/auth/callback', (req, res) => {
 
 // Protected routes (frontend auth guard enforces on each page)
 const protectedPages = [
-  { path: '/dashboard', file: 'school_dashboard_review_annex_a_report.html' },
   { path: '/submissions', file: 'annex_modules_redesigned.html' },
   { path: '/analytics', file: 'school_dashboard_access_management_analytics.html' },
   { path: '/admin', file: 'admin_overview_wired.html' },

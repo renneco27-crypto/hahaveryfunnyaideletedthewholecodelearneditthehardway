@@ -254,7 +254,7 @@ tailwind.config = {
 </div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
-<div id="sidebar-root"></div>
+<!-- sidebar removed -->
 <main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
 <div id="root"></div>
 </main>
@@ -316,6 +316,40 @@ const ModuleAReportingPanel = () => {
         });
       }
     }, 200);
+
+    // Load draft if ?draft=REF is in URL
+    var params = new URLSearchParams(window.location.search);
+    var ref = params.get('draft');
+    if (ref && window.__token) {
+      fetch('/api/drafts/' + encodeURIComponent(ref) + '?token=' + encodeURIComponent(window.__token))
+        .then(function(r) { return r.json(); })
+        .then(function(draft) {
+          var d = draft.report_data || {};
+          setDraftRef(draft.reference_number);
+          if (d.schoolMetadata) setSchoolMetadata(d.schoolMetadata);
+          if (d.categoryData) setCategoryData(d.categoryData);
+          if (d.preparedBy) setPreparedBy(d.preparedBy);
+          if (d.validatedBy) setValidatedBy(d.validatedBy);
+          if (d.activeModule) setActiveModule(d.activeModule);
+          if (d.moduleBData) setModuleBData(d.moduleBData);
+          if (d.moduleCData) setModuleCData(d.moduleCData);
+          if (d.periodCovered) setPeriodCovered(d.periodCovered);
+          if (d.totalStudents) setTotalStudents(d.totalStudents);
+          if (d.cNarrative) setCNarrative(d.cNarrative);
+          if (d.resolvedCount) setResolvedCount(d.resolvedCount);
+          if (d.ongoingCount) setOngoingCount(d.ongoingCount);
+          if (d.referredGovCount) setReferredGovCount(d.referredGovCount);
+          if (d.referredNGOCount) setReferredNGOCount(d.referredNGOCount);
+          if (d.moduleDData) setModuleDData(d.moduleDData);
+          if (d.moduleEData) setModuleEData(d.moduleEData);
+          if (d.eResolvedCount) setEResolvedCount(d.eResolvedCount);
+          if (d.eOngoingCount) setEOngoingCount(d.eOngoingCount);
+          if (d.eReferredGovCount) setEReferredGovCount(d.eReferredGovCount);
+          if (d.eReferredNGOCount) setEReferredNGOCount(d.eReferredNGOCount);
+        })
+        .catch(function(e) { console.error('Failed to load draft:', e); });
+    }
+
     return function() { clearInterval(iv); };
   }, []);
 
@@ -364,6 +398,7 @@ const ModuleAReportingPanel = () => {
   const [reportPayload, setReportPayload] = useState(null);
   const submitRef = useRef(null);
   const [activeModule, setActiveModule] = useState('A');
+  const [draftRef, setDraftRef] = useState(null);
   const visited = useRef({ A: true });
   const cClassificationOptions = [
     { id: '1', label: '1 - Dysfunctional family / Without parent or guardian' },
@@ -939,6 +974,57 @@ const ModuleAReportingPanel = () => {
     }, 50);
   };
 
+  const handleSaveDraft = async () => {
+    if (!window.__token) return;
+    var payload = {
+      referenceNumber: draftRef || ('DRFT-' + Date.now()),
+      schoolMetadata: schoolMetadata,
+      categoryData: categoryData,
+      preparedBy: preparedBy,
+      validatedBy: validatedBy,
+      activeModule: activeModule,
+      metadata: {
+        schoolName: schoolMetadata.schoolName,
+        schoolId: schoolMetadata.schoolId,
+        reportingYear: schoolMetadata.reportingYear
+      }
+    };
+    // Module B
+    if (moduleBData) payload.moduleBData = moduleBData;
+    // Module C
+    payload.moduleCData = moduleCData;
+    payload.periodCovered = periodCovered;
+    payload.totalStudents = totalStudents;
+    payload.cNarrative = cNarrative;
+    payload.resolvedCount = resolvedCount;
+    payload.ongoingCount = ongoingCount;
+    payload.referredGovCount = referredGovCount;
+    payload.referredNGOCount = referredNGOCount;
+    // Module D
+    if (moduleDData) payload.moduleDData = moduleDData;
+    // Module E
+    if (moduleEData) payload.moduleEData = moduleEData;
+    payload.eResolvedCount = eResolvedCount;
+    payload.eOngoingCount = eOngoingCount;
+    payload.eReferredGovCount = eReferredGovCount;
+    payload.eReferredNGOCount = eReferredNGOCount;
+
+    try {
+      var res = await fetch('/api/drafts?token=' + encodeURIComponent(window.__token), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Server returned ' + res.status);
+      var result = await res.json();
+      setDraftRef(result.referenceNumber);
+      window.location.href = '/analytics';
+    } catch (err) {
+      console.error('Save Draft failed:', err);
+      alert('Failed to save draft. Please try again.');
+    }
+  };
+
   const confirmSubmit = async () => {
     if (!reportPayload || submitting) return;
     setSubmitting(true);
@@ -956,6 +1042,10 @@ const ModuleAReportingPanel = () => {
         referenceNumber: reportPayload.referenceNumber,
         module: activeModule
       }));
+      // Delete draft after submit if resuming from one
+      if (draftRef && window.__token) {
+        navigator.sendBeacon('/api/drafts/' + encodeURIComponent(draftRef) + '?token=' + encodeURIComponent(window.__token));
+      }
       setTimeout(function() {
         window.location.href = '/analytics';
       }, 800);
@@ -1749,20 +1839,6 @@ const ModuleAReportingPanel = () => {
       {activeModule === 'D' && moduleDData && (
         <>
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
-            <div className="flex items-center gap-sm mb-md" style={{ color: '#ba1a1a' }}>
-              <span className="material-symbols-outlined msf" style={{ fontSize: '16px' }}>lock</span>
-              <span className="font-label-md text-label-md font-bold">CONFIDENTIAL</span>
-            </div>
-            <h3 className="font-headline-md text-headline-md font-bold text-primary mb-md">School-Based Consolidated Report on Incidents of Children in Conflict with the Law (CICL)</h3>
-            <div className="panel-grid" style={{ maxWidth: '400px' }}>
-              <div>
-                <label className="field-label">School Year <span className="required">*</span></label>
-                <input className="field-input" value={moduleDData.schoolYear || ''} onChange={e => setModuleDData(p => ({ ...p, schoolYear: e.target.value }))} placeholder="e.g., 2025-2026" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
               <div className="card-header-text">
@@ -1774,6 +1850,10 @@ const ModuleAReportingPanel = () => {
               <div>
                 <label className="field-label">School</label>
                 <input className="field-input" value={schoolMetadata.schoolName} readOnly />
+              </div>
+              <div>
+                <label className="field-label">School Year <span className="required">*</span></label>
+                <input className="field-input" value={moduleDData.schoolYear || ''} onChange={e => setModuleDData(p => ({ ...p, schoolYear: e.target.value }))} placeholder="e.g., 2025-2026" />
               </div>
               <div>
                 <label className="field-label">Period Covered <span className="required">*</span></label>
@@ -2166,7 +2246,7 @@ const ModuleAReportingPanel = () => {
       )}
 
       <div className="sticky-footer">
-        <button className="secondary-btn" type="button" onClick={() => window.location.href = '/submissions'}>
+        <button className="secondary-btn" type="button" onClick={handleSaveDraft}>
           <span className="material-symbols-outlined">save</span> Save Draft
         </button>
         <button className="primary-btn" type="button" onClick={handleSubmit}>
@@ -2182,7 +2262,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(<ModuleAReportingPan
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
-<script src="sidebar.js"></script>
 </body>
 </html>
 

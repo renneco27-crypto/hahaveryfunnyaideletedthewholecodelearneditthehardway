@@ -156,7 +156,7 @@
 <!-- FIX 5: wrapper uses flex with min-w-0 on children to prevent overflow -->
 <div class="flex min-h-[calc(100vh-4rem)]">
 
-<div id="sidebar-root"></div>
+<!-- sidebar removed -->
 
 <!-- FIX 6: main gets min-w-0 so it truly shrinks inside flex; sidebar margin only at lg+ -->
 <main class="flex-1 min-w-0 lg:ml-64 p-md md:p-lg">
@@ -524,5 +524,4 @@
     waitAuth(function(tok) { loadReports(tok); });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="auth-guard.js"></script>
-<script src="sidebar.js"></script></body></html>
+<script src="auth-guard.js"></script></body></html>

@@ -137,7 +137,7 @@
 </nav>
 <div class="flex flex-1 relative z-10">
 <!-- SideNavBar -->
-<div id="sidebar-root"></div>
+<!-- sidebar removed -->
 <!-- Main Content Area -->
 <main class="flex-1 lg:ml-64 p-lg space-y-lg max-w-[1200px] mx-auto w-full">
 <!-- Section 1: Division Submission Summary Header -->
@@ -196,12 +196,12 @@ Download Excel
 </div>
 <div class="flex flex-wrap gap-sm w-full lg:w-auto">
 <select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="reports-category">
-<option>Category: All</option>
-<option>Bullying</option>
-<option>Abuse</option>
-<option>CAR</option>
-<option>CICL</option>
-<option>Other</option>
+<option>Annex: All</option>
+<option>Annex A</option>
+<option>Annex B</option>
+<option>Annex C</option>
+<option>Annex D</option>
+<option>Annex E</option>
 </select>
 <select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="reports-status">
 <option>Status: All</option>
@@ -324,16 +324,19 @@ Download Excel
         function goReportsPage(p) {
             reportsPage = p;
             var search = (document.getElementById('reports-search')?.value || '').toLowerCase();
-            var catFilter = document.getElementById('reports-category')?.value || 'Category: All';
+            var catFilter = document.getElementById('reports-category')?.value || 'Annex: All';
             var statusFilter = document.getElementById('reports-status')?.value || 'Status: All';
 
             var filtered = reportsData.filter(function(r) {
                 if (search && !String(r.school_id || r.report_data?.metadata?.schoolId || '').toLowerCase().includes(search)) return false;
-                if (catFilter !== 'Category: All') {
-                    var mod = (r.module || r.report_data?.module || '').toLowerCase();
-                    var cat = catFilter.toLowerCase();
-                    if (cat === 'bullying' && !mod.includes('a') && !mod.includes('b')) return false;
-                    if (cat === 'abuse' && mod !== 'c') return false;
+                if (catFilter !== 'Annex: All') {
+                    var mod = (r.module || r.report_data?.module || '').toUpperCase();
+                    var cat = catFilter.toUpperCase();
+                    if (cat === 'ANNEX A' && mod !== 'A') return false;
+                    if (cat === 'ANNEX B' && mod !== 'B') return false;
+                    if (cat === 'ANNEX C' && mod !== 'C') return false;
+                    if (cat === 'ANNEX D' && mod !== 'D') return false;
+                    if (cat === 'ANNEX E' && mod !== 'E') return false;
                 }
                 if (statusFilter !== 'Status: All') {
                     var st = (r.status || '').toLowerCase();
@@ -358,14 +361,21 @@ Download Excel
                 var module = r.module || r.report_data?.module || '—';
                 var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
                 var catKeys = Object.keys(cats);
-                var summary = catKeys.length + ' categor' + (catKeys.length !== 1 ? 'ies' : 'y');
-                var caseCount = catKeys.length || 1;
+                var summary, caseCount;
+                if (module === 'D') {
+                  var ciclList = r.report_data?.data?.ciclList || [];
+                  summary = ciclList.length + ' CICL case' + (ciclList.length !== 1 ? 's' : '');
+                  caseCount = ciclList.length || 1;
+                } else {
+                  summary = catKeys.length + ' categor' + (catKeys.length !== 1 ? 'ies' : 'y');
+                  caseCount = catKeys.length || 1;
+                }
                 var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
                 var status = r.status || 'pending';
                 var statusColor = status === 'submitted' || status === 'sent' ? 'text-emerald-600' : status === 'pending' ? 'text-orange-600' : 'text-blue-600';
                 var statusDot = status === 'submitted' || status === 'sent' ? 'bg-emerald-600' : status === 'pending' ? 'bg-orange-600' : 'bg-blue-600';
                 var statusLabel = status === 'submitted' || status === 'sent' ? 'Submitted' : status === 'pending' ? 'Pending' : status;
-                var categoryBadge = module === 'A' ? 'Bullying' : module === 'B' ? 'Behavioral' : module === 'C' ? 'CAR' : module === 'D' ? 'CICL' : module === 'E' ? 'Other' : module;
+                var categoryBadge = module === 'A' ? 'Annex A' : module === 'B' ? 'Annex B' : module === 'C' ? 'Annex C' : module === 'D' ? 'Annex D' : module === 'E' ? 'Annex E' : module;
                 var badgeBg = module === 'A' ? 'bg-red-100 text-red-800' : module === 'B' ? 'bg-orange-100 text-orange-800' : module === 'C' ? 'bg-blue-100 text-blue-900' : module === 'D' ? 'bg-purple-100 text-purple-900' : 'bg-gray-100 text-gray-700';
                 var rowIdx = start + i;
                 return '<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ' + bg + '" onclick="showReportDetail(' + rowIdx + ')">' +
@@ -487,9 +497,18 @@ function showReportDetail(idx) {
     html += '<div><div class="text-caption text-on-surface-variant">Address</div><div class="font-bold">' + escHtml(md.address || '—') + '</div></div>';
     html += '<div><div class="text-caption text-on-surface-variant">Overall Status</div><div class="font-bold">' + escHtml(r.status || '—') + '</div></div>';
     html += '</div>';
-    // Get sections — Module B uses 'data', all others use 'data.categories'
+    // Get sections — Module B uses 'data', Module D uses 'ciclList', all others use 'data.categories'
     var sections = {};
     if (mod === 'B' && meta.data) { sections['_data'] = meta.data; }
+    else if (mod === 'D' && meta.data) {
+        sections['_d_header'] = { periodCovered: meta.data.periodCovered || '—', ciclCount: (meta.data.ciclList || []).length };
+        if (meta.data.ciclList && meta.data.ciclList.length > 0) {
+            sections['_d_list'] = { ciclList: meta.data.ciclList };
+        }
+        if (meta.data.interventionNarrative) {
+            sections['_d_narrative'] = { interventionNarrative: meta.data.interventionNarrative };
+        }
+    }
     else {
         var cats = meta.data?.categories || meta.categories || {};
         Object.keys(cats).forEach(function(k) { sections[k] = cats[k]; });
@@ -507,6 +526,36 @@ function showReportDetail(idx) {
                 html += '<tr class="' + bg + '"><td class="px-md py-sm font-bold text-on-surface-variant text-sm w-1/3 align-top">' + f.label + '</td><td class="px-md py-sm text-on-surface text-sm whitespace-pre-wrap">' + f.value + '</td></tr>';
             });
             html += '</table></div>';
+        } else if (mod === 'D') {
+            if (key === '_d_header') {
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">CICL Summary</div>';
+                html += '<div class="p-md"><span class="text-caption text-on-surface-variant">Period Covered: </span><span class="font-bold">' + escHtml(section.periodCovered) + '</span> &middot; <span class="text-caption text-on-surface-variant">Total Cases: </span><span class="font-bold">' + section.ciclCount + '</span></div></div>';
+            } else if (key === '_d_list') {
+                var list = section.ciclList || [];
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">CICL Cases (' + list.length + ')</div>';
+                html += '<table class="w-full text-left border-collapse"><thead><tr class="bg-surface-container-high text-xs uppercase tracking-wider text-on-surface-variant">';
+                html += '<th class="px-md py-sm">LRN</th><th class="px-md py-sm">Age</th><th class="px-md py-sm">Gender</th><th class="px-md py-sm">Disability</th><th class="px-md py-sm">Case/Violation</th><th class="px-md py-sm">Actions Taken</th><th class="px-md py-sm">Status</th>';
+                html += '</tr></thead><tbody>';
+                list.forEach(function(c, i) {
+                    var bg = i % 2 === 0 ? '' : 'bg-surface-container-low';
+                    html += '<tr class="' + bg + ' text-sm">';
+                    html += '<td class="px-md py-sm">' + escHtml(c.lrn || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.age || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.gender || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.disability || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.caseViolation || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.actionsTaken || '—') + '</td>';
+                    html += '<td class="px-md py-sm">' + escHtml(c.status || '—') + '</td>';
+                    html += '</tr>';
+                });
+                html += '</tbody></table></div>';
+            } else if (key === '_d_narrative') {
+                html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
+                html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">Intervention Narrative</div>';
+                html += '<div class="p-md text-sm whitespace-pre-wrap">' + escHtml(section.interventionNarrative) + '</div></div>';
+            }
         } else {
             html += '<div class="mb-md border border-outline-variant rounded-lg overflow-hidden">';
             html += '<div class="bg-surface-container-low text-on-surface px-md py-sm font-bold border-b border-outline-variant">' + escHtml(categoryTitle(key, mod)) + '</div>';
@@ -525,7 +574,7 @@ function showReportDetail(idx) {
 }
 function closeDetail() { document.getElementById('detail-modal').classList.add('hidden'); }
 function annexLabel(mod) {
-    return mod === 'A' ? 'Annex A (Bullying)' : mod === 'B' ? 'Annex B (Child Abuse)' : mod === 'C' ? 'Annex C (CAR)' : mod === 'D' ? 'Annex D (CICL)' : mod === 'E' ? 'Annex E (Other Rights)' : mod;
+    return mod === 'A' ? 'Annex A — School-Based Incident Report on Bullying' : mod === 'B' ? 'Annex B — School-Based Incident Report on Child Abuse' : mod === 'C' ? 'Annex C — Risk Registry Report' : mod === 'D' ? 'Annex D — School-Based Consolidated Report on Incidents of CICL' : mod === 'E' ? 'Annex E — School-Based Consolidated Report on Other Learner Rights' : mod;
 }
 function categoryTitle(key, mod) {
     if (mod === 'A') return 'Form of Bullying: ' + key;
@@ -655,5 +704,4 @@ function flattenDetail(obj, mod, sectionKey) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
-<script src="sidebar.js"></script>
 </body></html>
