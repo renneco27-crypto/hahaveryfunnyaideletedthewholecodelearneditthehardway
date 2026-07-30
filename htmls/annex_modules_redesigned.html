@@ -1942,6 +1942,7 @@ const ModuleAReportingPanel = () => {
               <div key={rowIdx} className="row-card">
                 <button className="remove-btn" type="button" onClick={() => removeERow(rowIdx)} title="Remove">✕</button>
                 <div className="panel-grid">
+                  {/* Type of Concern — full width */}
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label className="field-label">Type of Concern <span className="required">*</span></label>
                     <select className={`field-select ${validationErrors['eRow' + rowIdx + 'Concern'] ? 'field-error' : ''}`} value={row.concernType} onChange={e => updateERow(rowIdx, 'concernType', e.target.value)}>
@@ -1950,54 +1951,77 @@ const ModuleAReportingPanel = () => {
                     </select>
                     {validationErrors['eRow' + rowIdx + 'Concern'] && <div className="error-text">Required</div>}
                   </div>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <label className="field-label">Victim(s) <span className="required">*</span></label>
+
+                  {/* Victim(s) — full width box */}
+                  <div style={{ gridColumn: '1 / -1', border: '1px solid #d4d8e0', borderRadius: '10px', padding: '12px', background: '#fafbff' }}>
+                    <label className="field-label" style={{ marginBottom: '8px', display: 'block' }}>Victim(s) <span className="required">*</span></label>
                     {(row.victims || []).map((vic, vicIdx) => (
-                      <div key={vicIdx} style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap' }}>
-                        <input className={`field-input ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Name'] ? 'field-error' : ''}`} value={vic.name} onChange={e => updateERowVictim(rowIdx, vicIdx, 'name', e.target.value)} placeholder="Name" style={{ flex: '1', minWidth: '120px' }} />
-                        <select className={`field-select ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Sex'] ? 'field-error' : ''}`} value={vic.sexGender} onChange={e => updateERowVictim(rowIdx, vicIdx, 'sexGender', e.target.value)} style={{ width: '100px' }}>
+                      <div key={vicIdx} style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', padding: '8px', background: '#fff', borderRadius: '8px', border: '1px solid #eef0f4' }}>
+                        <input className={`field-input ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Name'] ? 'field-error' : ''}`} value={vic.name} onChange={e => updateERowVictim(rowIdx, vicIdx, 'name', e.target.value)} placeholder="Name" style={{ flex: '2', minWidth: '140px' }} />
+                        <select className={`field-select ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Sex'] ? 'field-error' : ''}`} value={vic.sexGender} onChange={e => updateERowVictim(rowIdx, vicIdx, 'sexGender', e.target.value)} style={{ width: '110px' }}>
                           <option value="">Sex/Gender</option>
                           <option value="M">M</option>
                           <option value="F">F</option>
                           <option value="LGBTQIA+">LGBTQIA+</option>
                         </select>
                         <input type="number" min="1" max="100" className={`field-input ${validationErrors['eRow' + rowIdx + 'Vic' + vicIdx + 'Age'] ? 'field-error' : ''}`} value={vic.age} onChange={e => updateERowVictim(rowIdx, vicIdx, 'age', e.target.value)} placeholder="Age" style={{ width: '70px' }} />
-                        <select value={vic.disability} onChange={e => updateERowVictim(rowIdx, vicIdx, 'disability', e.target.value)} style={{ width: '100px', padding: '8px', border: '1px solid #c2c7d1', borderRadius: '6px', fontSize: '13px' }}>
-                          <option value="0">No (0)</option>
-                          <option value="1">Yes (1)</option>
-                        </select>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <label style={{ fontSize: '12px', fontWeight: '600', color: '#44474e', whiteSpace: 'nowrap' }}>Learner w/ Disability:</label>
+                          <select value={vic.disability} onChange={e => updateERowVictim(rowIdx, vicIdx, 'disability', e.target.value)} style={{ width: '80px', padding: '8px', border: '1px solid #c2c7d1', borderRadius: '6px', fontSize: '13px' }}>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                          </select>
+                        </div>
                         {vicIdx > 0 && <button type="button" onClick={() => removeERowVictim(rowIdx, vicIdx)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: '16px' }} title="Remove victim">✕</button>}
                       </div>
                     ))}
                     <button type="button" onClick={() => addERowVictim(rowIdx)} style={{ fontSize: '12px', color: '#1261a3', background: 'none', border: '1px dashed #9ca3af', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', marginTop: '4px' }}>+ Add Victim</button>
                   </div>
-                  <div>
-                    <label className="field-label">Perpetrator (Name) <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['eRow' + rowIdx + 'PerpName'] ? 'field-error' : ''}`} value={row.perpetratorName} onChange={e => updateERow(rowIdx, 'perpetratorName', e.target.value)} placeholder="Name" />
-                    {validationErrors['eRow' + rowIdx + 'PerpName'] && <div className="error-text">Required</div>}
+
+                  {/* Perpetrator — own box */}
+                  <div style={{ gridColumn: '1 / -1', border: '1px solid #d4d8e0', borderRadius: '10px', padding: '12px', background: '#fafbff' }}>
+                    <label className="field-label" style={{ marginBottom: '8px', display: 'block' }}>Perpetrator <span className="required">*</span></label>
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1', minWidth: '180px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: '600', color: '#44474e', display: 'block', marginBottom: '4px' }}>Name</label>
+                        <input className={`field-input ${validationErrors['eRow' + rowIdx + 'PerpName'] ? 'field-error' : ''}`} value={row.perpetratorName} onChange={e => updateERow(rowIdx, 'perpetratorName', e.target.value)} placeholder="Full name" />
+                        {validationErrors['eRow' + rowIdx + 'PerpName'] && <div className="error-text">Required</div>}
+                      </div>
+                      <div style={{ width: '100px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: '600', color: '#44474e', display: 'block', marginBottom: '4px' }}>Age</label>
+                        <input type="number" min="1" max="120" className={`field-input ${validationErrors['eRow' + rowIdx + 'PerpAge'] ? 'field-error' : ''}`} value={row.perpetratorAge} onChange={e => updateERow(rowIdx, 'perpetratorAge', e.target.value)} placeholder="Age" />
+                        {validationErrors['eRow' + rowIdx + 'PerpAge'] && <div className="error-text">Required</div>}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="field-label">Perpetrator (Age) <span className="required">*</span></label>
-                    <input type="number" min="1" max="120" className={`field-input ${validationErrors['eRow' + rowIdx + 'PerpAge'] ? 'field-error' : ''}`} value={row.perpetratorAge} onChange={e => updateERow(rowIdx, 'perpetratorAge', e.target.value)} placeholder="Age" />
-                    {validationErrors['eRow' + rowIdx + 'PerpAge'] && <div className="error-text">Required</div>}
+
+                  {/* Date & Place — own box */}
+                  <div style={{ gridColumn: '1 / -1', border: '1px solid #d4d8e0', borderRadius: '10px', padding: '12px', background: '#fafbff' }}>
+                    <label className="field-label" style={{ marginBottom: '8px', display: 'block' }}>Incident Details <span className="required">*</span></label>
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1', minWidth: '160px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: '600', color: '#44474e', display: 'block', marginBottom: '4px' }}>Date</label>
+                        <DateInput value={row.incidentDate} onChange={e => updateERow(rowIdx, 'incidentDate', e.target.value)} />
+                        {validationErrors['eRow' + rowIdx + 'Date'] && <div className="error-text">Required</div>}
+                      </div>
+                      <div style={{ flex: '2', minWidth: '200px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: '600', color: '#44474e', display: 'block', marginBottom: '4px' }}>Place</label>
+                        <input className={`field-input ${validationErrors['eRow' + rowIdx + 'Place'] ? 'field-error' : ''}`} value={row.incidentPlace} onChange={e => updateERow(rowIdx, 'incidentPlace', e.target.value)} placeholder="Location" />
+                        {validationErrors['eRow' + rowIdx + 'Place'] && <div className="error-text">Required</div>}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="field-label">Date of Incident <span className="required">*</span></label>
-                    <DateInput value={row.incidentDate} onChange={e => updateERow(rowIdx, 'incidentDate', e.target.value)} />
-                    {validationErrors['eRow' + rowIdx + 'Date'] && <div className="error-text">Required</div>}
-                  </div>
-                  <div>
-                    <label className="field-label">Place of Incident <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['eRow' + rowIdx + 'Place'] ? 'field-error' : ''}`} value={row.incidentPlace} onChange={e => updateERow(rowIdx, 'incidentPlace', e.target.value)} placeholder="Place" />
-                    {validationErrors['eRow' + rowIdx + 'Place'] && <div className="error-text">Required</div>}
-                  </div>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <label className="field-label">Action/s Taken <span className="required">*</span></label>
+
+                  {/* Actions Taken — own box */}
+                  <div style={{ gridColumn: '1 / -1', border: '1px solid #d4d8e0', borderRadius: '10px', padding: '12px', background: '#fafbff' }}>
+                    <label className="field-label" style={{ marginBottom: '8px', display: 'block' }}>Action/s Taken <span className="required">*</span></label>
                     <textarea className={`field-textarea ${validationErrors['eRow' + rowIdx + 'Act'] ? 'field-error' : ''}`} value={row.actionsTaken} onChange={e => updateERow(rowIdx, 'actionsTaken', e.target.value)} placeholder="Describe actions taken..." rows={3} />
                     {validationErrors['eRow' + rowIdx + 'Act'] && <div className="error-text">Required</div>}
                   </div>
-                  <div>
-                    <label className="field-label">Status <span className="required">*</span></label>
+
+                  {/* Status — own box */}
+                  <div style={{ gridColumn: '1 / -1', border: '1px solid #d4d8e0', borderRadius: '10px', padding: '12px', background: '#fafbff' }}>
+                    <label className="field-label" style={{ marginBottom: '8px', display: 'block' }}>Status <span className="required">*</span></label>
                     <select className={`field-select ${validationErrors['eRow' + rowIdx + 'Status'] ? 'field-error' : ''}`} value={row.status} onChange={e => updateERow(rowIdx, 'status', e.target.value)}>
                       <option value="">Select</option>
                       {eStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
