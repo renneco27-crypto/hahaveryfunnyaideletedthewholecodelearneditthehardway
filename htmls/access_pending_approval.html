@@ -224,6 +224,14 @@
             document.querySelector('.font-label-md.uppercase').textContent = 'Status: Session Conflict';
         }
 
+        // IP limit detection: account has exceeded the 3 IP address limit
+        if (params.get('reason') === 'ip_limit') {
+            document.querySelector('h1').textContent = 'Maximum IP addresses reached.';
+            document.querySelector('.p-md.border-l-4 p').textContent =
+                'This account has reached the maximum of 3 registered IP addresses. A login attempt from a new location requires admin approval. Please contact your administrator to approve access from this device.';
+            document.querySelector('.font-label-md.uppercase').textContent = 'Status: IP Limit Reached';
+        }
+
 // Logout button — clear all local/session storage + supabase session + notify server
         function goLogin() {
             var email = new URLSearchParams(window.location.search).get('email') || '';

@@ -33,7 +33,7 @@
     var { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       sessionStorage.removeItem('auth_cache');
-      window.location.href = '/pending';
+      window.location.href = '/login';
       return;
     }
     var res = await fetch('/api/verify-session', {
@@ -45,7 +45,9 @@
 
     if (!result.valid) {
       sessionStorage.removeItem('auth_cache');
-      var target = result.singleSession ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '') : '/pending';
+      var target = result.reason === 'single_session' ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '')
+        : result.reason === 'ip_limit' ? '/pending?reason=ip_limit&email=' + encodeURIComponent(result.email || '')
+        : '/pending';
       window.location.href = target;
       return;
     }

@@ -358,10 +358,17 @@ app.get('/api/reports', async (req, res) => {
 // ===== FRONTEND ROUTES WITH AUTH + CLEAN URLs =====
 const HTML_DIR = path.join(__dirname, 'htmls');
 
-// Single-session enforcement: map email -> token
-const activeSessions = {};
-const blockedRequests = []; // { email, schoolName, deviceId, timestamp }
+// IP-limit enforcement: registered IPs are persisted in the registered_ips table.
+// Each non-admin account may register up to 3 IPs before requiring admin approval.
+const blockedRequests = []; // { email, schoolName, deviceId: clientIp, timestamp }
 const revokedUsers = {}; // email -> true
+
+// getClientIp() - extract the client IP address from headers or socket
+function getClientIp(req) {
+  const fwd = req.headers['x-forwarded-for'];
+  if (fwd) return fwd.split(',')[0].trim();
+  return req.socket.remoteAddress || 'unknown';
+}
 
 // GET /api/access-requests — list pending blocked session attempts (latest per email)
 app.get('/api/access-requests', (req, res) => {
@@ -371,24 +378,25 @@ app.get('/api/access-requests', (req, res) => {
   res.json(Object.values(latest));
 });
 
-// POST /api/access-requests/:email/approve — clear old session so new device can log in
-app.post('/api/access-requests/:email/approve', (req, res) => {
+// POST /api/access-requests/:email/approve — clear IP history so new location can log in
+app.post('/api/access-requests/:email/approve', async (req, res) => {
   const { email } = req.params;
-  delete activeSessions[email];
-  const idx = blockedRequests.findIndex(r => r.email === email);
-  if (idx !== -1) blockedRequests.splice(idx, 1);
-  // Remove all remaining entries for this email
-  for (var i = blockedRequests.length - 1; i >= 0; i--) { if (blockedRequests[i].email === email) blockedRequests.splice(i, 1); }
+  // Clear all registered IPs for this account in Supabase
+  if (serviceClient) {
+    const { error } = await serviceClient.from('registered_ips').delete().eq('email', email);
+    if (error) console.error('approve: clear IPs failed:', error.message);
+  }
+  // Remove all remaining entries for this email from the pending queue
+  for (var i = blockedRequests.length - 1; i >= 0; i--) {
+    if (blockedRequests[i].email === email) blockedRequests.splice(i, 1);
+  }
   res.json({ success: true });
 });
 
 // POST /api/access-requests/:email/revoke — permanently block user
 app.post('/api/access-requests/:email/revoke', (req, res) => {
   const { email } = req.params;
-  delete activeSessions[email];
   revokedUsers[email] = true;
-  const idx = blockedRequests.findIndex(r => r.email === email);
-  if (idx !== -1) blockedRequests.splice(idx, 1);
   // Remove all remaining entries for this email
   for (var i = blockedRequests.length - 1; i >= 0; i--) { if (blockedRequests[i].email === email) blockedRequests.splice(i, 1); }
   res.json({ success: true });
@@ -416,28 +424,37 @@ app.post('/api/verify-session', async (req, res) => {
   const fullName = user.user_metadata?.full_name || user.email || 'User';
   const email = user.email;
 
-  // Track token changes for admin visibility (don't block — Supabase rotates tokens)
-  if (activeSessions[email] && activeSessions[email] !== token) {
-    blockedRequests.push({ email, schoolName, deviceId: token.slice(-8), timestamp: new Date().toISOString() });
-  }
-  // Always update to the latest token
-  activeSessions[email] = token;
-
   // Check if user is revoked
   if (revokedUsers[email]) {
     return res.json({ valid: false });
   }
 
-  // Register this session
-  activeSessions[email] = token;
+  // Admins bypass the IP limit entirely
+  if (role === 'admin') {
+    return res.json({ valid: true, user: { email, role, schoolName, avatarUrl, fullName } });
+  }
+
+  // Enforce 3 IP limit for non-admin accounts (persisted in Supabase)
+  const clientIp = getClientIp(req);
+  const { data: existing } = await db
+    .from('registered_ips').select('ip_address').eq('email', email);
+  const registeredIps = existing ? existing.map(r => r.ip_address) : [];
+
+  if (!registeredIps.includes(clientIp)) {
+    if (registeredIps.length >= 3) {
+      blockedRequests.push({ email, schoolName, deviceId: clientIp, timestamp: new Date().toISOString() });
+      return res.json({ valid: false, reason: 'ip_limit', email });
+    }
+    const { error: insertErr } = await db
+      .from('registered_ips').insert({ email, ip_address: clientIp });
+    if (insertErr) console.error('register IP failed:', insertErr.message);
+  }
 
   res.json({ valid: true, user: { email, role, schoolName, avatarUrl, fullName } });
 });
 
-// Sign-out endpoint — clears the active session
+// Sign-out endpoint — nothing in-memory to clear (IPs persist until approved)
 app.post('/api/signout', (req, res) => {
-  const { email } = req.body;
-  if (email) delete activeSessions[email];
   res.json({ success: true });
 });
 
