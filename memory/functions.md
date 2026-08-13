@@ -54,7 +54,8 @@ C:.
 │   ├── 20260728_add_school_name_to_profiles.sql
 │   ├── 20260728_cleanup_old_reports.sql
 │   ├── oauth_sudo_and_user.sql
-│   └── 20260730_create_form_drafts.sql    — Drafts table (Save/Resume)
+│   ├── 20260730_create_form_drafts.sql    — Drafts table (Save/Resume)
+│   └── 20260813_create_registered_ips.sql — IP limit table (3 IPs per non-admin)
 ├── memory/
 │   └── functions.md
 ├── ormoc_city_division_schools.json
@@ -70,6 +71,22 @@ Keywords: drafts table, save resume
 Function Names: N/A (DDL)
 
 Description: Creates `form_drafts` table for storing incomplete form state with columns `id`, `reference_number`, `school_name`, `school_id`, `report_data` (jsonb), `status`, `created_at`, `updated_at`. Indexed by `school_name`, `status`, `created_at`.
+
+### supabase/migrations/20260813_create_registered_ips.sql
+
+Keywords: ip limit, registered ips, access approval
+
+Function Names: N/A (DDL)
+
+Description: Creates `registered_ips` table (email, ip_address, unique per email+ip) for enforcing the 3 IP address limit per non-admin account. IPs persist in Supabase and are cleared on `/api/access-requests/:email/approve`.
+
+### server.js
+
+Keywords: admin login redirect, 3 IP limit, verify-session, ip_limit, getClientIp
+
+Function Names: getClientIp, POST /api/verify-session, POST /api/access-requests/:email/approve
+
+Description: Fixed auth-guard bug (no session → /login instead of /pending). Replaced in-memory `activeSessions` token tracking with `registered_ips` Supabase table. verify-session extracts client IP via `x-forwarded-for`/socket, admins bypass the limit entirely, non-admins get 3 registered IPs before `{ valid:false, reason:'ip_limit' }` and a pending-queue entry. Approve clears the email's IP history.
 
 ### server.js
 
