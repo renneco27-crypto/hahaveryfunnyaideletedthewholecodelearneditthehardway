@@ -30,6 +30,22 @@ All changes in commit messages: "fixed annex a-e", "remove dashboard route...", 
 
 12. **`/dashboard` route REMOVED** — Login redirects to `/analytics`. Auth-guard non-admin redirects to `/analytics`. Do NOT re-add.
 
+## Session Summary (2026-08-13, PM)
+
+### What was done
+
+1. **`.env` created** — `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (service role key, project `nstyqceyjkgevnibfqks`, verified working against `/rest/v1/profiles`). `.env` is gitignored; never commit it.
+
+2. **`.opencode/plugins/supabase.ts` created** — opencode plugin exposing two tools:
+   - `supabase_table` — read/write/delete rows via PostgREST `GET/PATCH/POST/DELETE` (supports `select` projection, exact-match `filters`, `limit`, `order`; DELETE only on delete columns).
+   - `supabase_sql` — execute raw SQL (including DDL) against `https://api.supabase.com/v1/projects/{ref}/database/query`.
+   - Loads credentials from `.env`. Verified loads with Node 24 native TS; both tools registered.
+
+3. **Migration attempt (20260813_create_build_logs.sql)** — created file only; could NOT be applied:
+   - Service role key rejected by Management API `/database/query` (401 `JWT failed verification`).
+   - The Management API requires a `sbp_...` access token or DB password/connection string.
+   - `create_build_logs.sql` still needs to be run in the Supabase Dashboard SQL Editor (or with an `sbp_` token), else `build_logs` table will not exist.
+
 ## Repository Map
 
 ```
@@ -61,8 +77,19 @@ C:.
 ├── ormoc_city_division_schools.json
 ├── package.json
 ├── AGENTS.md
-└── README.md
+├── README.md
+└── .opencode/
+    └── plugins/
+        └── supabase.ts — supabase_table (CRUD via PostgREST), supabase_sql (raw SQL/DDL via Management API)
 ```
+
+### .opencode/plugins/supabase.ts
+
+Keywords: supabase plugin, postgrest, table crud, raw sql, env creds
+
+Function Names: supabase_table, supabase_sql
+
+Description: opencode plugin reading SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY from .env. `supabase_table` performs PostgREST CRUD (select/filters/order/limit, insert, bulk upsert, update, delete). `supabase_sql` runs raw SQL against the Supabase Management API `database/query` endpoint (requires `sbp_` token — service role key alone is rejected).
 
 ### supabase/migrations/20260730_create_form_drafts.sql
 
