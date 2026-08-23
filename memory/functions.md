@@ -191,6 +191,14 @@ Description:
 - Fixed unclosed card `<div>` elements in Module A and Module C narrative cards that caused Babel JSX parse errors (`Unexpected token }`).
 - Placed `renderSchoolBar` in a dedicated standard script block with `user_updated` event listener and Supabase query.
 
+### htmls/latest_excel_division_consolidated_reports.html
+
+Keywords: reports page sidebar, duplicate download button removed, sidebar-root mount
+
+Description:
+- Fixed missing sidebar on `/reports` by updating mount container from `#sidebar-mount` to `#sidebar-root` and removed the premature `<head>` auth-guard call.
+- Removed duplicate "Download Excel (.xlsx)" button from top header, leaving the dedicated exporter section with the sheet selector.
+
 
 
 
