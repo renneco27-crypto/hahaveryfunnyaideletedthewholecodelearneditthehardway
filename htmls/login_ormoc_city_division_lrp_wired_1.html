@@ -246,19 +246,15 @@
         }
       });
 
-      // Google login (popup)
+      // Google login (direct full-page redirect)
       document.getElementById('googleLoginBtn').addEventListener('click', async function() {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin + '/auth/callback',
-            skipBrowserRedirect: true
+            redirectTo: window.location.origin + '/auth/callback'
           }
         });
-        if (error) { alert(error.message); return; }
-        if (data?.url) {
-          window.open(data.url, 'google-login', 'width=520,height=600,left=400,top=120');
-        }
+        if (error) alert(error.message);
       });
 
       // Email login
