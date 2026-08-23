@@ -238,36 +238,41 @@ tailwind.config = {
 }
 </script>
 </head>
-<body class="bg-background text-on-surface">
-<div class="fixed top-0 left-0 w-full h-full z-[-1] overflow-hidden pointer-events-none">
-<img alt="Background" class="w-full h-full object-cover opacity-[0.08] blur-[4px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRPcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
-</div>
-<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
-<div class="flex items-center gap-sm">
-<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">description</span>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Background Mesh Gradient -->
+<div class="fixed inset-0 z-[-1] login-mesh pointer-events-none"></div>
+
+<!-- TopNavBar -->
+<header class="w-full bg-primary text-on-primary border-b border-outline-variant/20 sticky top-0 z-50 shadow-md">
+<div class="max-w-7xl mx-auto px-md h-16 flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-secondary-fixed">shield_person</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-on-surface font-bold">Student Compliance Reporting</p>
-<p class="font-caption text-caption text-on-surface-variant">Annex A — Modules A–E</p>
+<span class="font-bold text-headline-md tracking-tight">Ormoc City Division LRP</span>
+<p class="text-caption text-on-primary/70 -mt-1 font-caption">Annex A–E Student Compliance Reporting</p>
 </div>
 </div>
-        <div id="school-submission-bar" class="my-4"></div>
 <div class="flex items-center gap-md">
-<button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10">
+<button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-on-primary/30 text-on-primary hover:bg-surface/10 transition-all cursor-pointer h-10" title="Account Settings">
 <span class="material-symbols-outlined">account_circle</span>
 <span class="font-label-md text-label-md">Account</span>
 </button>
-<button onclick="signOut()" class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10">
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Logout</span>
+<button onclick="signOut()" class="flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Sign Out">
+<span class="material-symbols-outlined text-lg">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
 </button>
+</div>
 </div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <div id="sidebar-root"></div>
-<main class="flex-1 ml-[64px] lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
+<main class="flex-1 ml-[64px] lg:ml-64 p-md md:p-lg max-w-container-max mx-auto overflow-y-auto">
+<div class="max-w-7xl mx-auto flex flex-col gap-md">
+<div id="school-submission-bar"></div>
 <div id="root"></div>
+</div>
 </main>
 </div>
 <footer class="w-full py-md px-lg flex justify-between items-center bg-surface-dim border-t border-outline-variant text-on-surface">
