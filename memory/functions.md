@@ -200,6 +200,16 @@ Description:
 - Standardized the deep navy top navbar (`bg-primary text-on-primary`), shield portal badge, and unified Account/Sign Out button styling across all screens.
 - Standardized card containers (`bg-surface-container-lowest border border-outline-variant rounded-lg shadow-sm`), soft background mesh, and high-contrast table headers (`bg-surface-container-high font-bold`).
 
+### User Profile School Sync, District Matching & Sign Out Glow
+
+Keywords: profile school sync, district normalization, sign out red glow, navbar buttons wiring
+
+Description:
+- Automated school binding in `server.js` `/api/verify-session` and queue processing to sync `profiles.school_name` from recent submissions if empty.
+- Updated `getSchoolDistrict` and `admin_overview_wired.html` `submittedMap` with `normalizeSchoolName` regex to match abbreviations (e.g. `Ipil Central School` <-> `Ipil CS` -> District 2).
+- Wired Account and Sign Out buttons in `latest_excel_division_consolidated_reports.html` to `window.signOut()` and Account Settings with identical button styling as `admin_overview_wired.html`.
+- Added `.signout-btn` with red glow hover effect (`hover:bg-error hover:shadow-[0_0_16px_rgba(186,26,26,0.8)]`) across all navigation headers and sidebars.
+
 
 
 
