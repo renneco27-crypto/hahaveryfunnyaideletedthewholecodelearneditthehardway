@@ -139,7 +139,7 @@
 <!-- SideNavBar -->
 <div id="sidebar-root"></div>
 <!-- Main Content Area -->
-<main class="flex-1 lg:ml-64 p-lg space-y-lg max-w-[1200px] mx-auto w-full">
+<main class="flex-1 ml-[64px] lg:ml-64 p-lg space-y-lg max-w-[1200px] mx-auto w-full">
 <!-- Section 1: Division Submission Summary Header -->
 <section class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg shadow-sm">
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
@@ -210,7 +210,8 @@ Download Excel
 <option>Referred</option>
 </select>
 <div class="flex items-center gap-xs bg-surface-variant p-1 rounded-lg">
-<button class="px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md" id="view-raw">Raw Data</button>
+<button class="px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold" id="view-school">By School</button>
+<button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md" id="view-raw">Raw Data</button>
 <button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md" id="view-status">School Status</button>
 </div>
 </div>
@@ -219,13 +220,13 @@ Download Excel
 <div class="overflow-x-auto" id="table-container">
 <table class="w-full text-left border-collapse" id="reports-table">
 <thead>
-<tr class="bg-surface-container-low border-b-2 border-outline-variant">
+<tr class="bg-surface-container-low border-b-2 border-outline-variant" id="table-header-tr">
 <th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Category</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Incident Summary</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Case Count</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Date</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Action Status</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">District</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Annexes Submitted</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Total Cases</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Last Submission</th>
+<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-center">Action</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-outline-variant" id="reports-tbody">
@@ -233,7 +234,7 @@ Download Excel
 </table>
 </div>
 <!-- Pagination -->
-<div class="p-md bg-surface-container flex items-center justify-between">
+<div class="p-md bg-surface-container flex items-center justify-between" id="pagination-bar">
 <span class="text-caption font-caption text-on-surface-variant" id="reports-info">No entries</span>
 <div class="flex items-center gap-xs">
 <button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="reports-prev">
@@ -260,6 +261,21 @@ Download Excel
 <a class="text-caption font-caption text-on-surface-variant hover:text-primary transition-all" href="#">Accessibility Statement</a>
 </div>
 </footer>
+
+<!-- School Annex Submissions Drilldown Modal -->
+<div id="school-modal" class="fixed inset-0 z-50 hidden bg-black/40 flex items-center justify-center p-md" onclick="if(event.target===this)closeSchoolModal()">
+<div class="bg-surface-container-lowest rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+<div class="flex items-center justify-between p-md border-b border-black/60">
+<div>
+  <h2 class="font-display text-display text-on-surface" id="school-modal-title">School Submissions</h2>
+  <p class="text-caption font-caption text-on-surface-variant" id="school-modal-subtitle">All annexes submitted by this school</p>
+</div>
+<button onclick="closeSchoolModal()" class="material-symbols-outlined text-on-surface-variant hover:text-on-surface text-2xl">close</button>
+</div>
+<div class="overflow-auto p-md" id="school-modal-body"></div>
+</div>
+</div>
+
 <script>
         document.querySelectorAll('.grid > div').forEach(card => {
             card.addEventListener('mouseenter', () => { card.style.transform = 'translateY(-2px)'; });
@@ -270,7 +286,7 @@ Download Excel
         async function loadStats(token) {
             try {
                 var [schoolsRes, statsRes] = await Promise.all([
-                    fetch('/ormoc_city_division_schools.json'),
+                    fetch('/api/schools', { headers: { 'Authorization': 'Bearer ' + token } }),
                     fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + token } })
                 ]);
                 var districts = await schoolsRes.json();
@@ -294,7 +310,6 @@ Download Excel
                 }
             } catch (e) { console.error('Stats load error:', e); }
         }
-        // loadStats() called below with token
 
         function getAuthToken() {
             try { return (JSON.parse(sessionStorage.getItem('auth_cache') || '{}')).token || ''; } catch(e) { return ''; }
@@ -309,164 +324,340 @@ Download Excel
             }, 100);
         }
 
-        // Reports table: live data with search, filter, pagination
-        var reportsData = [];
-        var reportsPage = 0;
-        var REPORTS_PAGE_SIZE = 10;
+    var currentViewMode = 'school';
+    var reportsData = [];
+    var reportsPage = 0;
+    var REPORTS_PAGE_SIZE = 10;
+    var districtsCache = [];
+    var allSchools = [];
 
-        function loadReportsTable(token) {
-            fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(r) { return r.json(); }).then(function(stats) {
-                reportsData = stats.reports || [];
-                goReportsPage(0);
-            }).catch(function(e) { console.error('Reports load error:', e); });
-        }
+    fetch('/api/schools').then(function(r) { return r.json(); }).then(function(d) {
+        districtsCache = d;
+        d.forEach(function(dd) { dd.schools.forEach(function(s) { allSchools.push({ name: s, district: dd.district, psds: dd.psds }); }); });
+    });
 
-        function goReportsPage(p) {
-            reportsPage = p;
-            var search = (document.getElementById('reports-search')?.value || '').toLowerCase();
-            var catFilter = document.getElementById('reports-category')?.value || 'Annex: All';
-            var statusFilter = document.getElementById('reports-status')?.value || 'Status: All';
+    function getSchoolDistrict(schoolName) {
+        var found = allSchools.find(function(s) { return s.name.toLowerCase() === (schoolName || '').toLowerCase(); });
+        return found ? found.district : '—';
+    }
 
-            var filtered = reportsData.filter(function(r) {
-                if (search && !String(r.school_id || r.report_data?.metadata?.schoolId || '').toLowerCase().includes(search)) return false;
-                if (catFilter !== 'Annex: All') {
-                    var mod = (r.module || r.report_data?.module || '').toUpperCase();
-                    var cat = catFilter.toUpperCase();
-                    if (cat === 'ANNEX A' && mod !== 'A') return false;
-                    if (cat === 'ANNEX B' && mod !== 'B') return false;
-                    if (cat === 'ANNEX C' && mod !== 'C') return false;
-                    if (cat === 'ANNEX D' && mod !== 'D') return false;
-                    if (cat === 'ANNEX E' && mod !== 'E') return false;
-                }
-                if (statusFilter !== 'Status: All') {
-                    var st = (r.status || '').toLowerCase();
-                    var sf = statusFilter.toLowerCase();
-                    if (sf === 'resolved' && st !== 'submitted' && st !== 'resolved') return false;
-                    if (sf === 'on-going' && st !== 'pending') return false;
-                }
-                return true;
-            });
+    function renderView() {
+        if (currentViewMode === 'school') renderSchoolGroupedTable();
+        else if (currentViewMode === 'raw') renderRawReportsTable();
+        else if (currentViewMode === 'status') showSchoolStatus();
+    }
 
-            var totalPages = Math.ceil(filtered.length / REPORTS_PAGE_SIZE) || 1;
-            if (p >= totalPages) p = totalPages - 1;
-            var start = p * REPORTS_PAGE_SIZE;
-            var end = Math.min(start + REPORTS_PAGE_SIZE, filtered.length);
-            var page = filtered.slice(start, end);
+    function renderSchoolGroupedTable() {
+        var search = (document.getElementById('reports-search')?.value || '').toLowerCase();
+        var schoolMap = {};
 
-            var tbody = document.getElementById('reports-tbody');
-            tbody.innerHTML = page.map(function(r, i) {
-                var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
-                var schoolName = r.school_name || '—';
-                var schoolId = r.school_id || r.report_data?.metadata?.schoolId || '—';
-                var module = r.module || r.report_data?.module || '—';
-                var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
-                var catKeys = Object.keys(cats);
-                var summary, caseCount;
-                if (module === 'D') {
-                  var ciclList = r.report_data?.data?.ciclList || [];
-                  summary = ciclList.length + ' CICL case' + (ciclList.length !== 1 ? 's' : '');
-                  caseCount = ciclList.length || 1;
-                } else {
-                  summary = catKeys.length + ' categor' + (catKeys.length !== 1 ? 'ies' : 'y');
-                  caseCount = catKeys.length || 1;
-                }
-                var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
-                var status = r.status || 'pending';
-                var statusColor = status === 'submitted' || status === 'sent' ? 'text-emerald-600' : status === 'pending' ? 'text-orange-600' : 'text-blue-600';
-                var statusDot = status === 'submitted' || status === 'sent' ? 'bg-emerald-600' : status === 'pending' ? 'bg-orange-600' : 'bg-blue-600';
-                var statusLabel = status === 'submitted' || status === 'sent' ? 'Submitted' : status === 'pending' ? 'Pending' : status;
-                var categoryBadge = module === 'A' ? 'Annex A' : module === 'B' ? 'Annex B' : module === 'C' ? 'Annex C' : module === 'D' ? 'Annex D' : module === 'E' ? 'Annex E' : module;
-                var badgeBg = module === 'A' ? 'bg-red-100 text-red-800' : module === 'B' ? 'bg-orange-100 text-orange-800' : module === 'C' ? 'bg-blue-100 text-blue-900' : module === 'D' ? 'bg-purple-100 text-purple-900' : 'bg-gray-100 text-gray-700';
-                var rowIdx = start + i;
-                return '<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ' + bg + '" onclick="showReportDetail(' + rowIdx + ')">' +
-                    '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(schoolName) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(String(schoolId)) + '</div></td>' +
-                    '<td class="px-md py-md"><span class="' + badgeBg + ' px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">' + categoryBadge + '</span></td>' +
-                    '<td class="px-md py-md text-body-md max-w-xs truncate">' + escHtml(summary) + '</td>' +
-                    '<td class="px-md py-md text-right font-bold text-secondary">' + String(caseCount).padStart(2, '0') + '</td>' +
-                    '<td class="px-md py-md text-caption">' + date + '</td>' +
-                    '<td class="px-md py-md"><div class="flex items-center gap-xs ' + statusColor + ' font-bold text-xs uppercase"><span class="w-2 h-2 rounded-full ' + statusDot + '"></span> ' + statusLabel + '</div></td></tr>';
-            }).join('');
-            if (page.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="px-md py-md text-center text-on-surface-variant">No matching entries</td></tr>';
+        reportsData.forEach(function(r) {
+            var sName = r.school_name || r.report_data?.metadata?.schoolName || 'Unknown School';
+            var sId = r.school_id || r.report_data?.metadata?.schoolId || '—';
+            if (search && !sName.toLowerCase().includes(search) && !String(sId).toLowerCase().includes(search)) return;
 
-            document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + filtered.length + ' entr' + (filtered.length !== 1 ? 'ies' : 'y');
-            document.getElementById('reports-prev').disabled = p === 0;
-            document.getElementById('reports-next').disabled = p >= totalPages - 1;
-            document.querySelectorAll('.page-btn').forEach(function(btn) {
-                var n = parseInt(btn.dataset.page) - 1;
-                btn.className = 'px-xs py-1 rounded font-bold ' + (n === p ? 'bg-primary text-on-primary' : 'hover:bg-surface-variant');
-            });
-        }
+            if (!schoolMap[sName]) {
+                schoolMap[sName] = {
+                    name: sName,
+                    schoolId: sId,
+                    district: getSchoolDistrict(sName),
+                    reports: [],
+                    annexes: new Set(),
+                    totalCases: 0,
+                    lastDate: r.created_at
+                };
+            }
+            schoolMap[sName].reports.push(r);
+            var mod = (r.module || r.report_data?.module || '').toUpperCase();
+            if (mod) schoolMap[sName].annexes.add(mod);
+            if (r.created_at && (!schoolMap[sName].lastDate || new Date(r.created_at) > new Date(schoolMap[sName].lastDate))) {
+                schoolMap[sName].lastDate = r.created_at;
+            }
 
-        function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-        document.getElementById('reports-search').addEventListener('input', function() { goReportsPage(0); });
-        document.getElementById('reports-category').addEventListener('change', function() { goReportsPage(0); });
-        document.getElementById('reports-status').addEventListener('change', function() { goReportsPage(0); });
-        document.getElementById('reports-prev').addEventListener('click', function() { if (reportsPage > 0) goReportsPage(reportsPage - 1); });
-        document.getElementById('reports-next').addEventListener('click', function() { goReportsPage(reportsPage + 1); });
-        document.querySelectorAll('.page-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() { goReportsPage(parseInt(this.dataset.page) - 1); });
-        });
-        waitAuth(function(tok) { loadStats(tok); loadReportsTable(tok); });
-
-        // View toggle: Raw Data / School Status
-        var districtsCache = [];
-        var allSchools = [];
-        fetch('/ormoc_city_division_schools.json').then(function(r) { return r.json(); }).then(function(d) {
-            districtsCache = d;
-            d.forEach(function(dd) { dd.schools.forEach(function(s) { allSchools.push({ school: s, district: dd.district }); }); });
+            var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
+            var catCount = Object.keys(cats).length || 1;
+            if (mod === 'D') catCount = (r.report_data?.data?.ciclList || []).length || 1;
+            if (mod === 'C') catCount = (r.report_data?.data?.children || []).length || 1;
+            if (mod === 'E') catCount = (r.report_data?.data?.rows || []).length || 1;
+            schoolMap[sName].totalCases += catCount;
         });
 
-        function showSchoolStatus() {
-            var submittedSet = new Set((reportsData || []).map(function(r) { return r.school_name; }));
-            var tbody = document.getElementById('reports-tbody');
-            if (!allSchools.length) { tbody.innerHTML = '<tr><td colspan="3" class="px-md py-md text-center text-on-surface-variant">Loading school data...</td></tr>'; return; }
-            tbody.innerHTML = allSchools.map(function(item, i) {
-                var submitted = submittedSet.has(item.school.name);
-                var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
-                return '<tr class="hover:bg-surface-container-high transition-colors ' + bg + '">' +
-                    '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(item.school.name) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(item.school.id) + '</div></td>' +
-                    '<td class="px-md py-md"><span class="text-caption font-caption text-on-surface-variant">' + escHtml(item.district) + '</span></td>' +
-                    '<td class="px-md py-md"><div class="flex items-center gap-xs ' + (submitted ? 'text-emerald-600' : 'text-on-surface-variant') + ' font-bold text-xs uppercase"><span class="w-2 h-2 rounded-full ' + (submitted ? 'bg-emerald-600' : 'bg-outline-variant') + '"></span> ' + (submitted ? 'Submitted' : 'Not Yet Submitted') + '</div></td></tr>';
-            }).join('');
-            document.getElementById('reports-info').textContent = 'Showing all ' + allSchools.length + ' schools';
-            var pag = document.querySelector('#reports-prev')?.parentElement;
-            if (pag) pag.style.display = 'none';
-            document.querySelector('.flex.items-center.justify-between')?.style.setProperty('display', 'none');
-        }
+        var schoolList = Object.values(schoolMap);
+        var thead = document.getElementById('table-header-tr');
+        thead.innerHTML =
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">District</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Annexes Submitted</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Total Cases</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Last Submission</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-center">Action</th>';
 
-        function showRawData() {
-            var pag = document.querySelector('#reports-prev')?.parentElement;
-            if (pag) pag.style.display = '';
-            document.querySelector('.flex.items-center.justify-between')?.style.setProperty('display', 'flex');
-            goReportsPage(reportsPage);
-        }
+        var totalPages = Math.ceil(schoolList.length / REPORTS_PAGE_SIZE) || 1;
+        if (reportsPage >= totalPages) reportsPage = totalPages - 1;
+        var start = reportsPage * REPORTS_PAGE_SIZE;
+        var end = Math.min(start + REPORTS_PAGE_SIZE, schoolList.length);
+        var page = schoolList.slice(start, end);
 
-        document.getElementById('view-raw').addEventListener('click', function() {
-            document.getElementById('view-raw').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
-            document.getElementById('view-status').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
-            // Change thead back to report columns
-            document.querySelector('#reports-table thead tr').className = 'bg-surface-container-low border-b-2 border-outline-variant';
-            document.querySelector('#reports-table thead tr').innerHTML =
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Category</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Incident Summary</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Case Count</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Date</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Action Status</th>';
-            showRawData();
+        var tbody = document.getElementById('reports-tbody');
+        tbody.innerHTML = page.map(function(s, i) {
+            var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
+            var sortedAnnexes = Array.from(s.annexes).sort();
+            var annexBadges = sortedAnnexes.map(function(mod) {
+                var badgeBg = mod === 'A' ? 'bg-red-100 text-red-800' : mod === 'B' ? 'bg-orange-100 text-orange-800' : mod === 'C' ? 'bg-blue-100 text-blue-900' : mod === 'D' ? 'bg-purple-100 text-purple-900' : 'bg-gray-100 text-gray-700';
+                return '<span class="' + badgeBg + ' px-xs py-0.5 rounded text-[11px] font-bold uppercase tracking-tight mr-1">Annex ' + mod + '</span>';
+            }).join('') || '<span class="text-caption text-on-surface-variant">None</span>';
+
+            var dateStr = s.lastDate ? new Date(s.lastDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+            return '<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ' + bg + '" onclick="showSchoolAnnexes(\'' + escHtml(s.name).replace(/'/g, "\\'") + '\')">' +
+                '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface font-bold">' + escHtml(s.name) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(String(s.schoolId)) + '</div></td>' +
+                '<td class="px-md py-md text-sm text-on-surface-variant">' + escHtml(s.district) + '</td>' +
+                '<td class="px-md py-md"><div class="flex flex-wrap gap-1">' + annexBadges + '</div></td>' +
+                '<td class="px-md py-md text-right font-bold text-secondary">' + String(s.totalCases).padStart(2, '0') + '</td>' +
+                '<td class="px-md py-md text-caption">' + dateStr + '</td>' +
+                '<td class="px-md py-md text-center"><button class="px-sm py-1 rounded bg-primary/10 text-primary hover:bg-primary hover:text-on-primary font-bold text-xs transition-colors">View Annexes →</button></td>' +
+                '</tr>';
+        }).join('');
+
+        if (page.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="px-md py-md text-center text-on-surface-variant">No submitted schools found</td></tr>';
+
+        document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + schoolList.length + ' school' + (schoolList.length !== 1 ? 's' : '');
+        document.getElementById('reports-prev').disabled = reportsPage === 0;
+        document.getElementById('reports-next').disabled = reportsPage >= totalPages - 1;
+        document.getElementById('pagination-bar').style.display = 'flex';
+    }
+
+    function showSchoolAnnexes(schoolName) {
+        var schoolReports = reportsData.filter(function(r) {
+            var s = r.school_name || r.report_data?.metadata?.schoolName;
+            return s && s.toLowerCase() === schoolName.toLowerCase();
         });
-        document.getElementById('view-status').addEventListener('click', function() {
-            document.getElementById('view-status').className = 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md';
-            document.getElementById('view-raw').className = 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
-            document.querySelector('#reports-table thead tr').className = 'bg-surface-container-low border-b-2 border-outline-variant';
-            document.querySelector('#reports-table thead tr').innerHTML =
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">District</th>' +
-                '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Status</th>';
-            showSchoolStatus();
+
+        document.getElementById('school-modal-title').textContent = schoolName;
+        document.getElementById('school-modal-subtitle').textContent = schoolReports.length + ' annex report' + (schoolReports.length !== 1 ? 's' : '') + ' submitted';
+
+        var bodyHtml = '<div class="overflow-x-auto"><table class="w-full text-left border-collapse">';
+        bodyHtml += '<thead><tr class="bg-surface-container-low border-b-2 border-outline-variant text-xs uppercase tracking-wider text-on-surface-variant">';
+        bodyHtml += '<th class="px-md py-sm">Annex Category</th>';
+        bodyHtml += '<th class="px-md py-sm">Reference No.</th>';
+        bodyHtml += '<th class="px-md py-sm">Incident Breakdown</th>';
+        bodyHtml += '<th class="px-md py-sm text-right">Case Count</th>';
+        bodyHtml += '<th class="px-md py-sm">Date Submitted</th>';
+        bodyHtml += '<th class="px-md py-sm">Status</th>';
+        bodyHtml += '<th class="px-md py-sm text-center">Action</th>';
+        bodyHtml += '</tr></thead><tbody class="divide-y divide-outline-variant">';
+
+        bodyHtml += schoolReports.map(function(r, idx) {
+            var mod = (r.module || r.report_data?.module || '').toUpperCase();
+            var categoryBadge = mod === 'A' ? 'Annex A (Bullying)' : mod === 'B' ? 'Annex B (Child Abuse)' : mod === 'C' ? 'Annex C (CAR)' : mod === 'D' ? 'Annex D (CICL)' : mod === 'E' ? 'Annex E (Other Rights)' : mod;
+            var badgeBg = mod === 'A' ? 'bg-red-100 text-red-800' : mod === 'B' ? 'bg-orange-100 text-orange-800' : mod === 'C' ? 'bg-blue-100 text-blue-900' : mod === 'D' ? 'bg-purple-100 text-purple-900' : 'bg-gray-100 text-gray-700';
+
+            var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
+            var catKeys = Object.keys(cats);
+            var summary, caseCount;
+            if (mod === 'D') {
+                var ciclList = r.report_data?.data?.ciclList || [];
+                summary = ciclList.length + ' CICL case' + (ciclList.length !== 1 ? 's' : '');
+                caseCount = ciclList.length || 1;
+            } else if (mod === 'C') {
+                var children = r.report_data?.data?.children || [];
+                summary = children.length + ' Child at Risk record' + (children.length !== 1 ? 's' : '');
+                caseCount = children.length || 1;
+            } else if (mod === 'E') {
+                var rows = r.report_data?.data?.rows || [];
+                summary = rows.length + ' Concern row' + (rows.length !== 1 ? 's' : '');
+                caseCount = rows.length || 1;
+            } else {
+                summary = catKeys.length + ' categor' + (catKeys.length !== 1 ? 'ies' : 'y');
+                caseCount = catKeys.length || 1;
+            }
+
+            var dateStr = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+            var globalIdx = reportsData.indexOf(r);
+
+            return '<tr class="hover:bg-surface-container-high transition-colors">' +
+                '<td class="px-md py-md"><span class="' + badgeBg + ' px-xs py-1 rounded text-xs font-bold uppercase">' + categoryBadge + '</span></td>' +
+                '<td class="px-md py-md font-mono text-xs text-on-surface">' + escHtml(r.reference_number || '—') + '</td>' +
+                '<td class="px-md py-md text-sm">' + escHtml(summary) + '</td>' +
+                '<td class="px-md py-md text-right font-bold text-secondary">' + String(caseCount).padStart(2, '0') + '</td>' +
+                '<td class="px-md py-md text-xs">' + dateStr + '</td>' +
+                '<td class="px-md py-md"><span class="px-xs py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase">' + escHtml(r.status || 'Submitted') + '</span></td>' +
+                '<td class="px-md py-md text-center"><button onclick="closeSchoolModal(); showReportDetail(' + globalIdx + ');" class="px-sm py-1 rounded bg-primary text-on-primary hover:opacity-90 font-bold text-xs shadow-sm">View Full Form</button></td>' +
+                '</tr>';
+        }).join('');
+
+        bodyHtml += '</tbody></table></div>';
+        document.getElementById('school-modal-body').innerHTML = bodyHtml;
+        document.getElementById('school-modal').classList.remove('hidden');
+    }
+
+    function closeSchoolModal() {
+        document.getElementById('school-modal').classList.add('hidden');
+    }
+
+    function renderRawReportsTable() {
+        var search = (document.getElementById('reports-search')?.value || '').toLowerCase();
+        var catFilter = document.getElementById('reports-category')?.value || 'Annex: All';
+        var statusFilter = document.getElementById('reports-status')?.value || 'Status: All';
+
+        var thead = document.getElementById('table-header-tr');
+        thead.innerHTML =
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Category</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Incident Summary</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Case Count</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Date</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Action Status</th>';
+
+        var filtered = reportsData.filter(function(r) {
+            var sName = String(r.school_name || r.report_data?.metadata?.schoolName || '').toLowerCase();
+            var sId = String(r.school_id || r.report_data?.metadata?.schoolId || '').toLowerCase();
+            if (search && !sName.includes(search) && !sId.includes(search)) return false;
+            if (catFilter !== 'Annex: All') {
+                var mod = (r.module || r.report_data?.module || '').toUpperCase();
+                var cat = catFilter.toUpperCase();
+                if (cat === 'ANNEX A' && mod !== 'A') return false;
+                if (cat === 'ANNEX B' && mod !== 'B') return false;
+                if (cat === 'ANNEX C' && mod !== 'C') return false;
+                if (cat === 'ANNEX D' && mod !== 'D') return false;
+                if (cat === 'ANNEX E' && mod !== 'E') return false;
+            }
+            if (statusFilter !== 'Status: All') {
+                var st = (r.status || '').toLowerCase();
+                var sf = statusFilter.toLowerCase();
+                if (sf === 'resolved' && st !== 'submitted' && st !== 'resolved') return false;
+                if (sf === 'on-going' && st !== 'pending') return false;
+            }
+            return true;
         });
-    </script>
+
+        var totalPages = Math.ceil(filtered.length / REPORTS_PAGE_SIZE) || 1;
+        if (reportsPage >= totalPages) reportsPage = totalPages - 1;
+        var start = reportsPage * REPORTS_PAGE_SIZE;
+        var end = Math.min(start + REPORTS_PAGE_SIZE, filtered.length);
+        var page = filtered.slice(start, end);
+
+        var tbody = document.getElementById('reports-tbody');
+        tbody.innerHTML = page.map(function(r, i) {
+            var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
+            var schoolName = r.school_name || '—';
+            var schoolId = r.school_id || r.report_data?.metadata?.schoolId || '—';
+            var module = (r.module || r.report_data?.module || '—').toUpperCase();
+            var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
+            var catKeys = Object.keys(cats);
+            var summary, caseCount;
+            if (module === 'D') {
+              var ciclList = r.report_data?.data?.ciclList || [];
+              summary = ciclList.length + ' CICL case' + (ciclList.length !== 1 ? 's' : '');
+              caseCount = ciclList.length || 1;
+            } else if (module === 'C') {
+              var children = r.report_data?.data?.children || [];
+              summary = children.length + ' Child at Risk record' + (children.length !== 1 ? 's' : '');
+              caseCount = children.length || 1;
+            } else if (module === 'E') {
+              var rows = r.report_data?.data?.rows || [];
+              summary = rows.length + ' Concern row' + (rows.length !== 1 ? 's' : '');
+              caseCount = rows.length || 1;
+            } else {
+              summary = catKeys.length + ' categor' + (catKeys.length !== 1 ? 'ies' : 'y');
+              caseCount = catKeys.length || 1;
+            }
+            var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+            var status = r.status || 'pending';
+            var statusColor = status === 'submitted' || status === 'sent' ? 'text-emerald-600' : status === 'pending' ? 'text-orange-600' : 'text-blue-600';
+            var statusDot = status === 'submitted' || status === 'sent' ? 'bg-emerald-600' : status === 'pending' ? 'bg-orange-600' : 'bg-blue-600';
+            var statusLabel = status === 'submitted' || status === 'sent' ? 'Submitted' : status === 'pending' ? 'Pending' : status;
+            var categoryBadge = module === 'A' ? 'Annex A' : module === 'B' ? 'Annex B' : module === 'C' ? 'Annex C' : module === 'D' ? 'Annex D' : module === 'E' ? 'Annex E' : module;
+            var badgeBg = module === 'A' ? 'bg-red-100 text-red-800' : module === 'B' ? 'bg-orange-100 text-orange-800' : module === 'C' ? 'bg-blue-100 text-blue-900' : module === 'D' ? 'bg-purple-100 text-purple-900' : 'bg-gray-100 text-gray-700';
+            var globalIdx = reportsData.indexOf(r);
+            return '<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ' + bg + '" onclick="showReportDetail(' + globalIdx + ')">' +
+                '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(schoolName) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(String(schoolId)) + '</div></td>' +
+                '<td class="px-md py-md"><span class="' + badgeBg + ' px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">' + categoryBadge + '</span></td>' +
+                '<td class="px-md py-md text-body-md max-w-xs truncate">' + escHtml(summary) + '</td>' +
+                '<td class="px-md py-md text-right font-bold text-secondary">' + String(caseCount).padStart(2, '0') + '</td>' +
+                '<td class="px-md py-md text-caption">' + date + '</td>' +
+                '<td class="px-md py-md"><div class="flex items-center gap-xs ' + statusColor + ' font-bold text-xs uppercase"><span class="w-2 h-2 rounded-full ' + statusDot + '"></span> ' + statusLabel + '</div></td></tr>';
+        }).join('');
+
+        if (page.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="px-md py-md text-center text-on-surface-variant">No matching entries</td></tr>';
+
+        document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + filtered.length + ' entr' + (filtered.length !== 1 ? 'ies' : 'y');
+        document.getElementById('reports-prev').disabled = reportsPage === 0;
+        document.getElementById('reports-next').disabled = reportsPage >= totalPages - 1;
+        document.getElementById('pagination-bar').style.display = 'flex';
+    }
+
+    function setViewTab(tab) {
+        currentViewMode = tab;
+        document.getElementById('view-school').className = tab === 'school' ? 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold' : 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+        document.getElementById('view-raw').className = tab === 'raw' ? 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold' : 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+        document.getElementById('view-status').className = tab === 'status' ? 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold' : 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
+        reportsPage = 0;
+        renderView();
+    }
+
+    document.getElementById('view-school').addEventListener('click', function() { setViewTab('school'); });
+    document.getElementById('view-raw').addEventListener('click', function() { setViewTab('raw'); });
+    document.getElementById('view-status').addEventListener('click', function() { setViewTab('status'); });
+
+    document.getElementById('reports-search').addEventListener('input', function() { reportsPage = 0; renderView(); });
+    document.getElementById('reports-category').addEventListener('change', function() {
+        var val = this.value;
+        if (val !== 'Annex: All' && currentViewMode === 'school') {
+            setViewTab('raw');
+        } else {
+            reportsPage = 0;
+            renderView();
+        }
+    });
+    document.getElementById('reports-status').addEventListener('change', function() {
+        var val = this.value;
+        if (val !== 'Status: All' && currentViewMode === 'school') {
+            setViewTab('raw');
+        } else {
+            reportsPage = 0;
+            renderView();
+        }
+    });
+    document.getElementById('reports-prev').addEventListener('click', function() { if (reportsPage > 0) { reportsPage--; renderView(); } });
+    document.getElementById('reports-next').addEventListener('click', function() { reportsPage++; renderView(); });
+    document.querySelectorAll('.page-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { reportsPage = parseInt(this.dataset.page) - 1; renderView(); });
+    });
+
+    function loadReportsTable(token) {
+        fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(r) { return r.json(); }).then(function(stats) {
+            reportsData = stats.reports || [];
+            renderView();
+        }).catch(function(e) { console.error('Reports load error:', e); });
+    }
+
+    waitAuth(function(tok) { loadStats(tok); loadReportsTable(tok); });
+
+    function showSchoolStatus() {
+        var submittedSet = new Set((reportsData || []).map(function(r) { return r.school_name; }));
+        var tbody = document.getElementById('reports-tbody');
+        var thead = document.getElementById('table-header-tr');
+        thead.innerHTML =
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">District</th>' +
+            '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Status</th>';
+        
+        if (!allSchools.length) { tbody.innerHTML = '<tr><td colspan="3" class="px-md py-md text-center text-on-surface-variant">Loading school data...</td></tr>'; return; }
+        tbody.innerHTML = allSchools.map(function(item, i) {
+            var submitted = submittedSet.has(item.name);
+            var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
+            return '<tr class="hover:bg-surface-container-high transition-colors ' + bg + '">' +
+                '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(item.name) + '</div><div class="text-caption font-caption text-on-surface-variant">PSDS: ' + escHtml(item.psds || '—') + '</div></td>' +
+                '<td class="px-md py-md"><span class="text-caption font-caption text-on-surface-variant">' + escHtml(item.district) + '</span></td>' +
+                '<td class="px-md py-md"><div class="flex items-center gap-xs ' + (submitted ? 'text-emerald-600' : 'text-on-surface-variant') + ' font-bold text-xs uppercase"><span class="w-2 h-2 rounded-full ' + (submitted ? 'bg-emerald-600' : 'bg-outline-variant') + '"></span> ' + (submitted ? 'Submitted' : 'Not Yet Submitted') + '</div></td></tr>';
+        }).join('');
+        document.getElementById('reports-info').textContent = 'Showing all ' + allSchools.length + ' schools';
+        document.getElementById('pagination-bar').style.display = 'none';
+    }
+
+    function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+</script>
 <!-- Detail Modal -->
 <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-black/40 flex items-center justify-center p-md" onclick="if(event.target===this)closeDetail()">
 <div class="bg-surface-container-lowest rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">

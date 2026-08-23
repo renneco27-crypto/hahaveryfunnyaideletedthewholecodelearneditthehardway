@@ -157,3 +157,43 @@ Keywords: analytics, draft rows, school filter, auth fix, renderHistory, annexLa
 Function Names: loadAnalytics, renderHistory, annexLabel, getIncidentCount
 
 Description: loadAnalytics now uses window.__token for auth instead of ignored schoolName param. Fetches both /api/stats and /api/drafts, merges and sorts results. renderHistory fixed to read from correct DB fields (r.report_data?.metadata?.reportingYear, r.status, r.module). Draft rows show "Continue" button linking to /submissions?draft=REF. getIncidentCount handles Module D's ciclList format. School name header displayed in subtitle.
+
+### supabase/migrations/20260823_create_division_schools.sql
+
+Keywords: division schools table, seed schools, ormoc city schools
+
+Function Names: N/A (DDL)
+
+Description: Creates `division_schools` table (`id`, `name`, `district`, `psds`, `created_at`) with RLS policy and seeds all 109 schools across 10 districts from Ormoc City Division.
+
+### server.js
+
+Keywords: GET /api/schools, schools API, division schools
+
+Function Names: GET /api/schools
+
+Description: Fetches schools from `division_schools` table grouped by district; falls back to `htmls/ormoc_city_division_schools.json` if table is not yet seeded.
+
+### htmls/sidebar.js & htmls/auth-guard.js
+
+Keywords: avatar cache, user profile update, per-user avatar caching, school name display
+
+Function Names: getAvatarSrc, init, window.renderSidebar
+
+Description: Avatar caching in localStorage is now keyed per user (`avatar_cache_` + email) instead of a single global key. Sign out removes avatar caches. `auth-guard.js` triggers `user_updated` event and `window.renderSidebar()` when `verify-session` returns fresh profile data.
+
+### htmls/annex_modules_redesigned.html
+
+Keywords: annex comparison, impact flags, definitions legend, legal notes, annex e metadata, principal validation
+
+Description: Synchronized all Annex forms (A-E) to match official specifications:
+- Annex A: Added `E-5: Death` and `E-6: Psychological / Emotional Damage` to impactFlags; added Definitions & Legend section (Forms A-1 to A-5, Motives M-1 to M-3, Effects E-1 to E-6).
+- Annex B: Formatted Victim/Perpetrator labels and placeholders to `(Last Name, First Name, M.I.)`; added Policy Note ("No amicable settlement") and Abuse Type / Relationship Definitions card.
+- Annex C: Added Legal Notes card for Section 57 of RA 9344 and PD 1563 (Mendicancy Law); specified "Validated By (School Principal / Head)".
+- Annex D: Specified "Validated By (School Principal / Head)".
+- Annex E: Added complete Institutional Metadata card (Address, Classification, Level).
+
+
+
+
+

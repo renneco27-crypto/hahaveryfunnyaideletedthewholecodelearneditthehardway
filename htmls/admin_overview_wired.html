@@ -158,7 +158,7 @@
 <div class="flex min-h-[calc(100vh-64px)]">
 <div id="sidebar-root"></div>
 <!-- Main Content Area -->
-<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
+<main class="flex-1 ml-[64px] lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
 <!-- Page Header & Stats -->
 <div class="flex justify-between items-end mb-lg">
 <div>
@@ -323,7 +323,7 @@
   (async function() {
     try {
       const [schoolsRes, statsRes] = await Promise.all([
-        fetch('/ormoc_city_division_schools.json'),
+        fetch('/api/schools', { headers: { 'Authorization': 'Bearer ' + token } }),
         fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + token } })
       ]);
       const districts = await schoolsRes.json();

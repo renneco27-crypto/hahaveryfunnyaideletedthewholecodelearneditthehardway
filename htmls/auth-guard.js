@@ -7,7 +7,9 @@
     var email = window.__user?.email;
     if (email) {
       try { await fetch('/api/signout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+      try { localStorage.removeItem('avatar_cache_' + email); } catch(e) {}
     }
+    try { localStorage.removeItem('avatar_cache'); } catch(e) {}
     sessionStorage.removeItem('auth_cache');
     await supabase.auth.signOut();
     window.location.href = '/login';
@@ -55,12 +57,14 @@
     sessionStorage.setItem('auth_cache', JSON.stringify({ user: result.user, token: session.access_token }));
     window.__user = result.user;
     window.__token = session.access_token;
+    window.dispatchEvent(new CustomEvent('user_updated'));
+    if (typeof window.renderSidebar === 'function') window.renderSidebar();
 
     if (window.location.pathname === '/admin' && result.user.role !== 'admin') {
       window.location.href = '/analytics';
     }
   } catch (e) {
     console.error('Auth guard error:', e);
-    if (!window.__user) window.location.href = '/pending';
+    if (!window.__user) window.location.href = '/login';
   }
 })();

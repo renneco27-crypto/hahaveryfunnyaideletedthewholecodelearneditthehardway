@@ -355,6 +355,35 @@ app.get('/api/reports', async (req, res) => {
   }
 });
 
+// GET /api/schools — list all division schools from database (with JSON fallback)
+app.get('/api/schools', async (req, res) => {
+  try {
+    const db = serviceClient || supabase;
+    const { data, error } = await db.from('division_schools').select('*').order('district').order('name');
+    if (!error && data && data.length > 0) {
+      // Group by district to match expected format
+      const districtMap = {};
+      data.forEach(s => {
+        if (!districtMap[s.district]) {
+          districtMap[s.district] = { district: s.district, psds: s.psds, schools: [] };
+        }
+        districtMap[s.district].schools.push(s.name);
+      });
+      return res.json(Object.values(districtMap));
+    }
+    // Fallback to JSON file if table is not yet seeded
+    const jsonPath = path.join(HTML_DIR, 'ormoc_city_division_schools.json');
+    if (fs.existsSync(jsonPath)) {
+      const fallback = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      return res.json(fallback);
+    }
+    res.json([]);
+  } catch (error) {
+    console.error('Schools API Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ===== FRONTEND ROUTES WITH AUTH + CLEAN URLs =====
 const HTML_DIR = path.join(__dirname, 'htmls');
 
