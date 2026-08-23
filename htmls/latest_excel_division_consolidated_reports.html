@@ -957,15 +957,14 @@
                             '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary uppercase tracking-wider">Annex ' + annexLetter + '</span>' +
                             '<h4 class="font-bold text-on-surface text-label-md tracking-tight">DepEd Division Consolidated Report — ' + sheetTitle + '</h4>' +
                         '</div>' +
-                        '<p class="text-caption font-caption text-on-surface-variant mt-0.5">' +
-                            'School Year: <span class="font-semibold text-on-surface">2025–2026</span> • Division: <span class="font-semibold text-on-surface">Ormoc City</span> • Generated: <span>' + todayStr + '</span> • <span class="text-emerald-700 font-semibold">Official Consolidated Master Database</span>' +
+                        '<p class="text-caption font-caption text-on-surface-variant mt-0.5 italic">' +
+                            'School Year: 2025–2026 • Division: Ormoc City • Generated: ' + todayStr + ' • Official Consolidated Master Database' +
                         '</p>' +
                     '</div>' +
                 '</div>' +
                 '<div class="flex items-center gap-xs shrink-0">' +
                     '<button onclick="toggleSmokeTestData()" class="flex items-center gap-xs px-sm py-1.5 rounded-lg border border-outline-variant text-xs font-label-md ' + (useSmokeTestData ? 'bg-secondary/10 text-secondary border-secondary/30 font-bold' : 'bg-surface text-on-surface-variant hover:bg-surface-variant') + ' transition-colors cursor-pointer">' +
-                        '<span class="material-symbols-outlined text-sm">science</span>' +
-                        '<span>' + (useSmokeTestData ? 'Demo Data: Active' : 'Demo Data: Off') + '</span>' +
+                        '<span>' + (useSmokeTestData ? 'Demo: On' : 'Demo: Off') + '</span>' +
                     '</button>' +
                     '<button onclick="downloadExcelDatabase()" class="flex items-center gap-xs bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container px-md py-1.5 rounded-lg text-xs font-bold font-label-md transition-all shadow-xs cursor-pointer">' +
                         '<span class="material-symbols-outlined text-sm">download</span>' +
@@ -975,87 +974,60 @@
             '</div>' +
         '</div>';
 
-        var formulaStripHtml = '<div class="p-sm bg-surface-container-lowest border-x border-b border-outline-variant">' +
-            '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-xs mb-xs px-xs">' +
-                '<span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">' +
-                    '<span class="material-symbols-outlined text-sm text-secondary">functions</span>' +
-                    '<span>Formula Metrics & Aggregate KPIs</span>' +
-                '</span>' +
-                '<span class="text-[11px] text-on-surface-variant font-mono">' +
-                    'Sorted: <span class="font-semibold text-primary">Public ➔ Private</span> | <span class="font-semibold text-primary">Elementary ➔ Secondary</span>' +
-                '</span>' +
-            '</div>' +
-            '<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-xs text-xs font-mono">' +
-                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
-                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Public</span>' +
-                    '<div class="flex items-baseline justify-between mt-0.5">' +
-                        '<span class="font-bold text-primary text-sm">' + totPublicSchools + '</span>' +
-                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
-                    '</div>' +
+        var formulaStripHtml = '<div class="px-md py-sm bg-surface-container-lowest border-x border-b border-outline-variant">' +
+            '<div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-xs">' +
+                '<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant/60 text-center">' +
+                    '<div class="text-[10px] text-on-surface-variant uppercase tracking-wider font-sans mb-0.5">Public</div>' +
+                    '<div class="font-bold text-primary text-base">' + totPublicSchools + '</div>' +
                 '</div>' +
-                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
-                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Private</span>' +
-                    '<div class="flex items-baseline justify-between mt-0.5">' +
-                        '<span class="font-bold text-primary text-sm">' + totPrivateSchools + '</span>' +
-                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
-                    '</div>' +
+                '<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant/60 text-center">' +
+                    '<div class="text-[10px] text-on-surface-variant uppercase tracking-wider font-sans mb-0.5">Private</div>' +
+                    '<div class="font-bold text-primary text-base">' + totPrivateSchools + '</div>' +
                 '</div>' +
-                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
-                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Elementary</span>' +
-                    '<div class="flex items-baseline justify-between mt-0.5">' +
-                        '<span class="font-bold text-primary text-sm">' + totElemSchools + '</span>' +
-                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
-                    '</div>' +
+                '<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant/60 text-center">' +
+                    '<div class="text-[10px] text-on-surface-variant uppercase tracking-wider font-sans mb-0.5">Elementary</div>' +
+                    '<div class="font-bold text-primary text-base">' + totElemSchools + '</div>' +
                 '</div>' +
-                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
-                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Secondary</span>' +
-                    '<div class="flex items-baseline justify-between mt-0.5">' +
-                        '<span class="font-bold text-primary text-sm">' + totSecSchools + '</span>' +
-                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
-                    '</div>' +
+                '<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant/60 text-center">' +
+                    '<div class="text-[10px] text-on-surface-variant uppercase tracking-wider font-sans mb-0.5">Secondary</div>' +
+                    '<div class="font-bold text-primary text-base">' + totSecSchools + '</div>' +
                 '</div>' +
-                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
-                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Incidents</span>' +
-                    '<div class="flex items-baseline justify-between mt-0.5">' +
-                        '<span class="font-bold text-amber-800 text-sm">' + totalCasesOverall + '</span>' +
-                        '<span class="text-[10px] text-on-surface-variant font-mono">=SUM</span>' +
-                    '</div>' +
+                '<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant/60 text-center">' +
+                    '<div class="text-[10px] text-on-surface-variant uppercase tracking-wider font-sans mb-0.5">Incidents</div>' +
+                    '<div class="font-bold text-amber-800 text-base">' + totalCasesOverall + '</div>' +
                 '</div>' +
-                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
-                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Resolution</span>' +
-                    '<div class="flex items-baseline justify-between mt-0.5">' +
-                        '<span class="font-bold text-emerald-700 text-sm">' + divisionResolutionRate + '%</span>' +
-                        '<span class="text-[10px] text-on-surface-variant font-mono">Rate</span>' +
-                    '</div>' +
+                '<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant/60 text-center">' +
+                    '<div class="text-[10px] text-on-surface-variant uppercase tracking-wider font-sans mb-0.5">Resolution</div>' +
+                    '<div class="font-bold text-emerald-700 text-base">' + divisionResolutionRate + '%</div>' +
                 '</div>' +
-                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
-                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Private Cases</span>' +
-                    '<div class="flex items-baseline justify-between mt-0.5">' +
-                        '<span class="font-bold text-primary text-sm">' + privateCases + '</span>' +
-                        '<span class="text-[10px] text-emerald-700 font-mono">' + privateResolutionRate + '%</span>' +
-                    '</div>' +
+                '<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant/60 text-center">' +
+                    '<div class="text-[10px] text-on-surface-variant uppercase tracking-wider font-sans mb-0.5">Priv. Cases</div>' +
+                    '<div class="font-bold text-primary text-base">' + privateCases + ' <span class="text-emerald-700 text-xs font-normal">(' + privateResolutionRate + '%)</span></div>' +
                 '</div>' +
             '</div>' +
         '</div>';
 
-        var sheetTabsHtml = bannerHtml + formulaStripHtml + '<div class="p-sm bg-surface-container border-x border-b border-outline-variant flex flex-wrap items-center gap-xs">' +
-            '<button onclick="setExcelSheet(\'bullying\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'bullying' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+        var activeTabClass = 'px-md py-2 rounded-lg text-xs font-label-md font-bold flex items-center gap-xs cursor-pointer border-2 border-emerald-500 bg-emerald-50 text-emerald-800 transition-all';
+        var inactiveTabClass = 'px-md py-2 rounded-lg text-xs font-label-md font-bold flex items-center gap-xs cursor-pointer border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-all';
+
+        var sheetTabsHtml = bannerHtml + formulaStripHtml + '<div class="px-md py-sm bg-surface-container border-x border-b border-outline-variant flex flex-wrap gap-xs">' +
+            '<button onclick="setExcelSheet(\'bullying\')" class="' + (activeExcelSheet === 'bullying' ? activeTabClass : inactiveTabClass) + '">' +
                 '<span class="material-symbols-outlined text-sm">shield</span>' +
                 '<span>Bullying (Annex A)</span>' +
             '</button>' +
-            '<button onclick="setExcelSheet(\'child_abuse\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'child_abuse' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+            '<button onclick="setExcelSheet(\'child_abuse\')" class="' + (activeExcelSheet === 'child_abuse' ? activeTabClass : inactiveTabClass) + '">' +
                 '<span class="material-symbols-outlined text-sm">health_and_safety</span>' +
                 '<span>Child Abuse (Annex B)</span>' +
             '</button>' +
-            '<button onclick="setExcelSheet(\'children_at_risk\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'children_at_risk' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+            '<button onclick="setExcelSheet(\'children_at_risk\')" class="' + (activeExcelSheet === 'children_at_risk' ? activeTabClass : inactiveTabClass) + '">' +
                 '<span class="material-symbols-outlined text-sm">family_restroom</span>' +
                 '<span>Children At Risk (Annex C)</span>' +
             '</button>' +
-            '<button onclick="setExcelSheet(\'cicl\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'cicl' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+            '<button onclick="setExcelSheet(\'cicl\')" class="' + (activeExcelSheet === 'cicl' ? activeTabClass : inactiveTabClass) + '">' +
                 '<span class="material-symbols-outlined text-sm">gavel</span>' +
                 '<span>CICL Cases (Annex D)</span>' +
             '</button>' +
-            '<button onclick="setExcelSheet(\'other_lrp_concerns\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'other_lrp_concerns' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+            '<button onclick="setExcelSheet(\'other_lrp_concerns\')" class="' + (activeExcelSheet === 'other_lrp_concerns' ? activeTabClass : inactiveTabClass) + '">' +
                 '<span class="material-symbols-outlined text-sm">assignment</span>' +
                 '<span>Other LRP (Annex E)</span>' +
             '</button>' +
@@ -1084,32 +1056,21 @@
             });
         }
 
-        var summaryBlockHtml = '<div class="mt-6 p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-xs max-w-2xl">' +
-            '<div class="flex items-center justify-between pb-sm mb-sm border-b border-outline-variant">' +
-                '<div class="flex items-center gap-xs">' +
-                    '<span class="material-symbols-outlined text-primary text-lg">calculate</span>' +
-                    '<h5 class="font-bold text-on-surface text-label-md uppercase tracking-wider">Summary Metrics & Division Formulas</h5>' +
-                '</div>' +
-                '<span class="text-caption font-mono text-on-surface-variant">=COUNTIF / =SUM / =SUMIFS</span>' +
+        var summaryBlockHtml = '<div class="mt-6 p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-xs max-w-xl">' +
+            '<div class="flex items-center gap-xs pb-sm mb-sm border-b border-outline-variant">' +
+                '<h5 class="font-bold text-on-surface text-label-md uppercase tracking-wider">Summary</h5>' +
             '</div>' +
-            '<table class="w-full text-xs border-collapse">' +
-                '<thead><tr class="bg-surface-container-low text-on-surface-variant font-label-md border-b border-outline-variant text-left">' +
-                    '<th class="px-md py-sm">Metric</th>' +
-                    '<th class="px-md py-sm font-mono">Excel Formula</th>' +
-                    '<th class="px-md py-sm font-mono text-right">Calculated Value</th>' +
-                '</tr></thead>' +
-                '<tbody class="divide-y divide-outline-variant">' +
-                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTA(A5:A' + (4 + list.length) + ')</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + seenSchoolSet.size + '</td></tr>' +
-                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Public Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(D5:D' + (4 + list.length) + ', "Public")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totPublicSchools + '</td></tr>' +
-                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Private Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(D5:D' + (4 + list.length) + ', "Private")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totPrivateSchools + '</td></tr>' +
-                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Elementary Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(E5:E' + (4 + list.length) + ', "Elementary")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totElemSchools + '</td></tr>' +
-                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Secondary Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(E5:E' + (4 + list.length) + ', "Secondary")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totSecSchools + '</td></tr>' +
-                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Incidents (All Schools)</td><td class="px-md py-sm font-mono text-on-surface-variant">=SUM(S5:S' + (4 + list.length) + ')</td><td class="px-md py-sm font-mono font-bold text-right text-amber-800">' + totalCasesOverall + '</td></tr>' +
-                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Incidents — Private Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=SUMIFS(S5:S' + (4 + list.length) + ', D5:D' + (4 + list.length) + ', "Private")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + privateCases + '</td></tr>' +
-                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Resolved — Private Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=SUMIFS(T5:T' + (4 + list.length) + ', D5:D' + (4 + list.length) + ', "Private")</td><td class="px-md py-sm font-mono font-bold text-right text-emerald-700">' + privateResolved + '</td></tr>' +
-                    '<tr class="bg-surface-container-low font-bold border-t-2 border-outline-variant"><td class="px-md py-sm text-primary">Overall Resolution Rate</td><td class="px-md py-sm font-mono text-on-surface-variant">=IFERROR(ROUND(SUM(T5:T' + (4 + list.length) + ')/SUM(S5:S' + (4 + list.length) + ')*100, 1) & "%", "N/A")</td><td class="px-md py-sm font-mono text-right text-emerald-700 text-sm">' + divisionResolutionRate + '%</td></tr>' +
-                '</tbody>' +
-            '</table>' +
+            '<div class="divide-y divide-outline-variant">' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Total Schools</span><span class="font-bold text-primary">' + seenSchoolSet.size + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Public Schools</span><span class="font-bold text-primary">' + totPublicSchools + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Private Schools</span><span class="font-bold text-primary">' + totPrivateSchools + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Elementary Schools</span><span class="font-bold text-primary">' + totElemSchools + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Secondary Schools</span><span class="font-bold text-primary">' + totSecSchools + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Total Incidents</span><span class="font-bold text-amber-800">' + totalCasesOverall + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Private Incidents</span><span class="font-bold text-primary">' + privateCases + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm"><span class="text-on-surface-variant">Private Resolved</span><span class="font-bold text-emerald-700">' + privateResolved + '</span></div>' +
+                '<div class="flex justify-between py-sm text-sm font-bold border-t-2 border-outline-variant"><span class="text-primary">Overall Resolution Rate</span><span class="text-emerald-700">' + divisionResolutionRate + '%</span></div>' +
+            '</div>' +
         '</div>';
 
         if (activeExcelSheet === 'bullying') {
