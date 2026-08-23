@@ -279,32 +279,6 @@
 </div>
 
 </div>
-<!-- Reporting History Table -->
-<section class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm">
-<div class="p-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
-<h3 class="font-headline-md text-headline-md text-primary">Reporting History</h3>
-<span class="text-caption font-caption text-on-surface-variant font-medium">Historical Compliance Submissions</span>
-</div>
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="bg-surface-container-high text-xs uppercase tracking-wider text-on-surface-variant font-bold border-b border-outline-variant/60">
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant">Date Submitted</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant">Report Period</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant text-right">Incidents</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant text-right">Resolved</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant text-right">Ongoing</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant text-right">Referred</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant">Status</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant text-right">Action</th>
-</tr>
-</thead>
-<tbody class="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/30" id="history-tbody">
-</tbody>
-</table>
-</div>
-</section>
-</div>
 </main>
 </div>
 <!-- Footer -->
@@ -370,13 +344,6 @@
 
       // Bar chart
       renderChart(data.monthly);
-
-      // History table — merge submitted reports + drafts
-      var all = (data.reports || []).concat(drafts || []);
-      all.sort(function(a, b) {
-        return new Date(b.created_at || b.submitted_at) - new Date(a.created_at || a.submitted_at);
-      });
-      renderHistory(all);
     } catch (err) {
       console.error('Failed to load analytics:', err);
       document.getElementById('chart-bars').innerHTML = '<div class="text-caption text-outline w-full text-center py-md">Could not load data</div>';
@@ -410,75 +377,6 @@
       const [, mm] = key.split('-');
       const monthLabel = MONTHS_SHORT[parseInt(mm, 10) - 1] || key;
       return `<span>${monthLabel}</span>`;
-    }).join('');
-  }
-
-  function getIncidentCount(r) {
-    var mod = (r.module || '').toUpperCase();
-    var rd = r.report_data || {};
-    var data = rd.data || rd;
-    // Check for summaryCounts in report_data.data or report_data
-    var sc = data.summaryCounts || rd.summaryCounts;
-    if (sc) {
-      return {
-        total: (sc.resolved || 0) + (sc.ongoing || 0) + (sc.referredGov || 0) + (sc.referredNGO || 0),
-        resolved: sc.resolved || 0,
-        ongoing: sc.ongoing || 0,
-        referred: (sc.referredGov || 0) + (sc.referredNGO || 0)
-      };
-    }
-    if (mod === 'D') {
-      var ciclList = data.ciclList || rd.ciclList || [];
-      return { total: ciclList.length, resolved: 0, ongoing: 0, referred: 0 };
-    }
-    var cats = data.categories || rd.categories || {};
-    var keys = Object.keys(cats);
-    var total = keys.length || data.length || 0;
-    return { total: total, resolved: 0, ongoing: 0, referred: 0 };
-  }
-
-  function renderHistory(reports) {
-    const tbody = document.getElementById('history-tbody');
-    if (!reports || reports.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" class="p-md text-center text-outline">No reports submitted yet</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = reports.map((r, idx) => {
-      var isDraft = r.status === 'Draft' || r.report_data?.status === 'Draft';
-      var date = new Date(r.created_at || r.submitted_at || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      var mod = (r.module || r.report_data?.metadata?.annexType || '').toUpperCase();
-      var period = r.report_data?.metadata?.reportingYear || r.report_data?.schoolMetadata?.reportingYear || '—';
-      var label = annexLabel(mod);
-      var periodDisplay = period !== '—' ? label + ' — ' + period : label;
-      var ic = getIncidentCount(r);
-      var incidents = typeof ic === 'object' ? ic.total : ic;
-      var resolved = typeof ic === 'object' ? ic.resolved : 0;
-      var ongoing = typeof ic === 'object' ? ic.ongoing : 0;
-      var referred = typeof ic === 'object' ? ic.referred : 0;
-      var status = isDraft ? 'Draft' : (r.status || 'Submitted');
-      var cfg = STATUS_CONFIG[status] || { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' };
-      var alt = idx % 2 === 1 ? 'bg-[#F9FAFB]' : '';
-
-      var draftBtn = isDraft
-        ? '<a href="/submissions?draft=' + encodeURIComponent(r.reference_number) + '" class="inline-flex items-center gap-xs text-primary hover:underline font-label-md text-label-md"><span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span> Continue</a>'
-        : '';
-
-      return `<tr class="border-b border-outline-variant ${alt} hover:bg-surface-variant transition-colors">
-        <td class="p-md">${date}</td>
-        <td class="p-md text-on-surface-variant">${periodDisplay}</td>
-        <td class="p-md text-right">${incidents}</td>
-        <td class="p-md text-right">${resolved}</td>
-        <td class="p-md text-right">${ongoing}</td>
-        <td class="p-md text-right">${referred}</td>
-        <td class="p-md">
-          <span class="inline-flex items-center gap-xs px-2 py-1 rounded" style="background:${cfg.bg};color:${cfg.color};font-size:14px;">
-            <span class="material-symbols-outlined" style="font-size:16px;font-variation-settings:'FILL' 1;">${cfg.icon}</span>
-            ${status}
-          </span>
-        </td>
-        <td class="p-md">${draftBtn}</td>
-      </tr>`;
     }).join('');
   }
 
