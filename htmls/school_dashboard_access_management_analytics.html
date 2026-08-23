@@ -181,6 +181,13 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #74777f; }
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3, .font-display { font-family: 'Atkinson Hyperlegible Next', sans-serif; }
+        .signout-btn { transition: all 0.3s ease; }
+        .signout-btn:hover {
+            background-color: #ba1a1a !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 16px rgba(186, 26, 26, 0.8), 0 0 4px rgba(255, 255, 255, 0.6) !important;
+            border-color: #ba1a1a !important;
+        }
     </style>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
@@ -204,7 +211,7 @@
     <span class="material-symbols-outlined">account_circle</span>
     <span class="font-label-md text-label-md">Account</span>
 </button>
-<button onclick="signOut()" class="flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Sign Out">
+<button onclick="signOut()" class="signout-btn flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Sign Out">
     <span class="material-symbols-outlined text-lg">logout</span>
     <span class="font-label-md text-label-md">Sign Out</span>
 </button>

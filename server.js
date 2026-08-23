@@ -93,6 +93,9 @@ async function processUserQueue(email) {
       scheduleUserQueue(email, null);
     } else {
       console.log(`Inserted ${inserts.length} reports for ${email}`);
+      if (inserts[0]?.school_name && email) {
+        await db.from('profiles').update({ school_name: inserts[0].school_name }).eq('email', email);
+      }
       // Dispatch formatted JSON to Make.com webhook according to deped_lrp_report_schema.json
       const webhookUrl = process.env.MAKE_WEBHOOK_URL || 'https://hook.eu1.make.com/9acokbud64bqr23nugs4gfhjvfdzyj8f';
       for (const row of inserts) {
@@ -716,6 +719,20 @@ app.post('/api/verify-session', async (req, res) => {
   const avatarUrl = user.user_metadata?.avatar_url || null;
   const fullName = user.user_metadata?.full_name || user.email || 'User';
   const email = user.email;
+
+  // If schoolName is not in profile, look up recent submissions for this user
+  if (!schoolName && email) {
+    const { data: recentReports } = await db
+      .from('bullying_reports')
+      .select('school_name')
+      .eq('user_email', email)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (recentReports && recentReports.length > 0 && recentReports[0].school_name) {
+      schoolName = recentReports[0].school_name;
+      await db.from('profiles').update({ school_name: schoolName }).eq('id', user.id);
+    }
+  }
 
   // Check if user is revoked
   if (revokedUsers[email]) {

@@ -20,6 +20,13 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #74777f; }
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3, .font-display { font-family: 'Atkinson Hyperlegible Next', sans-serif; }
+        .signout-btn { transition: all 0.3s ease; }
+        .signout-btn:hover {
+            background-color: #ba1a1a !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 16px rgba(186, 26, 26, 0.8), 0 0 4px rgba(255, 255, 255, 0.6) !important;
+            border-color: #ba1a1a !important;
+        }
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -156,7 +163,7 @@
 <span class="material-symbols-outlined">account_circle</span>
 <span class="font-label-md text-label-md">Account</span>
 </button>
-<button onclick="signOut()" class="flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Logout">
+<button onclick="signOut()" class="signout-btn flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Logout">
 <span class="material-symbols-outlined text-lg">logout</span>
 <span class="font-label-md text-label-md">Sign Out</span>
 </button>
@@ -357,12 +364,34 @@
       const PAGE_SIZE = 10;
       let currentPage = 0;
 
+      function normalizeSchoolName(name) {
+        if (!name) return '';
+        return name.toLowerCase()
+          .replace(/\bcentral school\b/g, 'cs')
+          .replace(/\belementary school\b/g, 'es')
+          .replace(/\bnational high school\b/g, 'nhs')
+          .replace(/\bintegrated school\b/g, 'is')
+          .replace(/\bhigh school\b/g, 'hs')
+          .replace(/[^a-z0-9]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
       // Build a map of school_name -> status from reports
       var submittedMap = {};
       stats.reports.forEach(function(r) {
-        if (r.school_name && !submittedMap[r.school_name]) submittedMap[r.school_name] = r.status;
+        if (r.school_name) {
+          var norm = normalizeSchoolName(r.school_name);
+          submittedMap[norm] = r.status;
+          submittedMap[r.school_name] = r.status;
+        }
       });
-      var submittedCount = Object.keys(submittedMap).length;
+      function isSchoolSubmitted(name) {
+        if (!name) return false;
+        var norm = normalizeSchoolName(name);
+        return submittedMap[norm] || submittedMap[name];
+      }
+      var submittedCount = allSchools.filter(function(s) { return isSchoolSubmitted(s.name); }).length;
       var pct = totalSchools > 0 ? Math.round(submittedCount / totalSchools * 100) : 0;
 
       document.getElementById('stat-districts').textContent = totalDistricts;
@@ -372,12 +401,12 @@
       document.getElementById('stat-rate').textContent = pct + '%';
       document.getElementById('stat-progress').style.width = pct + '%';
 
-function renderTable() {
+      function renderTable() {
         const tbody = document.getElementById('schools-tbody');
         var filter = document.getElementById('status-filter').value;
         var filtered = allSchools;
-        if (filter === 'submitted') filtered = allSchools.filter(function(s) { return submittedMap[s.name]; });
-        else if (filter === 'pending') filtered = allSchools.filter(function(s) { return !submittedMap[s.name]; });
+        if (filter === 'submitted') filtered = allSchools.filter(function(s) { return isSchoolSubmitted(s.name); });
+        else if (filter === 'pending') filtered = allSchools.filter(function(s) { return !isSchoolSubmitted(s.name); });
         const totalFiltered = filtered.length;
         const totalPages = Math.ceil(totalFiltered / PAGE_SIZE) || 1;
         if (currentPage >= totalPages) currentPage = totalPages - 1;
@@ -387,25 +416,26 @@ function renderTable() {
         for (let i = start; i < end; i++) {
           const s = filtered[i];
           const alt = i % 2 === 1 ? 'bg-surface-container-low' : '';
+          const isSub = isSchoolSubmitted(s.name);
           html += '<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors ' + alt + '">';
           html += '<td class="p-md font-bold">' + s.name + '</td>';
           html += '<td class="p-md text-on-surface-variant">' + s.psds + '</td>';
           html += '<td class="p-md text-on-surface-variant">' + s.district + '</td>';
-          html += '<td class="p-md">' + (submittedMap[s.name] ? '<span class="px-xs py-1 rounded font-bold text-caption uppercase bg-green-100 text-green-800">Submitted</span>' : '<span class="text-caption text-on-surface-variant">Not yet submitted</span>') + '</td>';
+          html += '<td class="p-md">' + (isSub ? '<span class="px-xs py-1 rounded font-bold text-caption uppercase bg-green-100 text-green-800">Submitted</span>' : '<span class="text-caption text-on-surface-variant">Not yet submitted</span>') + '</td>';
           html += '</tr>';
         }
-tbody.innerHTML = html;
+        tbody.innerHTML = html;
         document.getElementById('showing-count').textContent = 'Showing ' + (start + 1) + '–' + end + ' of ' + totalFiltered + ' school' + (totalFiltered !== 1 ? 's' : '');
         document.getElementById('prev-page-btn').disabled = currentPage === 0;
         document.getElementById('next-page-btn').disabled = currentPage >= (Math.ceil(totalFiltered / PAGE_SIZE) || 1) - 1;
       }
 
-document.getElementById('prev-page-btn').addEventListener('click', function() {
+      document.getElementById('prev-page-btn').addEventListener('click', function() {
         if (currentPage > 0) { currentPage--; renderTable(); }
       });
       document.getElementById('next-page-btn').addEventListener('click', function() {
         var f = document.getElementById('status-filter').value;
-        var fil = f === 'all' ? allSchools : f === 'submitted' ? allSchools.filter(function(s) { return submittedMap[s.name]; }) : allSchools.filter(function(s) { return !submittedMap[s.name]; });
+        var fil = f === 'all' ? allSchools : f === 'submitted' ? allSchools.filter(function(s) { return isSchoolSubmitted(s.name); }) : allSchools.filter(function(s) { return !isSchoolSubmitted(s.name); });
         var tp = Math.ceil(fil.length / PAGE_SIZE) || 1;
         if (currentPage < tp - 1) { currentPage++; renderTable(); }
       });
