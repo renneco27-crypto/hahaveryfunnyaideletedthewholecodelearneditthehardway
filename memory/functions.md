@@ -215,8 +215,14 @@ Description:
 Keywords: google oauth exclusive, email login disabled, secure institutional signin
 
 Description:
-- Removed email OTP login form and input to prevent unauthorized or bypassed email logins.
-- Enforced Google OAuth ("Sign in with Google") as the exclusive authentication method for all authorized personnel.
+### Strict Database-Only Pre-Authorized Access
+
+Keywords: unauthorized rejection, profiles whitelist, access requests queue, admin approval
+
+Description:
+- Enforced strict whitelist authentication in `server.js` (`/api/verify-session`), `auth-guard.js`, `auth-callback.html`, and `login_ormoc_city_division_lrp_wired_1.html`.
+- Google OAuth logins for accounts NOT found in the `profiles` table are immediately rejected, signed out from Supabase, logged into `blockedRequests` queue for Admin review, and redirected to `/pending?reason=unauthorized`.
+- When an admin approves an account in Access Management (`/access`), the user profile is created in `profiles` and authorized.
 
 
 
