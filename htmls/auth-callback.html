@@ -14,8 +14,10 @@
     const { data: { session } } = await supabase.auth.getSession();
     if (session && window.opener) {
       window.opener.postMessage({ type: 'supabase-auth', session }, window.origin);
+      window.close();
+    } else {
+      window.location.href = '/login';
     }
-    window.close();
   })();
 </script>
 </body>
