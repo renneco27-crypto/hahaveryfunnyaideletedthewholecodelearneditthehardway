@@ -246,12 +246,19 @@ Description:
 - Copied updated background image `OIP (1).jpg` into `htmls/OIP (1).jpg`.
 - Updated `.login-mesh` CSS background-image URL from `/OIP (1).webp` to `/OIP (1).jpg` across `htmls/annex_modules_redesigned.html`, `htmls/reporting_history_wired.html`, and `htmls/school_dashboard_access_management_analytics.html`.
 
-### Incident Categories (Annex A) UI Redesign
+### htmls/latest_excel_division_consolidated_reports.html
 
-Keywords: incident categories redesign, annex a typography legibility, design harmony with annex b
+Keywords: excel master table redesign, DepEd_Ormoc_Master_Database_Professional.xlsx format, navy blue header theme, ice blue metadata ribbon, sentence wrapping no truncation, public first elementary first sorting, excel summary metrics table, smoke test demo dataset integration, formula rich xlsx exporter, explicit column widths
+
+Function Names: renderExcelMasterTable, getCombinedReports, compareReports, getSchoolSortKey, toggleSmokeTestData, buildBullyingSheetRows, buildChildAbuseSheetRows, buildCARSheetRows, buildCICLSheetRows, buildOtherLRPSheetRows, downloadExcelDatabase
 
 Description:
-- Redesigned the "Incident Categories" section in `htmls/annex_modules_redesigned.html` from small pills to full structured interactive option cards with bold category codes (`A-1` through `A-5`), category titles, readable descriptions, and active highlight borders, aligning directly with the design principles and typography legibility of Annex B ("Nature of Child Abuse").
+- **DepEd Professional Excel Schema Alignment (`DepEd_Ormoc_Master_Database_Professional.xlsx`)**: Matched both the web UI tables and downloadable `.xlsx` workbook 1:1 with the exact styling, color palette (`#1B3A6B` Navy header, `#EBF4FB` Ice Blue subtitle bar, `#F0F5FA` / `#FFFFFF` alternating rows), and column structure across all 5 sheets (Bullying, Child Abuse, Children at Risk, CICL, Other LRP Concerns).
+- **Official Title & Subtitle Banners**: Added division header banners (`DEPED DIVISION OF ORMOC CITY — CONSOLIDATED REPORT ON [ANNEX NAME]`) and metadata ribbons (`ANNEX [A-E] | School Year: 2025-2026 | Generated: [Date] | Status: Official Consolidated Master Database`).
+- **Summary Metrics & Formulas Block**: Implemented the Excel summary block directly below the data table featuring formulas (`=COUNTA`, `=COUNTIF(Sector, "Public")`, `=COUNTIF(Sector, "Private")`, `=COUNTIF(Level, "Elementary")`, `=SUM(Incidents)`, `=SUMIFS(Private Incidents)`, `=SUMIFS(Private Resolved)`, and `=IFERROR(ROUND(...))`).
+- **Eliminated Text Truncation**: Applied natural text wrapping (`whitespace-normal break-words leading-relaxed`) for full sentences in actions and interventions without requiring row height adjustment.
+- **Hierarchical Sorting**: Sorted records by Sector priority (**Public first**, then **Private**), Level priority (**Elementary first**, then **Secondary**), and School Name alphabetically.
+- **Integrated Smoke Test Dataset**: Synchronized smoke test data across 10 Ormoc City schools matching the professional Excel file records.
 
 
 

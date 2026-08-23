@@ -190,95 +190,93 @@
 </div>
 </div>
 </section>
-<!-- Section 2: Division Consolidated Reports Generator -->
-<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm">
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
-<div>
-<h3 class="font-headline-md text-headline-md text-primary">Division Master Database Exporter</h3>
-<p class="text-caption font-caption text-on-surface-variant mt-xs">Preview the live multi-sheet table below or download the master 5-sheet Excel file.</p>
-</div>
-<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
-<select id="report-category-select" class="bg-surface border border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md text-on-surface focus:ring-2 focus:ring-secondary/20 min-w-[240px]">
-<option value="ALL">All 5 Sheets (Master Database)</option>
-<option value="BULLYING">Bullying Consolidated (Annex A)</option>
-<option value="CHILD ABUSE">Child Abuse Consolidated (Annex B)</option>
-<option value="CHILDREN-AT-RISK">Children-at-Risk (Annex C)</option>
-<option value="CHILDREN IN CONFLICT WITH THE LAW">CICL Cases (Annex D)</option>
-<option value="OTHER LRP CONCERNS">Other LRP Concerns (Annex E)</option>
-</select>
-<button onclick="downloadExcelDatabase()" class="flex items-center justify-center gap-xs bg-emerald-700 text-white px-md py-sm rounded-lg font-label-md text-label-md hover:bg-emerald-800 transition-all shadow-sm whitespace-nowrap">
-<span class="material-symbols-outlined">download</span>
-Download Excel (.xlsx)
-</button>
-</div>
-</div>
+<!-- Section 2 + 3: Division Consolidated Reports — single minimal card matching /history design -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-sm overflow-hidden">
+
+  <!-- Card Header: Title, view tabs, download -->
+  <div class="p-md border-b border-outline-variant bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-md">
+    <div>
+      <div class="flex items-center gap-xs text-secondary font-label-md text-label-md uppercase tracking-wider mb-xs">
+        <span class="material-symbols-outlined text-sm">table_chart</span>
+        <span>Division Master Database</span>
+      </div>
+      <h3 class="font-headline-md text-headline-md text-primary">Consolidated Reports</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-xs">Live multi-school master database across all Annex modules.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-sm shrink-0">
+      <!-- View tabs as real buttons -->
+      <div class="flex items-center bg-surface-variant rounded-lg p-1 gap-1">
+        <button id="view-school" class="px-md py-1.5 rounded-md text-xs font-label-md font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all">By School</button>
+        <button id="view-excel" class="px-md py-1.5 rounded-md text-xs font-label-md font-bold bg-surface-container-lowest text-primary shadow-xs transition-all">Excel Master</button>
+        <button id="view-raw" class="px-md py-1.5 rounded-md text-xs font-label-md font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all">Raw Data</button>
+        <button id="view-status" class="px-md py-1.5 rounded-md text-xs font-label-md font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all">School Status</button>
+      </div>
+      <button onclick="downloadExcelDatabase()" class="flex items-center gap-xs bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container px-md py-sm rounded-lg font-label-md text-label-md text-xs font-bold transition-all shadow-xs whitespace-nowrap">
+        <span class="material-symbols-outlined text-sm">download</span>
+        Export Excel (.xlsx)
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter / Search Toolbar -->
+  <div class="p-md border-b border-outline-variant bg-surface-container-lowest flex flex-col sm:flex-row gap-sm items-center justify-between">
+    <div class="relative w-full sm:w-80">
+      <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+      <input class="w-full pl-xl pr-md py-2 border border-outline-variant rounded-lg font-body-md text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Search ID or School..." type="text" id="reports-search"/>
+    </div>
+    <div class="flex flex-wrap items-center gap-sm w-full sm:w-auto">
+      <select class="px-md py-2 border border-outline-variant rounded-lg font-body-md text-sm bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" id="reports-category">
+        <option>Annex: All</option>
+        <option>Annex A</option>
+        <option>Annex B</option>
+        <option>Annex C</option>
+        <option>Annex D</option>
+        <option>Annex E</option>
+      </select>
+      <select class="px-md py-2 border border-outline-variant rounded-lg font-body-md text-sm bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" id="reports-status">
+        <option>Status: All</option>
+        <option>Resolved</option>
+        <option>On-going</option>
+        <option>Referred</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Table Content -->
+  <div class="overflow-x-auto" id="table-container">
+    <table class="w-full text-left border-collapse" id="reports-table">
+      <thead>
+        <tr class="bg-surface-container-high text-xs uppercase tracking-wider text-on-surface-variant font-bold border-b border-outline-variant/60" id="table-header-tr">
+          <th class="px-md py-sm font-label-md text-label-md text-on-surface-variant">School Name &amp; ID</th>
+          <th class="px-md py-sm font-label-md text-label-md text-on-surface-variant">District</th>
+          <th class="px-md py-sm font-label-md text-label-md text-on-surface-variant">Annexes Submitted</th>
+          <th class="px-md py-sm font-label-md text-label-md text-on-surface-variant text-right">Total Cases</th>
+          <th class="px-md py-sm font-label-md text-label-md text-on-surface-variant">Last Submission</th>
+          <th class="px-md py-sm font-label-md text-label-md text-on-surface-variant text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody class="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/30" id="reports-tbody">
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="p-md border-t border-outline-variant bg-surface-container flex items-center justify-between" id="pagination-bar">
+    <span class="text-caption font-caption text-on-surface-variant" id="reports-info">No entries</span>
+    <div class="flex items-center gap-xs">
+      <button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="reports-prev">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button class="px-xs py-1 rounded bg-primary text-on-primary font-bold page-btn" data-page="1">1</button>
+      <button class="px-xs py-1 rounded hover:bg-surface-variant font-bold page-btn" data-page="2">2</button>
+      <button class="px-xs py-1 rounded hover:bg-surface-variant font-bold page-btn" data-page="3">3</button>
+      <button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="reports-next">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+
 </section>
-<!-- Section 3: Master Aggregated Live Data Table -->
-<div class="max-w-7xl mx-auto px-md">
-<section class="bg-surface-container-lowest border border-black/60 rounded-lg overflow-hidden shadow-sm">
-<!-- Filter Bar -->
-<div class="p-md border-b border-black/60 flex flex-col lg:flex-row gap-md items-center justify-between">
-<div class="relative w-full lg:w-96">
-<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-<input class="w-full pl-xl pr-md py-sm rounded-lg border-outline-variant focus:border-secondary focus:ring-2 focus:ring-secondary/20 bg-surface" placeholder="Search ID or School..." type="text" id="reports-search"/>
-</div>
-<div class="flex flex-wrap gap-sm w-full lg:w-auto">
-<select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="reports-category">
-<option>Annex: All</option>
-<option>Annex A</option>
-<option>Annex B</option>
-<option>Annex C</option>
-<option>Annex D</option>
-<option>Annex E</option>
-</select>
-<select class="bg-surface border-outline-variant rounded-lg px-md py-sm font-label-md text-label-md focus:ring-secondary/20" id="reports-status">
-<option>Status: All</option>
-<option>Resolved</option>
-<option>On-going</option>
-<option>Referred</option>
-</select>
-<div class="flex items-center gap-xs bg-surface-variant p-1 rounded-lg">
-<button class="px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold" id="view-school">By School</button>
-<button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md" id="view-excel">📊 Excel Master Table</button>
-<button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md" id="view-raw">Raw Data</button>
-<button class="px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md" id="view-status">School Status</button>
-</div>
-</div>
-</div>
-<!-- Table Content -->
-<div class="overflow-x-auto" id="table-container">
-<table class="w-full text-left border-collapse" id="reports-table">
-<thead>
-<tr class="bg-surface-container-low border-b-2 border-outline-variant" id="table-header-tr">
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">District</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Annexes Submitted</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">Total Cases</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Last Submission</th>
-<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-center">Action</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-outline-variant" id="reports-tbody">
-</tbody>
-</table>
-</div>
-<!-- Pagination -->
-<div class="p-md bg-surface-container flex items-center justify-between" id="pagination-bar">
-<span class="text-caption font-caption text-on-surface-variant" id="reports-info">No entries</span>
-<div class="flex items-center gap-xs">
-<button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="reports-prev">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="px-xs py-1 rounded bg-primary text-on-primary font-bold page-btn" data-page="1">1</button>
-<button class="px-xs py-1 rounded hover:bg-surface-variant font-bold page-btn" data-page="2">2</button>
-<button class="px-xs py-1 rounded hover:bg-surface-variant font-bold page-btn" data-page="3">3</button>
-<button class="p-1 rounded hover:bg-surface-variant transition-colors border border-outline-variant" id="reports-next">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-</div>
-</div>
-</section>
-</div>
 </main>
 </div>
 <!-- Footer -->
@@ -353,7 +351,7 @@ Download Excel (.xlsx)
             }, 100);
         }
 
-    var currentViewMode = 'school';
+    var currentViewMode = 'excel';
     var reportsData = [];
     var reportsPage = 0;
     var REPORTS_PAGE_SIZE = 10;
@@ -395,17 +393,12 @@ Download Excel (.xlsx)
         return fallbackDistrict || '—';
     }
 
-    function renderView() {
-        if (currentViewMode === 'school') renderSchoolGroupedTable();
-        else if (currentViewMode === 'raw') renderRawReportsTable();
-        else if (currentViewMode === 'status') showSchoolStatus();
-    }
-
     function renderSchoolGroupedTable() {
         var search = (document.getElementById('reports-search')?.value || '').toLowerCase();
         var schoolMap = {};
+        var sourceReports = getCombinedReports();
 
-        reportsData.forEach(function(r) {
+        sourceReports.forEach(function(r) {
             var sName = r.school_name || r.report_data?.metadata?.schoolName || 'Unknown School';
             var sId = r.school_id || r.report_data?.metadata?.schoolId || '—';
             if (search && !sName.toLowerCase().includes(search) && !String(sId).toLowerCase().includes(search)) return;
@@ -418,7 +411,8 @@ Download Excel (.xlsx)
                     reports: [],
                     annexes: new Set(),
                     totalCases: 0,
-                    lastDate: r.created_at
+                    lastDate: r.created_at,
+                    rawReport: r
                 };
             }
             schoolMap[sName].reports.push(r);
@@ -437,6 +431,10 @@ Download Excel (.xlsx)
         });
 
         var schoolList = Object.values(schoolMap);
+        schoolList.sort(function(a, b) {
+            return compareReports(a.rawReport, b.rawReport);
+        });
+
         var thead = document.getElementById('table-header-tr');
         thead.innerHTML =
             '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">School Name &amp; ID</th>' +
@@ -475,14 +473,15 @@ Download Excel (.xlsx)
 
         if (page.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="px-md py-md text-center text-on-surface-variant">No submitted schools found</td></tr>';
 
-        document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + schoolList.length + ' school' + (schoolList.length !== 1 ? 's' : '');
+        document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + schoolList.length + ' school' + (schoolList.length !== 1 ? 's' : '') + ' (Sorted: Public First, Elementary First)';
         document.getElementById('reports-prev').disabled = reportsPage === 0;
         document.getElementById('reports-next').disabled = reportsPage >= totalPages - 1;
         document.getElementById('pagination-bar').style.display = 'flex';
     }
 
     function showSchoolAnnexes(schoolName) {
-        var schoolReports = reportsData.filter(function(r) {
+        var sourceReports = getCombinedReports();
+        var schoolReports = sourceReports.filter(function(r) {
             var s = r.school_name || r.report_data?.metadata?.schoolName;
             return s && s.toLowerCase() === schoolName.toLowerCase();
         });
@@ -527,12 +526,12 @@ Download Excel (.xlsx)
             }
 
             var dateStr = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
-            var globalIdx = reportsData.indexOf(r);
+            var globalIdx = sourceReports.indexOf(r);
 
             return '<tr class="hover:bg-surface-container-high transition-colors">' +
                 '<td class="px-md py-md"><span class="' + badgeBg + ' px-xs py-1 rounded text-xs font-bold uppercase">' + categoryBadge + '</span></td>' +
                 '<td class="px-md py-md font-mono text-xs text-on-surface">' + escHtml(r.reference_number || '—') + '</td>' +
-                '<td class="px-md py-md text-sm">' + escHtml(summary) + '</td>' +
+                '<td class="px-md py-md text-sm whitespace-normal break-words leading-relaxed">' + escHtml(summary) + '</td>' +
                 '<td class="px-md py-md text-right font-bold text-secondary">' + String(caseCount).padStart(2, '0') + '</td>' +
                 '<td class="px-md py-md text-xs">' + dateStr + '</td>' +
                 '<td class="px-md py-md"><span class="px-xs py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase">' + escHtml(r.status || 'Submitted') + '</span></td>' +
@@ -563,7 +562,8 @@ Download Excel (.xlsx)
             '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Submission Date</th>' +
             '<th class="px-md py-sm font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Action Status</th>';
 
-        var filtered = reportsData.filter(function(r) {
+        var sourceReports = getCombinedReports().slice().sort(compareReports);
+        var filtered = sourceReports.filter(function(r) {
             var sName = String(r.school_name || r.report_data?.metadata?.schoolName || '').toLowerCase();
             var sId = String(r.school_id || r.report_data?.metadata?.schoolId || '').toLowerCase();
             if (search && !sName.includes(search) && !sId.includes(search)) return false;
@@ -618,16 +618,16 @@ Download Excel (.xlsx)
             }
             var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
             var status = r.status || 'pending';
-            var statusColor = status === 'submitted' || status === 'sent' ? 'text-emerald-600' : status === 'pending' ? 'text-orange-600' : 'text-blue-600';
-            var statusDot = status === 'submitted' || status === 'sent' ? 'bg-emerald-600' : status === 'pending' ? 'bg-orange-600' : 'bg-blue-600';
+            var statusColor = status === 'submitted' || status === 'sent' || status === 'Resolved' ? 'text-emerald-600' : status === 'pending' ? 'text-orange-600' : 'text-blue-600';
+            var statusDot = status === 'submitted' || status === 'sent' || status === 'Resolved' ? 'bg-emerald-600' : status === 'pending' ? 'bg-orange-600' : 'bg-blue-600';
             var statusLabel = status === 'submitted' || status === 'sent' ? 'Submitted' : status === 'pending' ? 'Pending' : status;
             var categoryBadge = module === 'A' ? 'Annex A' : module === 'B' ? 'Annex B' : module === 'C' ? 'Annex C' : module === 'D' ? 'Annex D' : module === 'E' ? 'Annex E' : module;
             var badgeBg = module === 'A' ? 'bg-red-100 text-red-800' : module === 'B' ? 'bg-orange-100 text-orange-800' : module === 'C' ? 'bg-blue-100 text-blue-900' : module === 'D' ? 'bg-purple-100 text-purple-900' : 'bg-gray-100 text-gray-700';
-            var globalIdx = reportsData.indexOf(r);
+            var globalIdx = sourceReports.indexOf(r);
             return '<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ' + bg + '" onclick="showReportDetail(' + globalIdx + ')">' +
-                '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface">' + escHtml(schoolName) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(String(schoolId)) + '</div></td>' +
+                '<td class="px-md py-md"><div class="font-label-md text-label-md text-on-surface font-bold">' + escHtml(schoolName) + '</div><div class="text-caption font-caption text-on-surface-variant">ID: ' + escHtml(String(schoolId)) + '</div></td>' +
                 '<td class="px-md py-md"><span class="' + badgeBg + ' px-xs py-1 rounded-full text-[11px] font-bold uppercase tracking-tighter">' + categoryBadge + '</span></td>' +
-                '<td class="px-md py-md text-body-md max-w-xs truncate">' + escHtml(summary) + '</td>' +
+                '<td class="px-md py-md text-body-md whitespace-normal break-words leading-relaxed max-w-md">' + escHtml(summary) + '</td>' +
                 '<td class="px-md py-md text-right font-bold text-secondary">' + String(caseCount).padStart(2, '0') + '</td>' +
                 '<td class="px-md py-md text-caption">' + date + '</td>' +
                 '<td class="px-md py-md"><div class="flex items-center gap-xs ' + statusColor + ' font-bold text-xs uppercase"><span class="w-2 h-2 rounded-full ' + statusDot + '"></span> ' + statusLabel + '</div></td></tr>';
@@ -635,37 +635,431 @@ Download Excel (.xlsx)
 
         if (page.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="px-md py-md text-center text-on-surface-variant">No matching entries</td></tr>';
 
-        document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + filtered.length + ' entr' + (filtered.length !== 1 ? 'ies' : 'y');
+        document.getElementById('reports-info').textContent = 'Showing ' + (start + 1) + ' to ' + end + ' of ' + filtered.length + ' entr' + (filtered.length !== 1 ? 'ies' : 'y') + ' (Sorted: Public First, Elementary First)';
         document.getElementById('reports-prev').disabled = reportsPage === 0;
         document.getElementById('reports-next').disabled = reportsPage >= totalPages - 1;
         document.getElementById('pagination-bar').style.display = 'flex';
     }
 
     var activeExcelSheet = 'bullying';
+    var useSmokeTestData = true; 
 
-    function setExcelSheet(sheet) {
-        activeExcelSheet = sheet;
-        renderExcelMasterTable();
+    var SMOKE_TEST_REPORTS = [
+        {
+            school_name: 'Ipil Central School',
+            school_id: '121780',
+            module: 'A',
+            classification: 'Public',
+            level: 'Elementary',
+            status: 'Resolved',
+            reference_number: 'REF-IPIL-2026-A1',
+            created_at: '2026-03-12T08:30:00Z',
+            report_data: {
+                module: 'A',
+                metadata: { schoolName: 'Ipil Central School', schoolId: '121780', classification: 'Public', level: 'Elementary', district: 'District 2', reportingYear: '2025-2026' },
+                data: {
+                    categories: {
+                        'A-1': { actionsTaken: 'Parent conference conducted, guidance counseling session completed, behavioral agreement signed.', status: 'Resolved', affectedStudents: [{ name: 'Juan Cruz', gender: 'M', age: 11, grade: 'Grade 5' }] },
+                        'A-2': { actionsTaken: 'Peer mediation facilitated by class adviser; positive socialization buddy system assigned.', status: 'Resolved', affectedStudents: [{ name: 'Maria Santos', gender: 'F', age: 10, grade: 'Grade 4' }] }
+                    }
+                },
+                preparedBy: { name: 'Renne Co', title: 'Child Protection Coordinator' },
+                validatedBy: { name: 'Elena Bautista', title: 'Principal IV' }
+            }
+        },
+        {
+            school_name: 'Ormoc City Central School',
+            school_id: '121785',
+            module: 'A',
+            classification: 'Public',
+            level: 'Elementary',
+            status: 'Resolved',
+            reference_number: 'REF-OCCS-2026-A2',
+            created_at: '2026-03-14T09:15:00Z',
+            report_data: {
+                module: 'A',
+                metadata: { schoolName: 'Ormoc City Central School', schoolId: '121785', classification: 'Public', level: 'Elementary', district: 'District 1', reportingYear: '2025-2026' },
+                data: {
+                    categories: {
+                        'A-1': { actionsTaken: 'Restorative justice circle conducted with both parents; weekly monitoring initiated.', status: 'Resolved', affectedStudents: [{ name: 'Pedro Penduko', gender: 'M', age: 12, grade: 'Grade 6' }] },
+                        'A-4': { actionsTaken: 'Digital safety workshop given to Section Mabini; social media accounts de-escalation mediated.', status: 'Resolved', affectedStudents: [{ name: 'Angel Locsin', gender: 'F', age: 11, grade: 'Grade 5' }] }
+                    }
+                },
+                preparedBy: { name: 'Carla Mendez', title: 'Guidance Counselor I' },
+                validatedBy: { name: 'Dr. Roberto Tan', title: 'Principal III' }
+            }
+        },
+        {
+            school_name: 'Ormoc Test Pilot School',
+            school_id: '121790',
+            module: 'B',
+            classification: 'Public',
+            level: 'Elementary',
+            status: 'Resolved',
+            reference_number: 'REF-OTPS-2026-B1',
+            created_at: '2026-03-15T10:00:00Z',
+            report_data: {
+                module: 'B',
+                metadata: { schoolName: 'Ormoc Test Pilot School', schoolId: '121790', classification: 'Public', level: 'Elementary', district: 'District 3', reportingYear: '2025-2026' },
+                data: {
+                    natureOfAbuse: 'Physical Abuse (N-1)',
+                    actionsTaken: 'Coordinated with Barangay Child Protection Council (BCPC) and CSWDO for child psycho-social support.',
+                    status: 'Resolved',
+                    categories: { 'N-1': { description: 'Corporal incident during neighborhood play outside school premises; family intervention.' } }
+                },
+                preparedBy: { name: 'Manuel Roxas', title: 'LRP Focal Person' },
+                validatedBy: { name: 'Teresa Magbanua', title: 'Head Teacher III' }
+            }
+        },
+        {
+            school_name: 'San Pedro Elementary School',
+            school_id: '121800',
+            module: 'C',
+            classification: 'Public',
+            level: 'Elementary',
+            status: 'Resolved',
+            reference_number: 'REF-SPES-2026-C1',
+            created_at: '2026-03-16T11:00:00Z',
+            report_data: {
+                module: 'C',
+                metadata: { schoolName: 'San Pedro Elementary School', schoolId: '121800', classification: 'Public', level: 'Elementary', district: 'District 5', reportingYear: '2025-2026' },
+                data: {
+                    periodCovered: 'SY 2025-2026',
+                    totalStudents: '850',
+                    narrative: 'Identified learners at risk of dropping out due to distance and financial distress enrolled in feeding program.',
+                    children: [
+                        { name: 'Gabriel Silang', age: 9, gender: 'M', status: 'Resolved', riskFactors: ['R-1 (Family poverty)', 'Distance from school'], familyContexts: ['Single Parent'], intervention: 'School feeding & transportation assistance provided' },
+                        { name: 'Leonor Rivera', age: 10, gender: 'F', status: 'Resolved', riskFactors: ['R-1 (Without guardian)'], familyContexts: ['Living with grandparents'], intervention: 'Home visitation and home learning partner assigned' }
+                    ]
+                },
+                preparedBy: { name: 'Liza Macaraeg', title: 'Teacher III / CPC Member' },
+                validatedBy: { name: 'Gerardo Santos', title: 'Principal II' }
+            }
+        },
+        {
+            school_name: 'Ormoc City National High School',
+            school_id: '303590',
+            module: 'A',
+            classification: 'Public',
+            level: 'Secondary',
+            status: 'Resolved',
+            reference_number: 'REF-OCNHS-2026-A1',
+            created_at: '2026-03-18T13:45:00Z',
+            report_data: {
+                module: 'A',
+                metadata: { schoolName: 'Ormoc City National High School', schoolId: '303590', classification: 'Public', level: 'Secondary', district: 'District 1', reportingYear: '2025-2026' },
+                data: {
+                    categories: {
+                        'A-3': { actionsTaken: 'Safe Spaces Act awareness session; sensitivity training conducted for Grade 9 student leaders.', status: 'Resolved', affectedStudents: [{ name: 'Bea Alonzo', gender: 'F', age: 15, grade: 'Grade 9' }] },
+                        'A-4': { actionsTaken: 'Group chat cyber-ridicule resolved via mediation with cyber-safety contract signed.', status: 'Resolved', affectedStudents: [{ name: 'Joshua Garcia', gender: 'M', age: 16, grade: 'Grade 10' }] }
+                    }
+                },
+                preparedBy: { name: 'Ferdinand Marcos Jr.', title: 'CPC Guidance Advocate' },
+                validatedBy: { name: 'Dr. Clarita Carlos', title: 'Principal IV' }
+            }
+        },
+        {
+            school_name: 'Linao National High School',
+            school_id: '303600',
+            module: 'D',
+            classification: 'Public',
+            level: 'Secondary',
+            status: 'Resolved',
+            reference_number: 'REF-LNHS-2026-D1',
+            created_at: '2026-03-19T14:30:00Z',
+            report_data: {
+                module: 'D',
+                metadata: { schoolName: 'Linao National High School', schoolId: '303600', classification: 'Public', level: 'Secondary', district: 'District 8', reportingYear: '2025-2026' },
+                data: {
+                    periodCovered: 'SY 2025-2026',
+                    interventionNarrative: 'Learners underwent peer diversion mediation program with continuous guidance monitoring.',
+                    ciclList: [
+                        { lrn: '121780190012', age: 15, gender: 'M', disability: 'None', caseViolation: 'Minor altercation outside school gate', actionsTaken: 'Diversion agreement, 10-hour campus community gardening service', status: 'Resolved' },
+                        { lrn: '121780190045', age: 16, gender: 'M', disability: 'None', caseViolation: 'Curfew violation with group', actionsTaken: 'Coordinated with Barangay Kagawad for mentoring program', status: 'Resolved' }
+                    ]
+                },
+                preparedBy: { name: 'Rodrigo Duterte', title: 'Discipline Officer' },
+                validatedBy: { name: 'Sara Zimmerman', title: 'School Principal' }
+            }
+        },
+        {
+            school_name: 'Valencia National High School',
+            school_id: '303610',
+            module: 'E',
+            classification: 'Public',
+            level: 'Secondary',
+            status: 'Resolved',
+            reference_number: 'REF-VNHS-2026-E1',
+            created_at: '2026-03-20T15:20:00Z',
+            report_data: {
+                module: 'E',
+                metadata: { schoolName: 'Valencia National High School', schoolId: '303610', classification: 'Public', level: 'Secondary', district: 'District 9', reportingYear: '2025-2026' },
+                data: {
+                    rows: [
+                        { concernType: 'Corporal Punishment Inquiry', victim: 'Student (Grade 8)', perpetrator: 'Staff Member', status: 'Resolved', actionsTaken: 'Fact-finding committee investigation conducted; administrative warning & restorative dialogue accomplished.' },
+                        { concernType: 'Gender-based Harassment', victim: 'Student (Grade 10)', perpetrator: 'Peer Learner', status: 'Resolved', actionsTaken: 'CPC safe spaces protocol applied; guidance counseling completed.' }
+                    ]
+                },
+                preparedBy: { name: 'Vicente Sotto', title: 'LRP Committee Chair' },
+                validatedBy: { name: 'Corazon Aquino', title: 'Principal II' }
+            }
+        },
+        {
+            school_name: 'San Lorenzo Ruiz Academy of Ormoc',
+            school_id: '404501',
+            module: 'A',
+            classification: 'Private',
+            level: 'Elementary',
+            status: 'Resolved',
+            reference_number: 'REF-SLRA-2026-A1',
+            created_at: '2026-03-21T09:00:00Z',
+            report_data: {
+                module: 'A',
+                metadata: { schoolName: 'San Lorenzo Ruiz Academy of Ormoc', schoolId: '404501', classification: 'Private', level: 'Elementary', district: 'District 1', reportingYear: '2025-2026' },
+                data: {
+                    categories: {
+                        'A-1': { actionsTaken: 'Values education session on kindness; counseling with school chaplain & parents.', status: 'Resolved', affectedStudents: [{ name: 'Dominic Savio', gender: 'M', age: 10, grade: 'Grade 4' }] },
+                        'A-2': { actionsTaken: 'Classroom integration circle; social inclusion project led by student council.', status: 'Resolved', affectedStudents: [{ name: 'Maria Goretti', gender: 'F', age: 9, grade: 'Grade 3' }] }
+                    }
+                },
+                preparedBy: { name: 'Sr. Mary Grace, OSB', title: 'Guidance Head' },
+                validatedBy: { name: 'Fr. Jose Mercado', title: 'School Director' }
+            }
+        },
+        {
+            school_name: 'St. Peter\'s College of Ormoc',
+            school_id: '404510',
+            module: 'A',
+            classification: 'Private',
+            level: 'Secondary',
+            status: 'Resolved',
+            reference_number: 'REF-SPCO-2026-A2',
+            created_at: '2026-03-22T11:30:00Z',
+            report_data: {
+                module: 'A',
+                metadata: { schoolName: 'St. Peter\'s College of Ormoc', schoolId: '404510', classification: 'Private', level: 'Secondary', district: 'District 1', reportingYear: '2025-2026' },
+                data: {
+                    categories: {
+                        'A-4': { actionsTaken: 'Cyber-ethics seminar conducted for JHS; social media conduct undertaking executed.', status: 'Resolved', affectedStudents: [{ name: 'Paul Newman', gender: 'M', age: 15, grade: 'Grade 9' }] }
+                    }
+                },
+                preparedBy: { name: 'Arthur Pendelton', title: 'Student Affairs Coordinator' },
+                validatedBy: { name: 'Dr. Rebecca Tan', title: 'Dean of Academics' }
+            }
+        },
+        {
+            school_name: 'Western Leyte College of Ormoc',
+            school_id: '404520',
+            module: 'B',
+            classification: 'Private',
+            level: 'Secondary',
+            status: 'Resolved',
+            reference_number: 'REF-WLC-2026-B1',
+            created_at: '2026-03-23T14:10:00Z',
+            report_data: {
+                module: 'B',
+                metadata: { schoolName: 'Western Leyte College of Ormoc', schoolId: '404520', classification: 'Private', level: 'Secondary', district: 'District 2', reportingYear: '2025-2026' },
+                data: {
+                    natureOfAbuse: 'Verbal Abuse / Degrading Remarks (N-3)',
+                    actionsTaken: 'Institutional mediation conducted with parents and student welfare officer; behavioral covenant completed.',
+                    status: 'Resolved',
+                    categories: { 'N-3': { description: 'Verbal confrontation during basketball intramurals; reconciled peacefully.' } }
+                },
+                preparedBy: { name: 'Patricia Gomez', title: 'LRP Coordinator' },
+                validatedBy: { name: 'Atty. Benjamin Cruz', title: 'President' }
+            }
+        }
+    ];
+
+    function getCombinedReports() {
+        if (!useSmokeTestData) return reportsData;
+        var existingKeys = new Set(reportsData.map(function(r) { return (r.school_id || '') + '_' + (r.module || r.report_data?.module || ''); }));
+        var combined = reportsData.slice();
+        SMOKE_TEST_REPORTS.forEach(function(st) {
+            var k = (st.school_id || '') + '_' + st.module;
+            if (!existingKeys.has(k)) combined.push(st);
+        });
+        return combined;
     }
+
+    function getSchoolSortKey(r) {
+        var meta = r.report_data?.metadata || {};
+        var sName = (r.school_name || meta.schoolName || '').trim();
+        var sector = (meta.classification || r.classification || 'Public').toLowerCase();
+        var level = (meta.level || r.level || 'Elementary').toLowerCase();
+        var sectorRank = sector.includes('public') ? 0 : 1;
+        var levelRank = 4;
+        if (level.includes('elem') || level.includes('kinder') || sName.toLowerCase().includes('central') || sName.toLowerCase().includes('elementary')) levelRank = 0;
+        else if (level.includes('junior') || level.includes('jhs')) levelRank = 1;
+        else if (level.includes('senior') || level.includes('shs')) levelRank = 2;
+        else if (level.includes('sec') || level.includes('high') || sName.toLowerCase().includes('national high') || sName.toLowerCase().includes('college')) levelRank = 3;
+        return { sectorRank: sectorRank, levelRank: levelRank, name: sName.toLowerCase() };
+    }
+
+    function compareReports(a, b) {
+        var keyA = getSchoolSortKey(a);
+        var keyB = getSchoolSortKey(b);
+        if (keyA.sectorRank !== keyB.sectorRank) return keyA.sectorRank - keyB.sectorRank;
+        if (keyA.levelRank !== keyB.levelRank) return keyA.levelRank - keyB.levelRank;
+        return keyA.name.localeCompare(keyB.name);
+    }
+
+    function toggleSmokeTestData() { useSmokeTestData = !useSmokeTestData; renderView(); }
+
+    function setExcelSheet(sheet) { activeExcelSheet = sheet; renderExcelMasterTable(); }
 
     function renderExcelMasterTable() {
         var thead = document.getElementById('table-header-tr');
         var tbody = document.getElementById('reports-tbody');
         var search = (document.getElementById('reports-search')?.value || '').toLowerCase();
+        var allSourceReports = getCombinedReports();
+        var totPublicSchools = 0, totPrivateSchools = 0, totElemSchools = 0, totSecSchools = 0, totalCasesOverall = 0, totalResolvedOverall = 0, privateCases = 0, privateResolved = 0;
+        var seenSchoolSet = new Set();
+        allSourceReports.forEach(function(r) {
+            var meta = r.report_data?.metadata || {};
+            var sName = r.school_name || meta.schoolName || '';
+            var sector = (meta.classification || 'Public').toLowerCase();
+            var level = (meta.level || 'Elementary').toLowerCase();
+            if (!seenSchoolSet.has(sName)) {
+                seenSchoolSet.add(sName);
+                if (sector.includes('public')) totPublicSchools++; else totPrivateSchools++;
+                if (level.includes('elem') || sName.toLowerCase().includes('central') || sName.toLowerCase().includes('elementary')) totElemSchools++; else totSecSchools++;
+            }
+            var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
+            var isPriv = !sector.includes('public');
+            var cCount = 1;
+            var mod = (r.module || r.report_data?.module || '').toUpperCase();
+            if (mod === 'A') {
+                cCount = Object.keys(cats).length || 1;
+                Object.keys(cats).forEach(function(k) { var c = cats[k] || {}; var st = (c.status || '').toLowerCase(); if (st.includes('resolved')) { totalResolvedOverall++; if (isPriv) privateResolved++; } });
+            } else if (mod === 'B') {
+                cCount = Object.keys(cats).length || 1;
+                if ((r.report_data?.data?.status || r.status || '').toLowerCase().includes('resolved')) { totalResolvedOverall++; if (isPriv) privateResolved++; }
+            } else if (mod === 'C') { cCount = (r.report_data?.data?.children || []).length || 1; totalResolvedOverall += cCount; if (isPriv) privateResolved += cCount; }
+            else if (mod === 'D') { cCount = (r.report_data?.data?.ciclList || []).length || 1; totalResolvedOverall += cCount; if (isPriv) privateResolved += cCount; }
+            else if (mod === 'E') { cCount = (r.report_data?.data?.rows || []).length || 1; totalResolvedOverall += cCount; if (isPriv) privateResolved += cCount; }
+            totalCasesOverall += cCount; if (isPriv) privateCases += cCount;
+        });
+        var divisionResolutionRate = totalCasesOverall > 0 ? Math.round((totalResolvedOverall / totalCasesOverall) * 100) : 100;
+        var privateResolutionRate = privateCases > 0 ? Math.round((privateResolved / privateCases) * 100) : 100;
+        var sheetTitle = activeExcelSheet === 'bullying' ? 'BULLYING' : activeExcelSheet === 'child_abuse' ? 'CHILD ABUSE' : activeExcelSheet === 'children_at_risk' ? 'CHILDREN AT RISK REGISTRY' : activeExcelSheet === 'cicl' ? 'CONSOLIDATED CICL REPORT' : 'OTHER LEARNER RIGHTS CONCERNS';
+        var annexLetter = activeExcelSheet === 'bullying' ? 'A' : activeExcelSheet === 'child_abuse' ? 'B' : activeExcelSheet === 'children_at_risk' ? 'C' : activeExcelSheet === 'cicl' ? 'D' : 'E';
+        var todayStr = new Date().toLocaleDateString();
 
-        var sheetTabsHtml =
-            '<div class="p-3 bg-surface-container-low border-b border-outline-variant flex flex-wrap items-center justify-between gap-2">' +
-            '  <div class="flex flex-wrap items-center gap-1.5">' +
-            '    <button onclick="setExcelSheet(\'bullying\')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ' + (activeExcelSheet === 'bullying' ? 'bg-emerald-800 text-white shadow-sm' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-variant') + '">📗 Bullying (Annex A)</button>' +
-            '    <button onclick="setExcelSheet(\'child_abuse\')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ' + (activeExcelSheet === 'child_abuse' ? 'bg-orange-800 text-white shadow-sm' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-variant') + '">📙 Child Abuse (Annex B)</button>' +
-            '    <button onclick="setExcelSheet(\'children_at_risk\')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ' + (activeExcelSheet === 'children_at_risk' ? 'bg-blue-900 text-white shadow-sm' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-variant') + '">📘 Children At Risk (Annex C)</button>' +
-            '    <button onclick="setExcelSheet(\'cicl\')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ' + (activeExcelSheet === 'cicl' ? 'bg-purple-900 text-white shadow-sm' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-variant') + '">📕 CICL Cases (Annex D)</button>' +
-            '    <button onclick="setExcelSheet(\'other_lrp_concerns\')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ' + (activeExcelSheet === 'other_lrp_concerns' ? 'bg-slate-800 text-white shadow-sm' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-variant') + '">📓 Other LRP (Annex E)</button>' +
-            '  </div>' +
-            '  <button onclick="downloadExcelDatabase()" class="flex items-center gap-1 bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all">' +
-            '    <span class="material-symbols-outlined text-sm">download</span> Download Master Excel (.xlsx)' +
-            '  </button>' +
-            '</div>';
+        var bannerHtml = '<div class="overflow-hidden rounded-t-lg border border-outline-variant bg-surface-container-low">' +
+            '<div class="p-md border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-md">' +
+                '<div class="flex items-center gap-sm">' +
+                    '<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">' +
+                        '<span class="material-symbols-outlined text-xl">table_chart</span>' +
+                    '</div>' +
+                    '<div>' +
+                        '<div class="flex items-center gap-xs flex-wrap">' +
+                            '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary uppercase tracking-wider">Annex ' + annexLetter + '</span>' +
+                            '<h4 class="font-bold text-on-surface text-label-md tracking-tight">DepEd Division Consolidated Report — ' + sheetTitle + '</h4>' +
+                        '</div>' +
+                        '<p class="text-caption font-caption text-on-surface-variant mt-0.5">' +
+                            'School Year: <span class="font-semibold text-on-surface">2025–2026</span> • Division: <span class="font-semibold text-on-surface">Ormoc City</span> • Generated: <span>' + todayStr + '</span> • <span class="text-emerald-700 font-semibold">Official Consolidated Master Database</span>' +
+                        '</p>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="flex items-center gap-xs shrink-0">' +
+                    '<button onclick="toggleSmokeTestData()" class="flex items-center gap-xs px-sm py-1.5 rounded-lg border border-outline-variant text-xs font-label-md ' + (useSmokeTestData ? 'bg-secondary/10 text-secondary border-secondary/30 font-bold' : 'bg-surface text-on-surface-variant hover:bg-surface-variant') + ' transition-colors cursor-pointer">' +
+                        '<span class="material-symbols-outlined text-sm">science</span>' +
+                        '<span>' + (useSmokeTestData ? 'Demo Data: Active' : 'Demo Data: Off') + '</span>' +
+                    '</button>' +
+                    '<button onclick="downloadExcelDatabase()" class="flex items-center gap-xs bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container px-md py-1.5 rounded-lg text-xs font-bold font-label-md transition-all shadow-xs cursor-pointer">' +
+                        '<span class="material-symbols-outlined text-sm">download</span>' +
+                        '<span>Export Excel (.xlsx)</span>' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+
+        var formulaStripHtml = '<div class="p-sm bg-surface-container-lowest border-x border-b border-outline-variant">' +
+            '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-xs mb-xs px-xs">' +
+                '<span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">' +
+                    '<span class="material-symbols-outlined text-sm text-secondary">functions</span>' +
+                    '<span>Formula Metrics & Aggregate KPIs</span>' +
+                '</span>' +
+                '<span class="text-[11px] text-on-surface-variant font-mono">' +
+                    'Sorted: <span class="font-semibold text-primary">Public ➔ Private</span> | <span class="font-semibold text-primary">Elementary ➔ Secondary</span>' +
+                '</span>' +
+            '</div>' +
+            '<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-xs text-xs font-mono">' +
+                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
+                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Public</span>' +
+                    '<div class="flex items-baseline justify-between mt-0.5">' +
+                        '<span class="font-bold text-primary text-sm">' + totPublicSchools + '</span>' +
+                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
+                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Private</span>' +
+                    '<div class="flex items-baseline justify-between mt-0.5">' +
+                        '<span class="font-bold text-primary text-sm">' + totPrivateSchools + '</span>' +
+                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
+                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Elementary</span>' +
+                    '<div class="flex items-baseline justify-between mt-0.5">' +
+                        '<span class="font-bold text-primary text-sm">' + totElemSchools + '</span>' +
+                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
+                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Secondary</span>' +
+                    '<div class="flex items-baseline justify-between mt-0.5">' +
+                        '<span class="font-bold text-primary text-sm">' + totSecSchools + '</span>' +
+                        '<span class="text-[10px] text-on-surface-variant font-mono">=COUNTIF</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
+                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Incidents</span>' +
+                    '<div class="flex items-baseline justify-between mt-0.5">' +
+                        '<span class="font-bold text-amber-800 text-sm">' + totalCasesOverall + '</span>' +
+                        '<span class="text-[10px] text-on-surface-variant font-mono">=SUM</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
+                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Resolution</span>' +
+                    '<div class="flex items-baseline justify-between mt-0.5">' +
+                        '<span class="font-bold text-emerald-700 text-sm">' + divisionResolutionRate + '%</span>' +
+                        '<span class="text-[10px] text-on-surface-variant font-mono">Rate</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60">' +
+                    '<span class="text-[10px] text-on-surface-variant block uppercase font-sans tracking-wider">Private Cases</span>' +
+                    '<div class="flex items-baseline justify-between mt-0.5">' +
+                        '<span class="font-bold text-primary text-sm">' + privateCases + '</span>' +
+                        '<span class="text-[10px] text-emerald-700 font-mono">' + privateResolutionRate + '%</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+
+        var sheetTabsHtml = bannerHtml + formulaStripHtml + '<div class="p-sm bg-surface-container border-x border-b border-outline-variant flex flex-wrap items-center gap-xs">' +
+            '<button onclick="setExcelSheet(\'bullying\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'bullying' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+                '<span class="material-symbols-outlined text-sm">shield</span>' +
+                '<span>Bullying (Annex A)</span>' +
+            '</button>' +
+            '<button onclick="setExcelSheet(\'child_abuse\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'child_abuse' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+                '<span class="material-symbols-outlined text-sm">health_and_safety</span>' +
+                '<span>Child Abuse (Annex B)</span>' +
+            '</button>' +
+            '<button onclick="setExcelSheet(\'children_at_risk\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'children_at_risk' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+                '<span class="material-symbols-outlined text-sm">family_restroom</span>' +
+                '<span>Children At Risk (Annex C)</span>' +
+            '</button>' +
+            '<button onclick="setExcelSheet(\'cicl\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'cicl' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+                '<span class="material-symbols-outlined text-sm">gavel</span>' +
+                '<span>CICL Cases (Annex D)</span>' +
+            '</button>' +
+            '<button onclick="setExcelSheet(\'other_lrp_concerns\')" class="px-md py-1.5 rounded-lg text-xs font-label-md font-bold transition-all flex items-center gap-xs cursor-pointer ' + (activeExcelSheet === 'other_lrp_concerns' ? 'bg-surface-container-lowest text-primary shadow-xs border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low') + '">' +
+                '<span class="material-symbols-outlined text-sm">assignment</span>' +
+                '<span>Other LRP (Annex E)</span>' +
+            '</button>' +
+        '</div>';
 
         var existingTabContainer = document.getElementById('excel-sheet-nav');
         if (!existingTabContainer) {
@@ -679,13 +1073,9 @@ Download Excel (.xlsx)
             existingTabContainer.style.display = 'block';
         }
 
-        // Module filter for current active sheet
         var modCode = activeExcelSheet === 'bullying' ? 'A' : activeExcelSheet === 'child_abuse' ? 'B' : activeExcelSheet === 'children_at_risk' ? 'C' : activeExcelSheet === 'cicl' ? 'D' : 'E';
-        var list = reportsData.filter(function(r) {
-            var m = (r.module || r.report_data?.module || '').toUpperCase();
-            return m === modCode;
-        });
-
+        var list = allSourceReports.filter(function(r) { var m = (r.module || r.report_data?.module || '').toUpperCase(); return m === modCode; });
+        list.sort(compareReports);
         if (search) {
             list = list.filter(function(r) {
                 var s = (r.school_name || r.report_data?.metadata?.schoolName || '').toLowerCase();
@@ -694,319 +1084,354 @@ Download Excel (.xlsx)
             });
         }
 
+        var summaryBlockHtml = '<div class="mt-6 p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-xs max-w-2xl">' +
+            '<div class="flex items-center justify-between pb-sm mb-sm border-b border-outline-variant">' +
+                '<div class="flex items-center gap-xs">' +
+                    '<span class="material-symbols-outlined text-primary text-lg">calculate</span>' +
+                    '<h5 class="font-bold text-on-surface text-label-md uppercase tracking-wider">Summary Metrics & Division Formulas</h5>' +
+                '</div>' +
+                '<span class="text-caption font-mono text-on-surface-variant">=COUNTIF / =SUM / =SUMIFS</span>' +
+            '</div>' +
+            '<table class="w-full text-xs border-collapse">' +
+                '<thead><tr class="bg-surface-container-low text-on-surface-variant font-label-md border-b border-outline-variant text-left">' +
+                    '<th class="px-md py-sm">Metric</th>' +
+                    '<th class="px-md py-sm font-mono">Excel Formula</th>' +
+                    '<th class="px-md py-sm font-mono text-right">Calculated Value</th>' +
+                '</tr></thead>' +
+                '<tbody class="divide-y divide-outline-variant">' +
+                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTA(A5:A' + (4 + list.length) + ')</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + seenSchoolSet.size + '</td></tr>' +
+                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Public Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(D5:D' + (4 + list.length) + ', "Public")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totPublicSchools + '</td></tr>' +
+                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Private Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(D5:D' + (4 + list.length) + ', "Private")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totPrivateSchools + '</td></tr>' +
+                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Elementary Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(E5:E' + (4 + list.length) + ', "Elementary")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totElemSchools + '</td></tr>' +
+                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Secondary Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=COUNTIF(E5:E' + (4 + list.length) + ', "Secondary")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + totSecSchools + '</td></tr>' +
+                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Incidents (All Schools)</td><td class="px-md py-sm font-mono text-on-surface-variant">=SUM(S5:S' + (4 + list.length) + ')</td><td class="px-md py-sm font-mono font-bold text-right text-amber-800">' + totalCasesOverall + '</td></tr>' +
+                    '<tr class="hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Incidents — Private Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=SUMIFS(S5:S' + (4 + list.length) + ', D5:D' + (4 + list.length) + ', "Private")</td><td class="px-md py-sm font-mono font-bold text-right text-primary">' + privateCases + '</td></tr>' +
+                    '<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50"><td class="px-md py-sm font-medium text-on-surface">Total Resolved — Private Schools</td><td class="px-md py-sm font-mono text-on-surface-variant">=SUMIFS(T5:T' + (4 + list.length) + ', D5:D' + (4 + list.length) + ', "Private")</td><td class="px-md py-sm font-mono font-bold text-right text-emerald-700">' + privateResolved + '</td></tr>' +
+                    '<tr class="bg-surface-container-low font-bold border-t-2 border-outline-variant"><td class="px-md py-sm text-primary">Overall Resolution Rate</td><td class="px-md py-sm font-mono text-on-surface-variant">=IFERROR(ROUND(SUM(T5:T' + (4 + list.length) + ')/SUM(S5:S' + (4 + list.length) + ')*100, 1) & "%", "N/A")</td><td class="px-md py-sm font-mono text-right text-emerald-700 text-sm">' + divisionResolutionRate + '%</td></tr>' +
+                '</tbody>' +
+            '</table>' +
+        '</div>';
+
         if (activeExcelSheet === 'bullying') {
-            thead.innerHTML =
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-on-surface-variant border-r">School ID</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-on-surface-variant border-r">School Name</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-on-surface-variant border-r">District</th>' +
-                '<th class="px-2 py-2 text-xs font-bold uppercase bg-surface-container-low text-center border-r">Phys (M/F)</th>' +
-                '<th class="px-2 py-2 text-xs font-bold uppercase bg-surface-container-low text-center border-r">Soc (M/F)</th>' +
-                '<th class="px-2 py-2 text-xs font-bold uppercase bg-surface-container-low text-center border-r">Gender (M/F)</th>' +
-                '<th class="px-2 py-2 text-xs font-bold uppercase bg-surface-container-low text-center border-r">Cyber (M/F)</th>' +
-                '<th class="px-2 py-2 text-xs font-bold uppercase bg-surface-container-low text-center border-r">Retal (M/F)</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-right font-bold border-r">Total Incidents</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-center border-r">Resolved / Monitored</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low">Actions Taken</th>';
-
-            var totPhysM = 0, totPhysF = 0, totSocM = 0, totSocF = 0, totGenM = 0, totGenF = 0, totCybM = 0, totCybF = 0, totRetM = 0, totRetF = 0, grandIncidents = 0;
-
+            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
+                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Physical<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Social<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Gender-based<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Cyber-<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Retaliation<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
+                '<th class="px-3 py-2.5 bg-[#1B3A6B] border-r border-slate-700 text-right min-w-[80px]">Total<br>Incidents</th>' +
+                '<th class="px-3 py-2.5 bg-[#1B3A6B] border-r border-slate-700 text-center min-w-[90px]">Resolved<br>Cases</th>' +
+                '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Actions Taken / Intervention</th>' +
+            '</tr>';
+            var totPhysM = 0, totPhysF = 0, totSocM = 0, totSocF = 0, totGenM = 0, totGenF = 0, totCybM = 0, totCybF = 0, totRetM = 0, totRetF = 0, grandIncidents = 0, totalResolved = 0;
             var rowsHtml = list.map(function(r, i) {
-                var meta = r.report_data?.metadata || {};
-                var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
-                var sId = r.school_id || meta.schoolId || '—';
-                var sName = r.school_name || meta.schoolName || 'Unknown School';
-                var dist = getSchoolDistrict(sName);
-
-                var pM = 0, pF = 0, sM = 0, sF = 0, gM = 0, gF = 0, cM = 0, cF = 0, rM = 0, rF = 0;
-                var resCount = 0, monCount = 0, actions = [];
-
-                Object.keys(cats).forEach(function(k) {
-                    var c = cats[k] || {};
-                    if (c.actionsTaken) actions.push(k + ': ' + c.actionsTaken);
-                    var st = (c.status || '').toLowerCase();
-                    if (st.includes('resolved')) resCount++;
-                    else monCount++;
-
-                    (c.affectedStudents || []).forEach(function(stu) {
-                        var gen = (stu.gender || 'M').toUpperCase();
-                        if (k === 'A-1') { if (gen === 'M') pM++; else pF++; }
-                        else if (k === 'A-2') { if (gen === 'M') sM++; else sF++; }
-                        else if (k === 'A-3') { if (gen === 'M') gM++; else gF++; }
-                        else if (k === 'A-4') { if (gen === 'M') cM++; else cF++; }
-                        else if (k === 'A-5') { if (gen === 'M') rM++; else rF++; }
-                    });
-                });
-
-                var totInc = pM + pF + sM + sF + gM + gF + cM + cF + rM + rF;
-                totPhysM += pM; totPhysF += pF; totSocM += sM; totSocF += sF;
-                totGenM += gM; totGenF += gF; totCybM += cM; totCybF += cF;
-                totRetM += rM; totRetF += rF; grandIncidents += totInc;
-
-                var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
-                return '<tr class="text-xs hover:bg-surface-container-high transition-colors ' + bg + '">' +
-                    '<td class="px-3 py-2 font-mono border-r font-semibold">' + escHtml(String(sId)) + '</td>' +
-                    '<td class="px-3 py-2 font-semibold text-on-surface border-r">' + escHtml(sName) + '</td>' +
-                    '<td class="px-3 py-2 border-r text-on-surface-variant">' + escHtml(dist) + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + pM + '/' + pF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + sM + '/' + sF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + gM + '/' + gF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + cM + '/' + cF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + rM + '/' + rF + '</td>' +
-                    '<td class="px-3 py-2 text-right font-bold text-secondary border-r">' + totInc + '</td>' +
-                    '<td class="px-3 py-2 text-center border-r">' + resCount + ' / ' + monCount + '</td>' +
-                    '<td class="px-3 py-2 text-on-surface-variant max-w-xs truncate" title="' + escHtml(actions.join(' | ')) + '">' + escHtml(actions.join(' | ') || '—') + '</td>' +
-                    '</tr>';
+                var meta = r.report_data?.metadata || {}; var cats = r.report_data?.data?.categories || r.report_data?.categories || {}; var sId = r.school_id || meta.schoolId || '—'; var sName = r.school_name || meta.schoolName || 'Unknown School'; var dist = getSchoolDistrict(sName); var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+                var pM = 0, pF = 0, sM = 0, sF = 0, gM = 0, gF = 0, cM = 0, cF = 0, rM = 0, rF = 0; var resCount = 0, monCount = 0, actions = [];
+                Object.keys(cats).forEach(function(k) { var c = cats[k] || {}; if (c.actionsTaken) actions.push('<b>' + k + ':</b> ' + c.actionsTaken); var st = (c.status || '').toLowerCase(); if (st.includes('resolved')) resCount++; else monCount++; (c.affectedStudents || []).forEach(function(stu) { var gen = (stu.gender || 'M').toUpperCase(); if (k === 'A-1') { if (gen === 'M') pM++; else pF++; } else if (k === 'A-2') { if (gen === 'M') sM++; else sF++; } else if (k === 'A-3') { if (gen === 'M') gM++; else gF++; } else if (k === 'A-4') { if (gen === 'M') cM++; else cF++; } else if (k === 'A-5') { if (gen === 'M') rM++; else rF++; } }); });
+                var totInc = pM + pF + sM + sF + gM + gF + cM + cF + rM + rF; if (totInc === 0 && Object.keys(cats).length > 0) totInc = Object.keys(cats).length; totPhysM += pM; totPhysF += pF; totSocM += sM; totSocF += sF; totGenM += gM; totGenF += gF; totCybM += cM; totCybF += cF; totRetM += rM; totRetF += rF; grandIncidents += totInc; totalResolved += resCount;
+                var sectorBadge = sector.toLowerCase().includes('public') ? '<span class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[11px] font-bold">Public</span>' : '<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[11px] font-bold">Private</span>';
+                var levelBadge = level.toLowerCase().includes('elem') ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold">Elementary</span>' : '<span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[11px] font-bold">Secondary</span>';
+                var bg = i % 2 === 1 ? 'bg-[#F0F5FA]' : 'bg-white';
+                return '<tr class="text-xs hover:bg-blue-100/40 transition-colors border-b border-outline-variant/60 ' + bg + '">' +
+                    '<td class="px-3 py-3 font-mono font-semibold border-r">' + escHtml(String(sId)) + '</td>' +
+                    '<td class="px-3 py-3 font-bold text-on-surface border-r whitespace-normal break-words">' + escHtml(sName) + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + sectorBadge + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + levelBadge + '</td>' +
+                    '<td class="px-3 py-3 border-r text-on-surface-variant">' + escHtml(dist) + '</td>' +
+                    '<td class="px-2 py-3 text-center border-r font-mono ' + (pM + pF > 0 ? 'font-bold text-blue-950 bg-blue-50/70' : 'text-slate-400') + '">' + pM + '/' + pF + '</td>' +
+                    '<td class="px-2 py-3 text-center border-r font-mono ' + (sM + sF > 0 ? 'font-bold text-blue-950 bg-blue-50/70' : 'text-slate-400') + '">' + sM + '/' + sF + '</td>' +
+                    '<td class="px-2 py-3 text-center border-r font-mono ' + (gM + gF > 0 ? 'font-bold text-blue-950 bg-blue-50/70' : 'text-slate-400') + '">' + gM + '/' + gF + '</td>' +
+                    '<td class="px-2 py-3 text-center border-r font-mono ' + (cM + cF > 0 ? 'font-bold text-blue-950 bg-blue-50/70' : 'text-slate-400') + '">' + cM + '/' + cF + '</td>' +
+                    '<td class="px-2 py-3 text-center border-r font-mono ' + (rM + rF > 0 ? 'font-bold text-blue-950 bg-blue-50/70' : 'text-slate-400') + '">' + rM + '/' + rF + '</td>' +
+                    '<td class="px-3 py-3 text-right font-bold text-[#1B3A6B] border-r font-mono text-sm">' + totInc + '</td>' +
+                    '<td class="px-3 py-3 text-center border-r"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">' + (resCount > 0 ? resCount + ' Resolved' : 'Submitted') + '</span></td>' +
+                    '<td class="px-3 py-3 text-on-surface-variant whitespace-normal break-words leading-relaxed max-w-md">' + (actions.join('<div class="my-1 border-t border-outline-variant/40"></div>') || 'Regular guidance intervention') + '</td>' +
+                '</tr>';
             }).join('');
-
-            if (list.length === 0) {
-                rowsHtml = '<tr><td colspan="11" class="px-md py-md text-center text-on-surface-variant">No Bullying (Annex A) submissions found</td></tr>';
-            } else {
-                rowsHtml += '<tr class="bg-surface-container-high font-bold text-xs border-t-2 border-outline-variant">' +
-                    '<td colspan="3" class="px-3 py-2 uppercase text-primary border-r">TOTAL (' + list.length + ' Schools)</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + totPhysM + '/' + totPhysF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + totSocM + '/' + totSocF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + totGenM + '/' + totGenF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + totCybM + '/' + totCybF + '</td>' +
-                    '<td class="px-2 py-2 text-center border-r font-mono">' + totRetM + '/' + totRetF + '</td>' +
-                    '<td class="px-3 py-2 text-right text-secondary border-r font-bold">' + grandIncidents + '</td>' +
-                    '<td colspan="2" class="px-3 py-2 text-on-surface-variant text-center">Grand Consolidated Total</td>' +
-                    '</tr>';
-            }
+            if (list.length === 0) rowsHtml = '<tr><td colspan="13" class="px-md py-md text-center text-on-surface-variant">No Bullying (Annex A) submissions found</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700">' +
+                '<td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td>' +
+                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totPhysM + '/' + totPhysF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totSocM + '/' + totSocF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totGenM + '/' + totGenF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totCybM + '/' + totCybF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totRetM + '/' + totRetF + '</td>' +
+                '<td class="px-3 py-3 text-right font-mono text-amber-300 text-sm border-r border-slate-700 font-bold">' + grandIncidents + '</td>' +
+                '<td class="px-3 py-3 text-center border-r border-slate-700 text-emerald-300">' + totalResolved + ' Resolved</td>' +
+                '<td class="px-3 py-3 text-blue-200">Excel Formulas Active (=SUM / =COUNTIF)</td>' +
+            '</tr>';
             tbody.innerHTML = rowsHtml;
-
-        } else {
-            // General table for other modules (Child Abuse, CAR, CICL, Other LRP)
-            thead.innerHTML =
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-on-surface-variant border-r">School ID</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-on-surface-variant border-r">School Name</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-on-surface-variant border-r">District</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-on-surface-variant border-r">Reference No.</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-right border-r">Cases Recorded</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low text-center border-r">Date Submitted</th>' +
-                '<th class="px-3 py-2 text-xs font-bold uppercase bg-surface-container-low">Actions / Status</th>';
-
-            var totalModuleCases = 0;
+        } else if (activeExcelSheet === 'child_abuse') {
+            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Physical / Nature of Abuse</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[90px]">Status</th>' +
+                '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Actions Taken</th>' +
+            '</tr>';
+            var totalAbuseCount = 0;
             var rowsHtml = list.map(function(r, i) {
-                var meta = r.report_data?.metadata || {};
-                var sId = r.school_id || meta.schoolId || '—';
-                var sName = r.school_name || meta.schoolName || 'Unknown School';
-                var dist = getSchoolDistrict(sName);
-                var ref = r.reference_number || '—';
-                var cCount = 1;
-                if (modCode === 'B') cCount = Object.keys(r.report_data?.categories || r.report_data?.data?.categories || {}).length || 1;
-                else if (modCode === 'C') cCount = (r.report_data?.data?.children || []).length || 1;
-                else if (modCode === 'D') cCount = (r.report_data?.data?.ciclList || []).length || 1;
-                else if (modCode === 'E') cCount = (r.report_data?.data?.rows || []).length || 1;
-
-                totalModuleCases += cCount;
-                var dt = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US') : '—';
-                var bg = i % 2 === 1 ? 'bg-surface-container-low' : '';
-
-                return '<tr class="text-xs hover:bg-surface-container-high transition-colors ' + bg + '">' +
-                    '<td class="px-3 py-2 font-mono font-semibold border-r">' + escHtml(String(sId)) + '</td>' +
-                    '<td class="px-3 py-2 font-semibold text-on-surface border-r">' + escHtml(sName) + '</td>' +
-                    '<td class="px-3 py-2 border-r text-on-surface-variant">' + escHtml(dist) + '</td>' +
-                    '<td class="px-3 py-2 font-mono border-r">' + escHtml(ref) + '</td>' +
-                    '<td class="px-3 py-2 text-right font-bold text-secondary border-r">' + cCount + '</td>' +
-                    '<td class="px-3 py-2 text-center border-r">' + dt + '</td>' +
-                    '<td class="px-3 py-2 text-emerald-700 font-semibold">' + escHtml(r.status || 'Submitted') + '</td>' +
-                    '</tr>';
+                var meta = r.report_data?.metadata || {}; var cats = r.report_data?.data?.categories || r.report_data?.categories || {}; var sId = r.school_id || meta.schoolId || '—'; var sName = r.school_name || meta.schoolName || 'Unknown School'; var dist = getSchoolDistrict(sName); var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+                var nature = r.report_data?.data?.natureOfAbuse || 'Physical/Verbal Abuse'; var action = r.report_data?.data?.actionsTaken || 'Documented and referred to CPC/CSWDO'; var cCount = Object.keys(cats).length || 1; totalAbuseCount += cCount;
+                var sectorBadge = sector.toLowerCase().includes('public') ? '<span class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[11px] font-bold">Public</span>' : '<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[11px] font-bold">Private</span>'; var levelBadge = level.toLowerCase().includes('elem') ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold">Elementary</span>' : '<span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[11px] font-bold">Secondary</span>';
+                var bg = i % 2 === 1 ? 'bg-[#F0F5FA]' : 'bg-white';
+                return '<tr class="text-xs hover:bg-blue-100/40 transition-colors border-b border-outline-variant/60 ' + bg + '">' +
+                    '<td class="px-3 py-3 font-mono font-semibold border-r">' + escHtml(String(sId)) + '</td>' +
+                    '<td class="px-3 py-3 font-bold text-on-surface border-r whitespace-normal break-words">' + escHtml(sName) + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + sectorBadge + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + levelBadge + '</td>' +
+                    '<td class="px-3 py-3 border-r text-on-surface-variant">' + escHtml(dist) + '</td>' +
+                    '<td class="px-3 py-3 border-r font-semibold text-blue-950 whitespace-normal break-words">' + escHtml(nature) + '</td>' +
+                    '<td class="px-3 py-3 text-center border-r"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">' + escHtml(r.status || 'Resolved') + '</span></td>' +
+                    '<td class="px-3 py-3 text-on-surface-variant whitespace-normal break-words leading-relaxed max-w-md">' + escHtml(action) + '</td>' +
+                '</tr>';
             }).join('');
-
-            if (list.length === 0) {
-                rowsHtml = '<tr><td colspan="7" class="px-md py-md text-center text-on-surface-variant">No submissions for this category yet</td></tr>';
-            } else {
-                rowsHtml += '<tr class="bg-surface-container-high font-bold text-xs border-t-2 border-outline-variant">' +
-                    '<td colspan="4" class="px-3 py-2 uppercase text-primary border-r">TOTAL (' + list.length + ' Submissions)</td>' +
-                    '<td class="px-3 py-2 text-right text-secondary border-r font-bold">' + totalModuleCases + '</td>' +
-                    '<td colspan="2" class="px-3 py-2 text-on-surface-variant text-center">Category Total</td>' +
-                    '</tr>';
-            }
+            if (list.length === 0) rowsHtml = '<tr><td colspan="8" class="px-md py-md text-center text-on-surface-variant">No Child Abuse (Annex B) submissions found</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="3" class="px-3 py-3 text-amber-300">' + totalAbuseCount + ' Total Incidents Managed Under DepEd Child Protection Policy</td></tr>';
+            tbody.innerHTML = rowsHtml;
+        } else if (activeExcelSheet === 'children_at_risk') {
+            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[150px]">Children at Risk (CAR)</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Identified Risk Factors</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[85px]">Resolved<br>Cases</th>' +
+                '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Interventions Provided</th>' +
+            '</tr>';
+            var totalCarCount = 0;
+            var rowsHtml = list.map(function(r, i) {
+                var meta = r.report_data?.metadata || {}; var sId = r.school_id || meta.schoolId || '—'; var sName = r.school_name || meta.schoolName || 'Unknown School'; var dist = getSchoolDistrict(sName); var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+                var data = r.report_data?.data || r.report_data || {}; var children = data.children || []; var count = children.length || 1; totalCarCount += count;
+                var childNames = children.map(function(c) { return '<b>' + (c.name || 'Learner') + '</b> (' + (c.gender || 'M') + ', ' + (c.age || '—') + ' y/o)'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>'); var riskStr = children.map(function(c) { return (c.riskFactors || []).join(', ') || 'Poverty / Distance'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>'); var intStr = children.map(function(c) { return c.intervention || 'Home visitation & counseling'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>') || data.narrative || 'Guidance intervention provided';
+                var sectorBadge = sector.toLowerCase().includes('public') ? '<span class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[11px] font-bold">Public</span>' : '<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[11px] font-bold">Private</span>'; var levelBadge = level.toLowerCase().includes('elem') ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold">Elementary</span>' : '<span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[11px] font-bold">Secondary</span>';
+                var bg = i % 2 === 1 ? 'bg-[#F0F5FA]' : 'bg-white';
+                return '<tr class="text-xs hover:bg-blue-100/40 transition-colors border-b border-outline-variant/60 ' + bg + '">' +
+                    '<td class="px-3 py-3 font-mono font-semibold border-r">' + escHtml(String(sId)) + '</td>' +
+                    '<td class="px-3 py-3 font-bold text-on-surface border-r whitespace-normal break-words">' + escHtml(sName) + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + sectorBadge + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + levelBadge + '</td>' +
+                    '<td class="px-3 py-3 border-r text-on-surface-variant">' + escHtml(dist) + '</td>' +
+                    '<td class="px-3 py-3 border-r text-blue-950 whitespace-normal break-words">' + childNames + '</td>' +
+                    '<td class="px-3 py-3 border-r text-on-surface-variant whitespace-normal break-words leading-relaxed">' + riskStr + '</td>' +
+                    '<td class="px-3 py-3 text-center border-r"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold">Resolved</span></td>' +
+                    '<td class="px-3 py-3 text-on-surface-variant whitespace-normal break-words leading-relaxed max-w-md">' + intStr + '</td>' +
+                '</tr>';
+            }).join('');
+            if (list.length === 0) rowsHtml = '<tr><td colspan="9" class="px-md py-md text-center text-on-surface-variant">No Children at Risk (Annex C) submissions found</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="4" class="px-3 py-3 text-blue-200">' + totalCarCount + ' Total Children at Risk Assisted</td></tr>';
+            tbody.innerHTML = rowsHtml;
+        } else if (activeExcelSheet === 'cicl') {
+            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[150px]">Learner Details (LRN)</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Offenses Documented</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[85px]">Status</th>' +
+                '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Intervention / Diversion</th>' +
+            '</tr>';
+            var totalCiclCount = 0;
+            var rowsHtml = list.map(function(r, i) {
+                var meta = r.report_data?.metadata || {}; var sId = r.school_id || meta.schoolId || '—'; var sName = r.school_name || meta.schoolName || 'Unknown School'; var dist = getSchoolDistrict(sName); var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+                var data = r.report_data?.data || r.report_data || {}; var ciclList = data.ciclList || []; var count = ciclList.length || 1; totalCiclCount += count;
+                var lrnStr = ciclList.map(function(c) { return '<b>' + (c.lrn || 'LRN') + '</b> (' + (c.gender || 'M') + ', ' + (c.age || '—') + ' y/o)'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>'); var vioStr = ciclList.map(function(c) { return c.caseViolation || 'Offense documented'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>'); var statusStr = ciclList.map(function(c) { return '<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-900 font-bold">' + (c.status || 'Submitted') + '</span>'; }).join('<div class="my-1"></div>'); var progStr = ciclList.map(function(c) { return c.actionsTaken || 'Diversion program active'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>') || data.interventionNarrative || 'Diversion active';
+                var sectorBadge = sector.toLowerCase().includes('public') ? '<span class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[11px] font-bold">Public</span>' : '<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[11px] font-bold">Private</span>'; var levelBadge = level.toLowerCase().includes('elem') ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold">Elementary</span>' : '<span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[11px] font-bold">Secondary</span>';
+                var bg = i % 2 === 1 ? 'bg-[#F0F5FA]' : 'bg-white';
+                return '<tr class="text-xs hover:bg-blue-100/40 transition-colors border-b border-outline-variant/60 ' + bg + '">' +
+                    '<td class="px-3 py-3 font-mono font-semibold border-r">' + escHtml(String(sId)) + '</td>' +
+                    '<td class="px-3 py-3 font-bold text-on-surface border-r whitespace-normal break-words">' + escHtml(sName) + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + sectorBadge + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + levelBadge + '</td>' +
+                    '<td class="px-3 py-3 border-r text-on-surface-variant">' + escHtml(dist) + '</td>' +
+                    '<td class="px-3 py-3 border-r font-mono text-purple-950 whitespace-normal break-words">' + lrnStr + '</td>' +
+                    '<td class="px-3 py-3 border-r font-medium text-on-surface whitespace-normal break-words leading-relaxed">' + vioStr + '</td>' +
+                    '<td class="px-3 py-3 text-center border-r">' + statusStr + '</td>' +
+                    '<td class="px-3 py-3 text-on-surface-variant whitespace-normal break-words leading-relaxed max-w-md">' + progStr + '</td>' +
+                '</tr>';
+            }).join('');
+            if (list.length === 0) rowsHtml = '<tr><td colspan="9" class="px-md py-md text-center text-on-surface-variant">No CICL (Annex D) submissions found</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="4" class="px-3 py-3 text-blue-200">' + totalCiclCount + ' Total CICL Cases Under Program</td></tr>';
+            tbody.innerHTML = rowsHtml;
+        } else if (activeExcelSheet === 'other_lrp_concerns') {
+            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Special Concerns Count</th>' +
+                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[90px]">Status</th>' +
+                '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Details &amp; Interventions</th>' +
+            '</tr>';
+            var totalOtherCount = 0;
+            var rowsHtml = list.map(function(r, i) {
+                var meta = r.report_data?.metadata || {}; var sId = r.school_id || meta.schoolId || '—'; var sName = r.school_name || meta.schoolName || 'Unknown School'; var dist = getSchoolDistrict(sName); var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+                var data = r.report_data?.data || r.report_data || {}; var rows = data.rows || []; var count = rows.length || 1; totalOtherCount += count;
+                var typeStr = rows.map(function(rw) { return rw.concernType || 'Special Concern'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>'); var statusStr = rows.map(function(rw) { return '<span class="px-2 py-0.5 rounded bg-slate-200 text-slate-800 font-bold">' + (rw.status || 'Submitted') + '</span>'; }).join('<div class="my-1"></div>'); var actStr = rows.map(function(rw) { return rw.actionsTaken || 'Institutional LRP compliance recorded'; }).join('<div class="my-1 border-t border-outline-variant/40"></div>');
+                var sectorBadge = sector.toLowerCase().includes('public') ? '<span class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[11px] font-bold">Public</span>' : '<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[11px] font-bold">Private</span>'; var levelBadge = level.toLowerCase().includes('elem') ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold">Elementary</span>' : '<span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[11px] font-bold">Secondary</span>';
+                var bg = i % 2 === 1 ? 'bg-[#F0F5FA]' : 'bg-white';
+                return '<tr class="text-xs hover:bg-blue-100/40 transition-colors border-b border-outline-variant/60 ' + bg + '">' +
+                    '<td class="px-3 py-3 font-mono font-semibold border-r">' + escHtml(String(sId)) + '</td>' +
+                    '<td class="px-3 py-3 font-bold text-on-surface border-r whitespace-normal break-words">' + escHtml(sName) + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + sectorBadge + '</td>' +
+                    '<td class="px-2.5 py-3 text-center border-r">' + levelBadge + '</td>' +
+                    '<td class="px-3 py-3 border-r text-on-surface-variant">' + escHtml(dist) + '</td>' +
+                    '<td class="px-3 py-3 border-r font-semibold text-slate-800 whitespace-normal break-words">' + typeStr + '</td>' +
+                    '<td class="px-3 py-3 text-center border-r">' + statusStr + '</td>' +
+                    '<td class="px-3 py-3 text-on-surface-variant whitespace-normal break-words leading-relaxed max-w-md">' + actStr + '</td>' +
+                '</tr>';
+            }).join('');
+            if (list.length === 0) rowsHtml = '<tr><td colspan="8" class="px-md py-md text-center text-on-surface-variant">No Other LRP Concerns (Annex E) submissions found</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="3" class="px-3 py-3 text-blue-200">' + totalOtherCount + ' Other Learner Rights Concerns Logged</td></tr>';
             tbody.innerHTML = rowsHtml;
         }
 
-        document.getElementById('reports-info').textContent = 'Showing ' + list.length + ' entries in Excel Master Sheet: ' + activeExcelSheet.replace(/_/g, ' ').toUpperCase();
+        var existingSummary = document.getElementById('excel-summary-metrics-block');
+        if (!existingSummary) {
+            var sDiv = document.createElement('div');
+            sDiv.id = 'excel-summary-metrics-block';
+            sDiv.innerHTML = summaryBlockHtml;
+            var tc = document.getElementById('table-container');
+            tc.parentNode.insertBefore(sDiv, tc.nextSibling);
+        } else {
+            existingSummary.innerHTML = summaryBlockHtml;
+            existingSummary.style.display = 'block';
+        }
+
+        document.getElementById('reports-info').textContent = 'Showing ' + list.length + ' entries in Excel Master Sheet: ' + activeExcelSheet.replace(/_/g, ' ').toUpperCase() + ' (Sorted: Public First, Elementary First)';
         document.getElementById('pagination-bar').style.display = 'none';
     }
 
     function buildBullyingSheetRows() {
-        var headers = [
-            'School ID', 'School Name', 'District', 'School Sector', 'School Level', 'School Year',
-            'Physical Bullying (M)', 'Physical Bullying (F)',
-            'Social Bullying (M)', 'Social Bullying (F)',
-            'Gender-based Bullying (M)', 'Gender-based Bullying (F)',
-            'Cyberbullying (M)', 'Cyberbullying (F)',
-            'Retaliation Bullying (M)', 'Retaliation Bullying (F)',
-            'Total Male Victims', 'Total Female Victims', 'Total Incidents',
-            'Resolved Cases', 'Cases for Monitoring', 'Referred to Govt', 'Referred to NGO',
-            'Actions Taken / Intervention', 'Submitted By', 'Validated By', 'Date Submitted'
-        ];
-        var rows = [headers];
-        var aReports = reportsData.filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'A'; });
+        var titleRow = ['DEPED DIVISION OF ORMOC CITY — CONSOLIDATED REPORT ON BULLYING'];
+        var metaRow = ['ANNEX A  |  School Year: 2025-2026  |  Generated: ' + new Date().toLocaleDateString() + '  |  Status: Official Consolidated Master Database'];
+        var blankRow = [];
+        var headers = ['School ID', 'School Name', 'District', 'School Sector', 'School Level', 'School Year', 'Physical Bullying (M)', 'Physical Bullying (F)', 'Social Bullying (M)', 'Social Bullying (F)', 'Gender-based Bullying (M)', 'Gender-based Bullying (F)', 'Cyber-bullying (M)', 'Cyber-bullying (F)', 'Retaliation Bullying (M)', 'Retaliation Bullying (F)', 'Total Male Victims', 'Total Female Victims', 'Total Incidents', 'Resolved Cases', 'Cases for Monitoring', 'Referred to Govt', 'Referred to NGO', 'Actions Taken / Intervention', 'Submitted By', 'Validated By', 'Date Submitted'];
+        var rows = [titleRow, metaRow, blankRow, headers];
+        var aReports = getCombinedReports().filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'A'; });
+        aReports.sort(compareReports);
         aReports.forEach(function(r) {
-            var meta = r.report_data?.metadata || {};
-            var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
-            var prep = r.prepared_by || r.report_data?.preparedBy || {};
-            var val = r.validated_by || r.report_data?.validatedBy || {};
-            var sName = r.school_name || meta.schoolName || 'Unknown School';
-            var sId = r.school_id || meta.schoolId || '000000';
-
-            var pM = 0, pF = 0, sM = 0, sF = 0, gM = 0, gF = 0, cM = 0, cF = 0, rM = 0, rF = 0;
-            var resCount = 0, monCount = 0, govCount = 0, ngoCount = 0, actions = [];
-
-            Object.keys(cats).forEach(function(k) {
-                var c = cats[k] || {};
-                if (c.actionsTaken) actions.push(k + ': ' + c.actionsTaken);
-                var st = (c.status || '').toLowerCase();
-                if (st.includes('resolved')) resCount++;
-                else if (st.includes('ongoing') || st.includes('monitoring')) monCount++;
-                else if (st.includes('gov')) govCount++;
-                else if (st.includes('ngo')) ngoCount++;
-
-                (c.affectedStudents || []).forEach(function(stu) {
-                    var gen = (stu.gender || 'M').toUpperCase();
-                    if (k === 'A-1') { if (gen === 'M') pM++; else pF++; }
-                    else if (k === 'A-2') { if (gen === 'M') sM++; else sF++; }
-                    else if (k === 'A-3') { if (gen === 'M') gM++; else gF++; }
-                    else if (k === 'A-4') { if (gen === 'M') cM++; else cF++; }
-                    else if (k === 'A-5') { if (gen === 'M') rM++; else rF++; }
-                });
-            });
-
-            var totM = pM + sM + gM + cM + rM;
-            var totF = pF + sF + gF + cF + rF;
-            var totInc = totM + totF;
-
-            rows.push([
-                String(sId), sName, getSchoolDistrict(sName), meta.classification || 'Public', meta.level || 'Elementary', meta.reportingYear || '2024-2025',
-                pM, pF, sM, sF, gM, gF, cM, cF, rM, rF,
-                totM, totF, totInc,
-                resCount, monCount, govCount, ngoCount,
-                actions.join(' | '), prep.name || '—', val.name || '—',
-                r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
-            ]);
+            var meta = r.report_data?.metadata || {}; var cats = r.report_data?.data?.categories || r.report_data?.categories || {}; var prep = r.prepared_by || r.report_data?.preparedBy || {}; var val = r.validated_by || r.report_data?.validatedBy || {}; var sName = r.school_name || meta.schoolName || 'Unknown School'; var sId = r.school_id || meta.schoolId || '000000'; var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+            var pM = 0, pF = 0, sM = 0, sF = 0, gM = 0, gF = 0, cM = 0, cF = 0, rM = 0, rF = 0; var resCount = 0, monCount = 0, govCount = 0, ngoCount = 0, actions = [];
+            Object.keys(cats).forEach(function(k) { var c = cats[k] || {}; if (c.actionsTaken) actions.push(k + ': ' + c.actionsTaken); var st = (c.status || '').toLowerCase(); if (st.includes('resolved')) resCount++; else if (st.includes('ongoing') || st.includes('monitoring')) monCount++; else if (st.includes('gov')) govCount++; else if (st.includes('ngo')) ngoCount++; (c.affectedStudents || []).forEach(function(stu) { var gen = (stu.gender || 'M').toUpperCase(); if (k === 'A-1') { if (gen === 'M') pM++; else pF++; } else if (k === 'A-2') { if (gen === 'M') sM++; else sF++; } else if (k === 'A-3') { if (gen === 'M') gM++; else gF++; } else if (k === 'A-4') { if (gen === 'M') cM++; else cF++; } else if (k === 'A-5') { if (gen === 'M') rM++; else rF++; } }); });
+            var totM = pM + sM + gM + cM + rM; var totF = pF + sF + gF + cF + rF; var totInc = totM + totF;
+            rows.push([String(sId), sName, getSchoolDistrict(sName), sector, level, meta.reportingYear || '2025-2026', pM, pF, sM, sF, gM, gF, cM, cF, rM, rF, totM, totF, totInc, resCount, monCount, govCount, ngoCount, actions.join(' | '), prep.name || '—', val.name || '—', r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]]);
         });
+        var startRow = 5, endRow = 4 + aReports.length;
+        var totalRow = ['TOTAL', 'ALL SCHOOLS CONSOLIDATED', '—', '—', '—', '2025-2026', { t: 'n', f: 'SUM(G' + startRow + ':G' + endRow + ')' }, { t: 'n', f: 'SUM(H' + startRow + ':H' + endRow + ')' }, { t: 'n', f: 'SUM(I' + startRow + ':I' + endRow + ')' }, { t: 'n', f: 'SUM(J' + startRow + ':J' + endRow + ')' }, { t: 'n', f: 'SUM(K' + startRow + ':K' + endRow + ')' }, { t: 'n', f: 'SUM(L' + startRow + ':L' + endRow + ')' }, { t: 'n', f: 'SUM(M' + startRow + ':M' + endRow + ')' }, { t: 'n', f: 'SUM(N' + startRow + ':N' + endRow + ')' }, { t: 'n', f: 'SUM(O' + startRow + ':O' + endRow + ')' }, { t: 'n', f: 'SUM(P' + startRow + ':P' + endRow + ')' }, { t: 'n', f: 'SUM(Q' + startRow + ':Q' + endRow + ')' }, { t: 'n', f: 'SUM(R' + startRow + ':R' + endRow + ')' }, { t: 'n', f: 'SUM(S' + startRow + ':S' + endRow + ')' }, { t: 'n', f: 'SUM(T' + startRow + ':T' + endRow + ')' }, { t: 'n', f: 'SUM(U' + startRow + ':U' + endRow + ')' }, { t: 'n', f: 'SUM(V' + startRow + ':V' + endRow + ')' }, { t: 'n', f: 'SUM(W' + startRow + ':W' + endRow + ')' }, '—', '—', '—', '—'];
+        rows.push(totalRow);
+        rows.push([]);
+        rows.push(['SUMMARY METRICS', 'Formula', 'Value']);
+        rows.push(['Total Schools', '=COUNTA(A5:A' + endRow + ')', { t: 'n', f: 'COUNTA(A5:A' + endRow + ')' }]);
+        rows.push(['Total Public Schools', '=COUNTIF(D5:D' + endRow + ', "Public")', { t: 'n', f: 'COUNTIF(D5:D' + endRow + ', "Public")' }]);
+        rows.push(['Total Private Schools', '=COUNTIF(D5:D' + endRow + ', "Private")', { t: 'n', f: 'COUNTIF(D5:D' + endRow + ', "Private")' }]);
+        rows.push(['Elementary Schools', '=COUNTIF(E5:E' + endRow + ', "Elementary")', { t: 'n', f: 'COUNTIF(E5:E' + endRow + ', "Elementary")' }]);
+        rows.push(['Secondary Schools', '=COUNTIF(E5:E' + endRow + ', "Secondary")', { t: 'n', f: 'COUNTIF(E5:E' + endRow + ', "Secondary")' }]);
+        rows.push(['Total Incidents (All Schools)', '=SUM(S5:S' + endRow + ')', { t: 'n', f: 'SUM(S5:S' + endRow + ')' }]);
+        rows.push(['Total Incidents — Private Schools', '=SUMIFS(S5:S' + endRow + ', D5:D' + endRow + ', "Private")', { t: 'n', f: 'SUMIFS(S5:S' + endRow + ', D5:D' + endRow + ', "Private")' }]);
+        rows.push(['Total Resolved — Private Schools', '=SUMIFS(T5:T' + endRow + ', D5:D' + endRow + ', "Private")', { t: 'n', f: 'SUMIFS(T5:T' + endRow + ', D5:D' + endRow + ', "Private")' }]);
+        rows.push(['Overall Resolution Rate', '=IFERROR(ROUND(SUM(T5:T' + endRow + ')/SUM(S5:S' + endRow + ')*100, 1) & "%", "N/A")', { t: 's', f: 'IFERROR(ROUND(SUM(T5:T' + endRow + ')/SUM(S5:S' + endRow + ')*100, 1) & "%", "N/A")' }]);
         return rows;
     }
 
     function buildChildAbuseSheetRows() {
+        var titleRow = ['DEPED DIVISION OF ORMOC CITY — CONSOLIDATED REPORT ON CHILD ABUSE'];
+        var metaRow = ['ANNEX B  |  School Year: 2025-2026  |  Generated: ' + new Date().toLocaleDateString() + '  |  Status: Official Consolidated Master Database'];
+        var blankRow = [];
         var headers = ['School ID', 'School Name', 'District', 'School Sector', 'School Level', 'School Year', 'Physical Abuse', 'Sexual Abuse', 'Psychological Abuse', 'Neglect', 'Commercial Exploitation', 'Total Incidents', 'Resolved Cases', 'Cases for Monitoring', 'Referred to Govt', 'Actions Taken', 'Submitted By', 'Validated By', 'Date Submitted'];
-        var rows = [headers];
-        var bReports = reportsData.filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'B'; });
+        var rows = [titleRow, metaRow, blankRow, headers];
+        var bReports = getCombinedReports().filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'B'; });
+        bReports.sort(compareReports);
         bReports.forEach(function(r) {
-            var meta = r.report_data?.metadata || {};
-            var cats = r.report_data?.data?.categories || r.report_data?.categories || {};
-            var prep = r.prepared_by || r.report_data?.preparedBy || {};
-            var val = r.validated_by || r.report_data?.validatedBy || {};
-            var sName = r.school_name || meta.schoolName || 'Unknown School';
-            var sId = r.school_id || meta.schoolId || '000000';
-            rows.push([
-                String(sId), sName, getSchoolDistrict(sName), meta.classification || 'Public', meta.level || 'Elementary', meta.reportingYear || '2024-2025',
-                Object.keys(cats).length, 0, 0, 0, 0, Object.keys(cats).length, 0, 0, 0, 'Documented and processed', prep.name || '—', val.name || '—',
-                r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
-            ]);
+            var meta = r.report_data?.metadata || {}; var cats = r.report_data?.data?.categories || r.report_data?.categories || {}; var prep = r.prepared_by || r.report_data?.preparedBy || {}; var val = r.validated_by || r.report_data?.validatedBy || {}; var sName = r.school_name || meta.schoolName || 'Unknown School'; var sId = r.school_id || meta.schoolId || '000000'; var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+            rows.push([String(sId), sName, getSchoolDistrict(sName), sector, level, meta.reportingYear || '2025-2026', Object.keys(cats).length || 1, 0, 0, 0, 0, Object.keys(cats).length || 1, 1, 0, 0, r.report_data?.data?.actionsTaken || 'Documented and processed', prep.name || '—', val.name || '—', r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]]);
         });
+        var startRow = 5, endRow = 4 + bReports.length;
+        var totalRow = ['TOTAL', 'ALL SCHOOLS CONSOLIDATED', '—', '—', '—', '2025-2026', { t: 'n', f: 'SUM(G' + startRow + ':G' + endRow + ')' }, { t: 'n', f: 'SUM(H' + startRow + ':H' + endRow + ')' }, { t: 'n', f: 'SUM(I' + startRow + ':I' + endRow + ')' }, { t: 'n', f: 'SUM(J' + startRow + ':J' + endRow + ')' }, { t: 'n', f: 'SUM(K' + startRow + ':K' + endRow + ')' }, { t: 'n', f: 'SUM(L' + startRow + ':L' + endRow + ')' }, { t: 'n', f: 'SUM(M' + startRow + ':M' + endRow + ')' }, { t: 'n', f: 'SUM(N' + startRow + ':N' + endRow + ')' }, { t: 'n', f: 'SUM(O' + startRow + ':O' + endRow + ')' }, '—', '—', '—', '—'];
+        rows.push(totalRow);
         return rows;
     }
 
     function buildCARSheetRows() {
+        var titleRow = ['DEPED DIVISION OF ORMOC CITY — CHILDREN AT RISK REGISTRY'];
+        var metaRow = ['ANNEX C  |  School Year: 2025-2026  |  Generated: ' + new Date().toLocaleDateString() + '  |  Status: Official Consolidated Master Database'];
+        var blankRow = [];
         var headers = ['School ID', 'School Name', 'District', 'School Sector', 'School Level', 'School Year', 'Children at Risk Total', 'Resolved Cases', 'Cases for Monitoring', 'Interventions Provided', 'Submitted By', 'Validated By', 'Date Submitted'];
-        var rows = [headers];
-        var cReports = reportsData.filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'C'; });
+        var rows = [titleRow, metaRow, blankRow, headers];
+        var cReports = getCombinedReports().filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'C'; });
+        cReports.sort(compareReports);
         cReports.forEach(function(r) {
-            var meta = r.report_data?.metadata || {};
-            var ch = r.report_data?.data?.children || [];
-            var prep = r.prepared_by || r.report_data?.preparedBy || {};
-            var val = r.validated_by || r.report_data?.validatedBy || {};
-            var sName = r.school_name || meta.schoolName || 'Unknown School';
-            var sId = r.school_id || meta.schoolId || '000000';
-            rows.push([
-                String(sId), sName, getSchoolDistrict(sName), meta.classification || 'Public', meta.level || 'Elementary', meta.reportingYear || '2024-2025',
-                ch.length || 1, ch.length || 1, 0, 'Guidance intervention provided', prep.name || '—', val.name || '—',
-                r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
-            ]);
+            var meta = r.report_data?.metadata || {}; var ch = r.report_data?.data?.children || []; var prep = r.prepared_by || r.report_data?.preparedBy || {}; var val = r.validated_by || r.report_data?.validatedBy || {}; var sName = r.school_name || meta.schoolName || 'Unknown School'; var sId = r.school_id || meta.schoolId || '000000'; var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+            rows.push([String(sId), sName, getSchoolDistrict(sName), sector, level, meta.reportingYear || '2025-2026', ch.length || 1, ch.length || 1, 0, r.report_data?.data?.narrative || 'Guidance intervention provided', prep.name || '—', val.name || '—', r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]]);
         });
+        var startRow = 5, endRow = 4 + cReports.length;
+        var totalRow = ['TOTAL', 'ALL SCHOOLS CONSOLIDATED', '—', '—', '—', '2025-2026', { t: 'n', f: 'SUM(G' + startRow + ':G' + endRow + ')' }, { t: 'n', f: 'SUM(H' + startRow + ':H' + endRow + ')' }, { t: 'n', f: 'SUM(I' + startRow + ':I' + endRow + ')' }, '—', '—', '—', '—'];
+        rows.push(totalRow);
         return rows;
     }
 
     function buildCICLSheetRows() {
+        var titleRow = ['DEPED DIVISION OF ORMOC CITY — CONSOLIDATED CICL REPORT'];
+        var metaRow = ['ANNEX D  |  School Year: 2025-2026  |  Generated: ' + new Date().toLocaleDateString() + '  |  Status: Official Consolidated Master Database'];
+        var blankRow = [];
         var headers = ['School ID', 'School Name', 'District', 'School Sector', 'School Level', 'School Year', 'CICL Cases Total', 'Offenses Documented', 'Intervention / Diversion', 'Submitted By', 'Validated By', 'Date Submitted'];
-        var rows = [headers];
-        var dReports = reportsData.filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'D'; });
+        var rows = [titleRow, metaRow, blankRow, headers];
+        var dReports = getCombinedReports().filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'D'; });
+        dReports.sort(compareReports);
         dReports.forEach(function(r) {
-            var meta = r.report_data?.metadata || {};
-            var list = r.report_data?.data?.ciclList || [];
-            var prep = r.prepared_by || r.report_data?.preparedBy || {};
-            var val = r.validated_by || r.report_data?.validatedBy || {};
-            var sName = r.school_name || meta.schoolName || 'Unknown School';
-            var sId = r.school_id || meta.schoolId || '000000';
-            rows.push([
-                String(sId), sName, getSchoolDistrict(sName), meta.classification || 'Public', meta.level || 'Elementary', meta.reportingYear || '2024-2025',
-                list.length || 1, list.length || 1, 'Diversion program active', prep.name || '—', val.name || '—',
-                r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
-            ]);
+            var meta = r.report_data?.metadata || {}; var list = r.report_data?.data?.ciclList || []; var prep = r.prepared_by || r.report_data?.preparedBy || {}; var val = r.validated_by || r.report_data?.validatedBy || {}; var sName = r.school_name || meta.schoolName || 'Unknown School'; var sId = r.school_id || meta.schoolId || '000000'; var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+            rows.push([String(sId), sName, getSchoolDistrict(sName), sector, level, meta.reportingYear || '2025-2026', list.length || 1, list.length || 1, r.report_data?.data?.interventionNarrative || 'Diversion program active', prep.name || '—', val.name || '—', r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]]);
         });
+        var startRow = 5, endRow = 4 + dReports.length;
+        var totalRow = ['TOTAL', 'ALL SCHOOLS CONSOLIDATED', '—', '—', '—', '2025-2026', { t: 'n', f: 'SUM(G' + startRow + ':G' + endRow + ')' }, { t: 'n', f: 'SUM(H' + startRow + ':H' + endRow + ')' }, '—', '—', '—', '—'];
+        rows.push(totalRow);
         return rows;
     }
 
     function buildOtherLRPSheetRows() {
+        var titleRow = ['DEPED DIVISION OF ORMOC CITY — OTHER LEARNER RIGHTS CONCERNS'];
+        var metaRow = ['ANNEX E  |  School Year: 2025-2026  |  Generated: ' + new Date().toLocaleDateString() + '  |  Status: Official Consolidated Master Database'];
+        var blankRow = [];
         var headers = ['School ID', 'School Name', 'District', 'School Sector', 'School Level', 'School Year', 'Special Concerns Count', 'Details & Interventions', 'Submitted By', 'Validated By', 'Date Submitted'];
-        var rows = [headers];
-        var eReports = reportsData.filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'E'; });
+        var rows = [titleRow, metaRow, blankRow, headers];
+        var eReports = getCombinedReports().filter(function(r) { return (r.module || r.report_data?.module || '').toUpperCase() === 'E'; });
+        eReports.sort(compareReports);
         eReports.forEach(function(r) {
-            var meta = r.report_data?.metadata || {};
-            var rw = r.report_data?.data?.rows || [];
-            var prep = r.prepared_by || r.report_data?.preparedBy || {};
-            var val = r.validated_by || r.report_data?.validatedBy || {};
-            var sName = r.school_name || meta.schoolName || 'Unknown School';
-            var sId = r.school_id || meta.schoolId || '000000';
-            rows.push([
-                String(sId), sName, getSchoolDistrict(sName), meta.classification || 'Public', meta.level || 'Elementary', meta.reportingYear || '2024-2025',
-                rw.length || 1, 'Institutional LRP compliance recorded', prep.name || '—', val.name || '—',
-                r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
-            ]);
+            var meta = r.report_data?.metadata || {}; var rw = r.report_data?.data?.rows || []; var prep = r.prepared_by || r.report_data?.preparedBy || {}; var val = r.validated_by || r.report_data?.validatedBy || {}; var sName = r.school_name || meta.schoolName || 'Unknown School'; var sId = r.school_id || meta.schoolId || '000000'; var sector = meta.classification || (sName.toLowerCase().includes('academy') || sName.toLowerCase().includes('college') ? 'Private' : 'Public'); var level = meta.level || (sName.toLowerCase().includes('high') || sName.toLowerCase().includes('college') ? 'Secondary' : 'Elementary');
+            rows.push([String(sId), sName, getSchoolDistrict(sName), sector, level, meta.reportingYear || '2025-2026', rw.length || 1, 'Institutional LRP compliance recorded', prep.name || '—', val.name || '—', r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]]);
         });
+        var startRow = 5, endRow = 4 + eReports.length;
+        var totalRow = ['TOTAL', 'ALL SCHOOLS CONSOLIDATED', '—', '—', '—', '2025-2026', { t: 'n', f: 'SUM(G' + startRow + ':G' + endRow + ')' }, '—', '—', '—', '—'];
+        rows.push(totalRow);
         return rows;
     }
 
     function downloadExcelDatabase() {
-        if (typeof XLSX === 'undefined') {
-            alert('Excel library is loading, please try again in a moment.');
-            return;
-        }
-
-        var wb = XLSX.utils.book_new();
-
-        // 1. Bullying Consolidated
-        var wsBullying = XLSX.utils.aoa_to_sheet(buildBullyingSheetRows());
-        XLSX.utils.book_append_sheet(wb, wsBullying, 'Bullying_Consolidated');
-
-        // 2. Child Abuse Consolidated
-        var wsAbuse = XLSX.utils.aoa_to_sheet(buildChildAbuseSheetRows());
-        XLSX.utils.book_append_sheet(wb, wsAbuse, 'Child_Abuse_Consolidated');
-
-        // 3. Children At Risk
-        var wsCAR = XLSX.utils.aoa_to_sheet(buildCARSheetRows());
-        XLSX.utils.book_append_sheet(wb, wsCAR, 'Children_At_Risk');
-
-        // 4. CICL Cases
-        var wsCICL = XLSX.utils.aoa_to_sheet(buildCICLSheetRows());
-        XLSX.utils.book_append_sheet(wb, wsCICL, 'CICL_Cases');
-
-        // 5. Other LRP Concerns
-        var wsOther = XLSX.utils.aoa_to_sheet(buildOtherLRPSheetRows());
-        XLSX.utils.book_append_sheet(wb, wsOther, 'Other_LRP_Concerns');
-
-        XLSX.writeFile(wb, 'DepEd_Ormoc_Division_Master_Database.xlsx');
+        window.location.href = '/api/download-excel';
     }
 
     function setViewTab(tab) {
         currentViewMode = tab;
-        document.getElementById('view-school').className = tab === 'school' ? 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold' : 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
-        document.getElementById('view-excel').className = tab === 'excel' ? 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold' : 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
-        document.getElementById('view-raw').className = tab === 'raw' ? 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold' : 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
-        document.getElementById('view-status').className = tab === 'status' ? 'px-sm py-1 rounded bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold' : 'px-sm py-1 rounded text-on-surface-variant font-label-md text-label-md';
-        
+        var activeClass = 'px-md py-1.5 rounded-md text-xs font-label-md font-bold bg-surface-container-lowest text-primary shadow-xs transition-all';
+        var inactiveClass = 'px-md py-1.5 rounded-md text-xs font-label-md font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all';
+        document.getElementById('view-school').className = tab === 'school' ? activeClass : inactiveClass;
+        document.getElementById('view-excel').className = tab === 'excel' ? activeClass : inactiveClass;
+        document.getElementById('view-raw').className = tab === 'raw' ? activeClass : inactiveClass;
+        document.getElementById('view-status').className = tab === 'status' ? activeClass : inactiveClass;
+
         var exNav = document.getElementById('excel-sheet-nav');
         if (exNav && tab !== 'excel') exNav.style.display = 'none';
 
@@ -1061,7 +1486,8 @@ Download Excel (.xlsx)
     waitAuth(function(tok) { loadStats(tok); loadReportsTable(tok); });
 
     function showSchoolStatus() {
-        var submittedSet = new Set((reportsData || []).map(function(r) { return r.school_name; }));
+        var sourceReports = getCombinedReports();
+        var submittedSet = new Set((sourceReports || []).map(function(r) { return r.school_name; }));
         var tbody = document.getElementById('reports-tbody');
         var thead = document.getElementById('table-header-tr');
         thead.innerHTML =
@@ -1096,7 +1522,8 @@ Download Excel (.xlsx)
 </div>
 <script>
 function showReportDetail(idx) {
-    var r = reportsData[idx];
+    var sourceReports = getCombinedReports();
+    var r = sourceReports[idx] || reportsData[idx];
     if (!r) return;
     var meta = r.report_data || {};
     var md = meta.metadata || {};

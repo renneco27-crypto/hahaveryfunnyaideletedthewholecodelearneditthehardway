@@ -838,6 +838,14 @@ app.get('/reports', (req, res) => {
 app.get('/access', (req, res) => {
   res.sendFile(path.join(HTML_DIR, 'access_management_wired.html'));
 });
+app.get('/api/download-excel', (req, res) => {
+  const filePath = path.join(__dirname, 'DepEd_Ormoc_Master_Database_Professional.xlsx');
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, 'DepEd_Ormoc_Master_Database_Professional.xlsx');
+  } else {
+    res.status(404).send('Excel file not found');
+  }
+});
 
 // Block direct .html file access — only serve through clean routes
 app.use((req, res, next) => {

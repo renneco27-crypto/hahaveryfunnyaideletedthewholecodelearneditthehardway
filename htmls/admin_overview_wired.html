@@ -242,13 +242,13 @@
 <div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
 <h2 class="font-headline-md text-headline-md text-primary">School Submissions Registry</h2>
 <div class="flex gap-sm items-center">
-<select id="status-filter" class="text-xs border border-outline-variant rounded-lg px-sm py-1.5 bg-surface text-on-surface font-label-md focus:ring-2 focus:ring-secondary/20">
+<select id="status-filter" class="text-xs border border-outline-variant rounded-lg px-sm py-2 bg-surface text-on-surface font-label-md focus:ring-2 focus:ring-secondary/20">
 <option value="all">Status: All</option>
 <option value="submitted">Submitted</option>
 <option value="pending">Not Yet Submitted</option>
 </select>
-<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-variant text-on-surface-variant hover:text-primary transition-colors" onclick="document.getElementById('status-filter').value='all'; renderTable();">
-<span class="material-symbols-outlined text-sm">filter_list</span>
+<button title="Reset Filter to All" class="px-3 py-2 border border-outline-variant rounded-lg hover:bg-surface-variant text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center shadow-xs cursor-pointer" onclick="document.getElementById('status-filter').value='all'; renderTable();">
+<span class="material-symbols-outlined text-lg">filter_list</span>
 </button>
 </div>
 </div>
