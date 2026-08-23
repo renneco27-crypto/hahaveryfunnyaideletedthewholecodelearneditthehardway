@@ -195,20 +195,29 @@
 
       async function checkAuthAndRoute() {
         try {
-          const { data: { user }, error: userError } = await supabase.auth.getUser();
-          if (userError || !user) return;
+          const { data: { session }, error: sessError } = await supabase.auth.getSession();
+          if (sessError || !session) return;
 
-          // Check app_metadata (raw_app_meta_data) first, fall back to profiles table
-          let role = user.app_metadata?.role;
+          const res = await fetch('/api/verify-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: session.access_token })
+          });
+          const result = await res.json();
 
-          if (!role) {
-            const { data: profile } = await supabase
-              .from('profiles').select('role').eq('id', user.id).single();
-            role = profile?.role || 'user';
+          if (!result.valid) {
+            sessionStorage.removeItem('auth_cache');
+            try { await supabase.auth.signOut(); } catch(e) {}
+            const target = result.reason === 'single_session' ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '')
+              : result.reason === 'ip_limit' ? '/pending?reason=ip_limit&email=' + encodeURIComponent(result.email || '')
+              : result.reason === 'unauthorized' ? '/pending?reason=unauthorized&email=' + encodeURIComponent(result.email || '')
+              : '/pending';
+            window.location.href = target;
+            return;
           }
 
-          console.log('Logged in as: ' + user.email + ' | Role: ' + role);
-          window.location.href = role === 'admin' ? '/admin' : '/analytics';
+          sessionStorage.setItem('auth_cache', JSON.stringify({ user: result.user, token: session.access_token }));
+          window.location.href = result.user.role === 'admin' ? '/admin' : '/analytics';
         } catch (e) {
           console.error('checkAuthAndRoute error:', e);
         }

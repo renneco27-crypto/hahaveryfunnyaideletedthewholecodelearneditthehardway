@@ -18,13 +18,26 @@
         return;
       }
 
-      const user = session.user;
-      let role = user.app_metadata?.role;
-      if (!role) {
-        const { data: profile } = await supabase
-          .from('profiles').select('role, school_name, school_id').eq('id', user.id).maybeSingle();
-        role = profile?.role || 'user';
+      // Strictly verify session against the backend database
+      const res = await fetch('/api/verify-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: session.access_token })
+      });
+      const result = await res.json();
+
+      if (!result.valid) {
+        sessionStorage.removeItem('auth_cache');
+        try { await supabase.auth.signOut(); } catch(e) {}
+        const target = result.reason === 'single_session' ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '')
+          : result.reason === 'ip_limit' ? '/pending?reason=ip_limit&email=' + encodeURIComponent(result.email || '')
+          : result.reason === 'unauthorized' ? '/pending?reason=unauthorized&email=' + encodeURIComponent(result.email || '')
+          : '/pending';
+        window.location.href = target;
+        return;
       }
+
+      sessionStorage.setItem('auth_cache', JSON.stringify({ user: result.user, token: session.access_token }));
 
       // If opened as popup, notify opener
       if (window.opener) {
@@ -34,7 +47,7 @@
       }
 
       // Main window direct redirect
-      window.location.href = role === 'admin' ? '/admin' : '/analytics';
+      window.location.href = result.user.role === 'admin' ? '/admin' : '/analytics';
     } catch (e) {
       console.error('Auth callback error:', e);
       window.location.href = '/login';

@@ -245,12 +245,13 @@
             document.querySelector('.font-label-md.uppercase').textContent = 'Status: Session Conflict';
         }
 
-        // IP limit detection: account has exceeded the 3 IP address limit
-        if (params.get('reason') === 'ip_limit') {
-            document.querySelector('h1').textContent = 'Maximum IP addresses reached.';
+        // Unauthorized account: account is not registered in the database
+        if (params.get('reason') === 'unauthorized') {
+            document.querySelector('h1').textContent = 'Account Not Authorized';
+            var emailText = params.get('email') ? ' (' + params.get('email') + ')' : '';
             document.querySelector('.p-md.border-l-4 p').textContent =
-                'This account has reached the maximum of 3 registered IP addresses. A login attempt from a new location requires admin approval. Please contact your administrator to approve access from this device.';
-            document.querySelector('.font-label-md.uppercase').textContent = 'Status: IP Limit Reached';
+                'This Google account' + emailText + ' is not registered in the DepEd Ormoc City Division LRP database. Access is strictly restricted to pre-authorized school coordinators and division administrators. Your login attempt has been logged for admin review.';
+            document.querySelector('.font-label-md.uppercase').textContent = 'Status: Unauthorized Account';
         }
 
 // Logout button — clear all local/session storage + supabase session + notify server

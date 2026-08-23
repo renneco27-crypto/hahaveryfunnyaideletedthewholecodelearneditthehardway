@@ -47,8 +47,10 @@
 
     if (!result.valid) {
       sessionStorage.removeItem('auth_cache');
+      try { await supabase.auth.signOut(); } catch(e) {}
       var target = result.reason === 'single_session' ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '')
         : result.reason === 'ip_limit' ? '/pending?reason=ip_limit&email=' + encodeURIComponent(result.email || '')
+        : result.reason === 'unauthorized' ? '/pending?reason=unauthorized&email=' + encodeURIComponent(result.email || '')
         : '/pending';
       window.location.href = target;
       return;

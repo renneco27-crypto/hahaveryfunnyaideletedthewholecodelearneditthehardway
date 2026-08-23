@@ -674,14 +674,19 @@ app.get('/api/access-requests', (req, res) => {
   res.json(Object.values(latest));
 });
 
-// POST /api/access-requests/:email/approve — clear IP history so new location can log in
+// POST /api/access-requests/:email/approve — approve user and clear IP history
 app.post('/api/access-requests/:email/approve', async (req, res) => {
   const { email } = req.params;
-  // Clear all registered IPs for this account in Supabase
-  if (serviceClient) {
-    const { error } = await serviceClient.from('registered_ips').delete().eq('email', email);
-    if (error) console.error('approve: clear IPs failed:', error.message);
+  const db = serviceClient || supabase;
+  // Ensure profile is created / approved in profiles table
+  const { data: existingProfile } = await db.from('profiles').select('id, email').eq('email', email).maybeSingle();
+  if (!existingProfile) {
+    await db.from('profiles').insert({ email, role: 'user' });
   }
+  delete revokedUsers[email];
+  // Clear all registered IPs for this account in Supabase
+  const { error } = await db.from('registered_ips').delete().eq('email', email);
+  if (error) console.error('approve: clear IPs failed:', error.message);
   // Remove all remaining entries for this email from the pending queue
   for (var i = blockedRequests.length - 1; i >= 0; i--) {
     if (blockedRequests[i].email === email) blockedRequests.splice(i, 1);
@@ -706,15 +711,33 @@ app.post('/api/verify-session', async (req, res) => {
   const { data: { user }, error } = await supabase.auth.getUser(token);
   if (error || !user) return res.json({ valid: false });
 
-  let role = user.app_metadata?.role;
-  let schoolName = null;
-
   const db = serviceClient || supabase;
-  const { data: profile } = await db
-    .from('profiles').select('role, school_name').eq('id', user.id).maybeSingle();
+  let { data: profile } = await db
+    .from('profiles').select('id, role, school_name, email').eq('id', user.id).maybeSingle();
 
-  if (!role) role = profile?.role || 'user';
-  schoolName = profile?.school_name || null;
+  // If not found by user.id, check by email (in case pre-registered by admin)
+  if (!profile && user.email) {
+    const { data: byEmail } = await db
+      .from('profiles').select('id, role, school_name, email').eq('email', user.email).maybeSingle();
+    if (byEmail) {
+      profile = byEmail;
+      // Sync the Supabase Auth user ID with the profile row
+      await db.from('profiles').update({ id: user.id }).eq('email', user.email);
+    }
+  }
+
+  // Strict check: If account is not in the profiles database or not approved, reject access
+  if (!profile || !['admin', 'user'].includes(profile.role)) {
+    console.log(`[ACCESS DENIED] ${user.email} is not in the authorized profiles database.`);
+    const clientIp = getClientIp(req);
+    if (!blockedRequests.some(r => r.email === user.email)) {
+      blockedRequests.push({ email: user.email, schoolName: null, deviceId: clientIp, timestamp: new Date().toISOString() });
+    }
+    return res.json({ valid: false, reason: 'unauthorized', email: user.email });
+  }
+
+  let role = profile.role || user.app_metadata?.role || 'user';
+  let schoolName = profile.school_name || null;
 
   const avatarUrl = user.user_metadata?.avatar_url || null;
   const fullName = user.user_metadata?.full_name || user.email || 'User';
@@ -736,7 +759,7 @@ app.post('/api/verify-session', async (req, res) => {
 
   // Check if user is revoked
   if (revokedUsers[email]) {
-    return res.json({ valid: false });
+    return res.json({ valid: false, reason: 'revoked', email });
   }
 
   // Admins bypass the IP limit entirely
