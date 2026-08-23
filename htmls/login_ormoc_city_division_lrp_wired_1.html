@@ -144,21 +144,8 @@
                         Sign In
                     </h2>
 <p class="font-body-md text-body-md text-on-surface-variant">
-                        Authorized personnel only. Please use your government-issued credentials.
+                        Authorized personnel only. Please sign in with your official Google account.
                     </p>
-</div>
-<!-- Email Login Form -->
-<div class="mb-md flex flex-col gap-sm">
-<input class="w-full px-md py-sm border border-outline rounded-lg font-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-on-surface" id="emailInput" placeholder="Enter your email" type="email">
-<p id="emailMsg" class="font-body-sm text-body-sm" style="color:red; display:none; margin-top:4px;"></p>
-<button id="emailLoginBtn" class="w-full bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-    Sign In
-</button>
-</div>
-<div class="relative flex items-center mb-md">
-<div class="flex-grow border-t border-outline-variant"></div>
-<span class="flex-shrink-0 mx-sm text-on-surface-variant font-caption text-caption uppercase">or</span>
-<div class="flex-grow border-t border-outline-variant"></div>
 </div>
 <!-- Google Auth Button -->
 <button id="googleLoginBtn" class="w-full flex items-center justify-center gap-sm bg-white border border-outline px-md py-sm rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors duration-200 active:bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" style="transform: translateY(0px); box-shadow: none;">
@@ -255,17 +242,6 @@
           }
         });
         if (error) alert(error.message);
-      });
-
-      // Email login
-      document.getElementById('emailLoginBtn').addEventListener('click', async function() {
-        const email = document.getElementById('emailInput').value.trim().toLowerCase();
-        const msgEl = document.getElementById('emailMsg');
-        if (!email) { msgEl.style.color = 'red'; msgEl.textContent = 'Please enter your email address.'; msgEl.style.display = ''; return; }
-        msgEl.style.display = 'none';
-        const { error } = await supabase.auth.signInWithOtp({ email });
-        if (error) { msgEl.style.color = 'red'; msgEl.textContent = error.message; msgEl.style.display = ''; }
-        else { msgEl.style.color = 'green'; msgEl.textContent = 'Check your email for the magic link.'; msgEl.style.display = ''; }
       });
 
       // Button hover effects
