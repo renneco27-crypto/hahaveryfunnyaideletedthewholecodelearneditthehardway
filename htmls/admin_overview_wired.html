@@ -8,11 +8,18 @@
 <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9ff;
+        .login-mesh {
+            background-color: #f5f6f8;
         }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #eef4ff; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #74777f; }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Atkinson Hyperlegible Next', sans-serif; }
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -36,25 +43,6 @@
         .delay-200 { animation-delay: 200ms; }
         .delay-300 { animation-delay: 300ms; }
         .delay-400 { animation-delay: 400ms; }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        .shimmer-effect {
-            position: relative;
-            overflow: hidden;
-        }
-        .shimmer-effect::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
-            animation: shimmer 2.5s infinite;
-        }
     </style>
 <script id="tailwind-config">
         tailwind.config = {
@@ -147,29 +135,49 @@
         }
     </script>
 </head>
-<body class="bg-background text-on-surface">
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Background Mesh Gradient -->
+<div class="fixed inset-0 z-[-1] login-mesh pointer-events-none"></div>
 
 <!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
-<div class="flex items-center gap-sm">
+<header class="w-full bg-primary text-on-primary border-b border-outline-variant/20 sticky top-0 z-50 shadow-md">
+<div class="max-w-7xl mx-auto px-md h-16 flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-secondary-fixed">shield_person</span>
 </div>
-<div class="flex items-center gap-md"><button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-outline text-primary hover:bg-surface-container transition-all cursor-pointer h-10" title="Account Settings"><span class="material-symbols-outlined">account_circle</span><span class="font-label-md text-label-md">Account</span></button><a class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all cursor-pointer h-10" href="#" onclick="event.preventDefault(); signOut()" title="Logout"><span class="material-symbols-outlined">logout</span><span class="font-label-md text-label-md">Logout</span></a></div>
+<div>
+<span class="font-bold text-headline-md tracking-tight">Ormoc City Division LRP</span>
+<p class="text-caption text-on-primary/70 -mt-1 font-caption">DepEd Learner Rights & Protection Portal</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-on-primary/30 text-on-primary hover:bg-surface/10 transition-all cursor-pointer h-10" title="Account Settings">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md text-label-md">Account</span>
+</button>
+<button onclick="signOut()" class="flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Logout">
+<span class="material-symbols-outlined text-lg">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</button>
+</div>
+</div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <div id="sidebar-root"></div>
 <!-- Main Content Area -->
-<main class="flex-1 ml-[64px] lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
-<!-- Page Header & Stats -->
-<div class="flex justify-between items-end mb-lg">
-<div>
-<h1 class="font-headline-lg text-headline-lg text-primary mb-xs">Operational Overview</h1>
-<p class="font-body-md text-body-md text-on-surface" style="font-size:15px;">Real-time status of Ormoc City Division LRP submissions across regional schools.</p>
+<main class="flex-1 ml-[64px] lg:ml-64 p-md md:p-lg max-w-container-max mx-auto overflow-y-auto">
+<div class="max-w-7xl mx-auto flex flex-col gap-lg">
+<!-- Section 1: Page Header & Stats -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg shadow-sm">
+<div class="mb-md">
+<h1 class="font-display text-display text-primary tracking-tight">Operational Overview</h1>
+<p class="text-on-surface-variant font-body-md text-body-md mt-xs">Real-time status of Ormoc City Division LRP submissions across regional schools.</p>
 </div>
 
-</div>
 <!-- Stats Bento Grid -->
-<div class="bento-grid mb-lg">
-<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-100">
+<div class="bento-grid mb-md">
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-low border border-outline-variant/50 rounded-lg p-md flex flex-col gap-sm slide-in delay-100 shadow-sm">
 <div class="flex justify-between items-start">
 <span class="material-symbols-outlined text-primary text-3xl">map</span>
 </div>
@@ -179,7 +187,7 @@
 </div>
 </div>
 
-<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-200">
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-low border border-outline-variant/50 rounded-lg p-md flex flex-col gap-sm slide-in delay-200 shadow-sm">
 <div class="flex justify-between items-start">
 <span class="material-symbols-outlined text-primary text-3xl">school</span>
 </div>
@@ -189,75 +197,85 @@
 </div>
 </div>
 
-<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-300">
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-low border border-outline-variant/50 rounded-lg p-md flex flex-col gap-sm slide-in delay-300 shadow-sm">
 <div class="flex justify-between items-start">
-<span class="material-symbols-outlined text-primary text-3xl">check_circle</span>
+<span class="material-symbols-outlined text-emerald-700 text-3xl">check_circle</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-green-700 uppercase tracking-wider">Submitted</p>
-<p class="font-display text-display text-green-600" id="stat-submitted">0</p>
+<p class="font-label-md text-label-md text-emerald-800 uppercase tracking-wider">Submitted</p>
+<p class="font-display text-display text-emerald-700" id="stat-submitted">0</p>
 </div>
 </div>
 
-<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-400">
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-low border border-outline-variant/50 rounded-lg p-md flex flex-col gap-sm slide-in delay-400 shadow-sm">
 <div class="flex justify-between items-start">
-<span class="material-symbols-outlined text-primary text-3xl">school</span>
+<span class="material-symbols-outlined text-secondary text-3xl">pending_actions</span>
 </div>
 <div>
-<p class="font-label-md text-label-md text-blue-700 uppercase tracking-wider">Schools</p>
-<p class="font-display text-display text-blue-600" id="stat-pending">—</p>
+<p class="font-label-md text-label-md text-secondary uppercase tracking-wider">Schools</p>
+<p class="font-display text-display text-secondary" id="stat-pending">—</p>
 </div>
 </div>
 
-<div class="col-span-12 lg:col-span-12 bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm slide-in delay-500">
+<div class="col-span-12 lg:col-span-12 bg-surface-container-low border border-outline-variant/50 rounded-lg p-md flex flex-col gap-sm slide-in delay-500 shadow-sm">
 <div class="flex justify-between items-start">
-<span class="material-symbols-outlined text-primary text-3xl">pie_chart</span>
-<span class="font-label-md text-label-md text-primary font-bold">Completion Rate</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-2xl">pie_chart</span>
+<span class="font-label-md text-label-md text-primary font-bold">Division Submission Progress</span>
 </div>
-<div>
-<div class="flex items-center gap-sm">
-<div class="flex-1 bg-outline-variant rounded-full h-3">
-<div class="bg-primary h-3 rounded-full" id="stat-progress" style="width: 0%"></div>
+<span class="font-bold text-headline-md text-primary" id="stat-rate">0%</span>
 </div>
-<span class="font-display text-display text-primary" id="stat-rate">0%</span>
+<div class="w-full bg-surface-variant h-3 rounded-full overflow-hidden border border-outline-variant">
+<div class="bg-secondary h-full transition-all duration-500 rounded-full" id="stat-progress" style="width: 0%"></div>
 </div>
 </div>
-</div></div>
+</div>
+</section>
+
 <!-- Table Section -->
-<section class="bg-surface-container-lowest border border-outline-variant">
-<div class="p-md border-b border-outline-variant flex justify-between items-center">
-<h2 class="font-headline-md text-headline-md text-primary">Recent Submissions</h2>
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h2 class="font-headline-md text-headline-md text-primary">School Submissions Registry</h2>
 <div class="flex gap-sm items-center">
-<select id="status-filter" class="text-xs border border-outline-variant rounded px-sm py-1 bg-surface text-on-surface font-label-md">
-<option value="all">All</option>
+<select id="status-filter" class="text-xs border border-outline-variant rounded-lg px-sm py-1.5 bg-surface text-on-surface font-label-md focus:ring-2 focus:ring-secondary/20">
+<option value="all">Status: All</option>
 <option value="submitted">Submitted</option>
 <option value="pending">Not Yet Submitted</option>
 </select>
-<button class="text-on-surface-variant hover:text-primary transition-colors" onclick="document.getElementById('status-filter').value='all'; renderTable();">
-<span class="material-symbols-outlined">filter_list</span>
+<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-variant text-on-surface-variant hover:text-primary transition-colors" onclick="document.getElementById('status-filter').value='all'; renderTable();">
+<span class="material-symbols-outlined text-sm">filter_list</span>
 </button>
 </div>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full border-collapse">
 <thead>
-<tr class="bg-surface-container-low border-b-2 border-primary">
-<th class="text-left p-md font-label-md text-label-md text-primary">School Name</th>
-<th class="text-left p-md font-label-md text-label-md text-primary">PSDS</th>
-<th class="text-left p-md font-label-md text-label-md text-primary">District</th>
-<th class="text-left p-md font-label-md text-label-md text-primary">Status</th>
-
+<tr class="bg-surface-container-high text-xs uppercase tracking-wider text-on-surface-variant font-bold border-b border-outline-variant/60">
+<th class="text-left px-md py-sm font-label-md text-label-md text-on-surface-variant">School Name</th>
+<th class="text-left px-md py-sm font-label-md text-label-md text-on-surface-variant">PSDS</th>
+<th class="text-left px-md py-sm font-label-md text-label-md text-on-surface-variant">District</th>
+<th class="text-left px-md py-sm font-label-md text-label-md text-on-surface-variant">Status</th>
 </tr>
 </thead>
-<tbody id="schools-tbody" class="font-body-md text-body-md">
+<tbody id="schools-tbody" class="font-body-md text-body-md divide-y divide-outline-variant/30">
 </tbody>
 </table>
 </div>
-<div class="p-md bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center font-caption text-caption">
-<span id="showing-count">Loading...</span>
+<div class="p-md bg-surface-container-low border-t border-outline-variant flex justify-between items-center font-caption text-caption">
+<span id="showing-count" class="text-on-surface-variant">Loading...</span>
 <div class="flex gap-xs">
-<button id="prev-page-btn" class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
-<span class="material-symbols-outlined">chevron_left</span>
+<button id="prev-page-btn" class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button id="next-page-btn" class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
 </button>
 <button id="next-page-btn" class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
 <span class="material-symbols-outlined">chevron_right</span>

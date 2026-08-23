@@ -93,8 +93,18 @@
 <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
         }
-        body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+        .login-mesh {
+            background-color: #f5f6f8;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #eef4ff; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #74777f; }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Atkinson Hyperlegible Next', sans-serif; }
         .table-zebra tr:nth-child(even) { background-color: #F9FAFB; }
         .tooltip-trigger:hover + .tooltip { opacity: 1; visibility: visible; }
         
@@ -112,57 +122,81 @@
         tbody tr:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </head>
-<body class="text-on-surface">
-<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
-<img alt="Background" class="w-full h-full object-cover opacity-18 blur-[6px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDibVxjc9vP4UsruNtNi9TguKjy5IhDKS39jqRZv6DbQ3wADFFU0Qz_MLKHpPCNN3T8iMRaVMyxuhncJo4S6Zuj6aL5mKWbFULnNOHqtVyCzIQgl7ZsAfkWKX5vRNAqfUtuxX3mGjh7SuK25KbykitSmkV-FNeZkTG0oy4srcxY1nRPcfbAavgT0nNIKB4kdQMtkSmg4YMBf2lWdbMclZwmbDEiJGYW5gCU3FVuujjBpDzBB7wXzoZUz5eDVKjiaRrjFk_nl32Syghs">
-</div>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Background Mesh Gradient -->
+<div class="fixed inset-0 z-[-1] login-mesh pointer-events-none"></div>
+
 <!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
-<div class="flex items-center gap-sm"><div class="flex flex-col">
-<span class="font-headline-md text-headline-md font-bold text-primary">Ormoc City Division LRP</span>
-<span class="font-caption text-caption text-on-surface-variant -mt-1">Empowering Integrity, Protecting Futures</span>
-</div></div>
-<div class="flex items-center gap-md"><button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center justify-center gap-xs px-md h-10 min-w-[120px] text-on-surface-variant cursor-pointer active:opacity-80 transition-all hover:text-primary rounded-lg border border-outline-variant hover:border-primary hover:bg-surface-variant font-label-md text-label-md">
+<header class="w-full bg-primary text-on-primary border-b border-outline-variant/20 sticky top-0 z-50 shadow-md">
+<div class="max-w-7xl mx-auto px-md h-16 flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-secondary-fixed">shield_person</span>
+</div>
+<div>
+<span class="font-bold text-headline-md tracking-tight">Ormoc City Division LRP</span>
+<p class="text-caption text-on-primary/70 -mt-1 font-caption">DepEd Learner Rights & Protection Portal</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-on-primary/30 text-on-primary hover:bg-surface/10 transition-all cursor-pointer h-10" title="Account Settings">
     <span class="material-symbols-outlined">account_circle</span>
     <span class="font-label-md text-label-md">Account</span>
 </button>
-<button class="flex items-center justify-center gap-xs px-md h-10 min-w-[120px] bg-primary text-on-primary cursor-pointer active:opacity-80 transition-all hover:bg-primary-container rounded-lg font-label-md text-label-md" onclick="signOut()">
-    <span class="material-symbols-outlined">logout</span>
-    <span class="font-label-md text-label-md">Logout</span>
-</button></div>
+<button class="flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" onclick="signOut()">
+    <span class="material-symbols-outlined text-lg">logout</span>
+    <span class="font-label-md text-label-md">Sign Out</span>
+</button>
+</div>
+</div>
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <!-- SideNavBar -->
 <div id="sidebar-root"></div>
 <!-- Main Content Area -->
-<main class="flex-1 ml-[64px] lg:ml-64 p-lg max-w-container-max mx-auto">
+<main class="flex-1 ml-[64px] lg:ml-64 p-md md:p-lg max-w-container-max mx-auto overflow-y-auto">
+<div class="max-w-7xl mx-auto flex flex-col gap-lg">
+<!-- Section 1: Page Header -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg shadow-sm">
+<div>
+<h1 class="font-display text-display text-primary tracking-tight">Access Management</h1>
+<p class="text-on-surface-variant font-body-md text-body-md mt-xs">Review, verify, and approve school-level user access requests across Ormoc City Division.</p>
+</div>
+</section>
+
 <!-- Table Container -->
-<div class="bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant rounded-lg overflow-hidden shadow-sm">
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h2 class="font-headline-md text-headline-md text-primary">Pending Access Requests</h2>
+<span class="font-caption text-caption text-on-surface-variant font-bold" id="access-count">Loading requests...</span>
+</div>
+<div class="overflow-x-auto">
 <table class="w-full text-left border-collapse table-zebra">
 <thead>
-<tr class="border-b-2 border-primary">
-<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">User Email</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">Institution</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">Device ID</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider">Request Date</th>
-<th class="px-md py-sm font-label-md text-label-md text-on-surface uppercase tracking-wider text-right">Actions</th>
+<tr class="bg-surface-container-high text-xs uppercase tracking-wider text-on-surface-variant font-bold border-b border-outline-variant/60">
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">User Email</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Institution</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Device ID</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Request Date</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
 </tr>
 </thead>
-<tbody class="font-body-md text-body-md text-on-surface" id="access-tbody">
+<tbody class="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/30" id="access-tbody">
 </tbody>
 </table>
-<div class="px-md py-sm bg-surface-container-low/90 flex justify-between items-center border-t border-outline-variant">
-<span class="font-caption text-caption text-on-surface-variant" id="access-count">No pending requests</span>
+</div>
+<div class="px-md py-sm bg-surface-container-low flex justify-between items-center border-t border-outline-variant">
+<span class="font-caption text-caption text-on-surface-variant">Live Authorization Queue</span>
 <div class="flex gap-xs">
-<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
+<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors">
 <span class="material-symbols-outlined text-sm">chevron_left</span>
 </button>
-<button class="p-1 border border-outline-variant rounded hover:bg-surface-variant transition-colors">
+<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors">
 <span class="material-symbols-outlined text-sm">chevron_right</span>
 </button>
 </div>
 </div>
-</div>
+</section>
 <!-- Contextual Information Card -->
 <div class="mt-lg grid grid-cols-1 md:grid-cols-2 gap-md">
 <div class="p-md bg-surface border border-outline-variant rounded-lg">

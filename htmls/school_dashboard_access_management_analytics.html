@@ -167,68 +167,78 @@
         }
     </script>
 <style>
-        .watermark-bg {
-            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD3gf1MtQLwQ-CbW4COxgyc5b6D8OecPxvl-GJXSn7XxFtP0EYansnhKGDzj8_I0DXtOkImqI2izqVTxMqw8ac2lRcfTPdJLPcFGmPw0YX6RC7AYM4KukkaYJhWAuMnGm_ObK5LaEoCPD0MW2VDzPrHFFxj8UTnh5QrIYEJcIU9A-ULKzaQK6M0qvvmZUkjS6No-u3bxtpL6PBFYcLIlkn4hIuileaow57rNVU9Qx0N50Vz-pdXKoG9NXKNTXnnc1Q5r86wg3Z-KvAG');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.05;
-            z-index: -1;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
         }
+        .login-mesh {
+            background-color: #f5f6f8;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #eef4ff; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #74777f; }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Atkinson Hyperlegible Next', sans-serif; }
     </style>
 </head>
-<body class="bg-background text-on-surface font-body-md relative overflow-x-hidden">
-<div class="watermark-bg"></div>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Background Mesh Gradient -->
+<div class="fixed inset-0 z-[-1] login-mesh pointer-events-none"></div>
+
 <!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-md h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant">
-<div class="flex items-center gap-sm">
-<div class="flex flex-col">
-<span class="font-headline-md text-headline-md font-bold text-primary">Ormoc City Division LRP</span>
-<span class="text-xs text-on-surface-variant font-medium">Empowering Integrity, Protecting Futures</span>
+<header class="w-full bg-primary text-on-primary border-b border-outline-variant/20 sticky top-0 z-50 shadow-md">
+<div class="max-w-7xl mx-auto px-md h-16 flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-secondary-fixed">shield_person</span>
+</div>
+<div>
+<span class="font-bold text-headline-md tracking-tight">Ormoc City Division LRP</span>
+<p class="text-caption text-on-primary/70 -mt-1 font-caption">DepEd Learner Rights & Protection Portal</p>
 </div>
 </div>
-    <div class="flex items-center gap-sm">
-        <button onclick="window.open('https://myaccount.google.com/','_blank')" aria-label="Account" class="h-10 min-w-[110px] flex items-center justify-center gap-xs rounded bg-surface border border-outline text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors">
-            <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">account_circle</span>
-            Account
-        </button>
-        <button onclick="signOut()" aria-label="Logout" class="h-10 min-w-[110px] flex items-center justify-center gap-xs rounded bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed transition-colors">
-            <span class="material-symbols-outlined" style="font-variation-settings: "FILL" 0;">logout</span>
-            Logout
-        </button>
-    </div>
+<div class="flex items-center gap-md">
+<button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-on-primary/30 text-on-primary hover:bg-surface/10 transition-all cursor-pointer h-10" title="Account Settings">
+    <span class="material-symbols-outlined">account_circle</span>
+    <span class="font-label-md text-label-md">Account</span>
+</button>
+<button onclick="signOut()" class="flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Sign Out">
+    <span class="material-symbols-outlined text-lg">logout</span>
+    <span class="font-label-md text-label-md">Sign Out</span>
+</button>
+</div>
+</div>
 </header>
-<div class="flex">
+<div class="flex min-h-[calc(100vh-64px)]">
 <div id="sidebar-root"></div>
 <!-- Main Content Canvas -->
-<main class="w-full ml-[64px] lg:ml-64 p-md md:p-lg min-h-screen">
-<div class="max-w-container-max mx-auto">
-<!-- Header -->
-<div class="mb-lg">
-<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-base">Access Management &amp; Analytics</h1>
-<p class="font-body-md text-body-md text-on-surface-variant"><span id="school-name-header"></span>Review your school's reporting performance and historical data.</p>
+<main class="flex-1 ml-[64px] lg:ml-64 p-md md:p-lg max-w-container-max mx-auto overflow-y-auto">
+<div class="max-w-7xl mx-auto flex flex-col gap-lg">
+<!-- Header Card -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg shadow-sm">
+<div>
+<h1 class="font-display text-display text-primary tracking-tight">School Overview &amp; Analytics</h1>
+<p class="text-on-surface-variant font-body-md text-body-md mt-xs"><span id="school-name-header" class="font-semibold text-primary"></span> Review your school's reporting performance and historical submission records.</p>
 </div>
+</section>
+
 <!-- Hero Metrics -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg">
-<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg flex flex-col gap-sm bg-surface-container-low">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-md">
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg flex flex-col gap-sm shadow-sm">
 <div class="flex items-center justify-between text-on-surface-variant">
 <h3 class="font-label-md text-label-md">Total Incidents Reported</h3>
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 0;">analytics</span>
+<span class="material-symbols-outlined text-primary">analytics</span>
 </div>
-<div class="font-display text-display text-on-surface" id="total-incidents">0</div>
+<div class="font-display text-display text-primary" id="total-incidents">0</div>
 <div class="font-caption text-caption text-outline">Year to date</div>
 </div>
 
-<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg flex flex-col gap-sm bg-surface-container-low">
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg flex flex-col gap-sm shadow-sm">
 <div class="flex items-center justify-between text-on-surface-variant">
 <h3 class="font-label-md text-label-md">Last Submission Date</h3>
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 0;">history</span>
+<span class="material-symbols-outlined text-primary">history</span>
 </div>
 <div class="font-headline-md text-headline-md text-on-surface mt-sm" id="last-submission">—</div>
 <div class="font-caption text-caption text-outline mt-auto">Processed successfully</div>
