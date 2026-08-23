@@ -136,20 +136,20 @@
 <header class="w-full bg-primary text-on-primary border-b border-outline-variant/20 sticky top-0 z-50 shadow-md">
 <div class="max-w-7xl mx-auto px-md h-16 flex items-center justify-between">
 <div class="flex items-center gap-md">
-<button class="md:hidden p-2 rounded-lg hover:bg-surface/10 text-on-primary transition-colors" id="mobile-menu-btn">
-<span class="material-symbols-outlined">menu</span>
-</button>
-<a class="flex items-center gap-xs font-bold text-headline-md tracking-tight hover:opacity-90 transition-opacity" href="/overview">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
 <span class="material-symbols-outlined text-secondary-fixed">shield_person</span>
-<span>DepEd LRP</span>
-</a>
+</div>
+<div>
+<span class="font-bold text-headline-md tracking-tight">Ormoc City Division LRP</span>
+<p class="text-caption text-on-primary/70 -mt-1 font-caption">DepEd Learner Rights & Protection Portal</p>
+</div>
 </div>
 <div class="flex items-center gap-md">
-<div class="hidden sm:flex items-center gap-xs bg-surface-container-highest/20 px-sm py-1 rounded-full border border-outline-variant/30 text-xs">
-<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-<span class="text-on-primary/90 font-medium">Division Admin Active</span>
-</div>
-<button onclick="handleSignOut()" class="signout-btn flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary border border-transparent transition-all cursor-pointer h-10 font-label-md text-label-md" title="Sign Out">
+<button onclick="window.open('https://myaccount.google.com/','_blank')" class="flex items-center gap-xs px-md py-sm rounded-lg border border-on-primary/30 text-on-primary hover:bg-surface/10 transition-all cursor-pointer h-10" title="Account Settings">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md text-label-md">Account</span>
+</button>
+<button onclick="signOut()" class="signout-btn flex items-center gap-xs px-md py-sm rounded-lg bg-secondary text-on-primary hover:bg-secondary-container hover:text-on-secondary-container transition-all cursor-pointer h-10" title="Sign Out">
 <span class="material-symbols-outlined text-lg">logout</span>
 <span class="font-label-md text-label-md">Sign Out</span>
 </button>
