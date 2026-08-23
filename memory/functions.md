@@ -184,18 +184,13 @@ Description: Avatar caching in localStorage is now keyed per user (`avatar_cache
 
 ### htmls/annex_modules_redesigned.html
 
-Keywords: annex comparison, impact flags, definitions legend, legal notes, annex e metadata, principal validation
+Keywords: school submission bar, annex a visibility, jsx card nesting fix, renderSchoolBar
 
-Description: Synchronized all Annex forms (A-E) to match official specifications:
-- Annex A: Added `E-5: Death` and `E-6: Psychological / Emotional Damage` to impactFlags; added Definitions & Legend section (Forms A-1 to A-5, Motives M-1 to M-3, Effects E-1 to E-6).
-- Annex B: Formatted Victim/Perpetrator labels and placeholders to `(Last Name, First Name, M.I.)`; added Policy Note ("No amicable settlement") and Abuse Type / Relationship Definitions card.
-- Annex C: Added Legal Notes card for Section 57 of RA 9344 and PD 1563 (Mendicancy Law); specified "Validated By (School Principal / Head)".
-- Annex D: Specified "Validated By (School Principal / Head)".
-### htmls/latest_excel_division_consolidated_reports.html
+Description: 
+- Added per-school live submission progress bar banner (`#school-submission-bar`) in the header showing the current logged-in school's total submissions count with progress fill.
+- Fixed unclosed card `<div>` elements in Module A and Module C narrative cards that caused Babel JSX parse errors (`Unexpected token }`).
+- Placed `renderSchoolBar` in a dedicated standard script block with `user_updated` event listener and Supabase query.
 
-Keywords: excel master table preview, multi-sheet xlsx export, sheetjs, division consolidated reports
-
-Description: Added interactive **Excel Master Table** preview directly inside the reports screen with sub-tabs for all 5 sheets (Bullying, Child Abuse, Children at Risk, CICL, Other LRP Concerns). Added **Download Excel (.xlsx)** button powered by SheetJS that generates the complete 5-sheet workbook `DepEd_Ormoc_Division_Master_Database.xlsx` directly in the browser with live database entries and summary totals.
 
 
 
