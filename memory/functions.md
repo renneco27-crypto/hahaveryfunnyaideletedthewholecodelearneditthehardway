@@ -210,6 +210,14 @@ Description:
 - Wired Account and Sign Out buttons in `latest_excel_division_consolidated_reports.html` to `window.signOut()` and Account Settings with identical button styling as `admin_overview_wired.html`.
 - Added `.signout-btn` with red glow hover effect (`hover:bg-error hover:shadow-[0_0_16px_rgba(186,26,26,0.8)]`) across all navigation headers and sidebars.
 
+### htmls/login_ormoc_city_division_lrp_wired_1.html
+
+Keywords: google oauth exclusive, email login disabled, secure institutional signin
+
+Description:
+- Removed email OTP login form and input to prevent unauthorized or bypassed email logins.
+- Enforced Google OAuth ("Sign in with Google") as the exclusive authentication method for all authorized personnel.
+
 
 
 
