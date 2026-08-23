@@ -191,13 +191,17 @@ Description: Synchronized all Annex forms (A-E) to match official specifications
 - Annex B: Formatted Victim/Perpetrator labels and placeholders to `(Last Name, First Name, M.I.)`; added Policy Note ("No amicable settlement") and Abuse Type / Relationship Definitions card.
 - Annex C: Added Legal Notes card for Section 57 of RA 9344 and PD 1563 (Mendicancy Law); specified "Validated By (School Principal / Head)".
 - Annex D: Specified "Validated By (School Principal / Head)".
-### server.js — Make.com Webhook & Excel Schema Integration
+### htmls/latest_excel_division_consolidated_reports.html
 
-Keywords: make.com webhook, deped_lrp_report_schema.json, transformReportToMakePayloads, automatic excel export
+Keywords: excel master table preview, multi-sheet xlsx export, sheetjs, division consolidated reports
 
-Function Names: transformReportToMakePayloads, processUserQueue
+Description: Added interactive **Excel Master Table** preview directly inside the reports screen with sub-tabs for all 5 sheets (Bullying, Child Abuse, Children at Risk, CICL, Other LRP Concerns). Added **Download Excel (.xlsx)** button powered by SheetJS that generates the complete 5-sheet workbook `DepEd_Ormoc_Division_Master_Database.xlsx` directly in the browser with live database entries and summary totals.
 
-Description: `server.js` transforms incoming report submissions directly into the standardized `deped_lrp_report_schema.json` format (`report_type: 'bullying' | 'child_abuse' | 'other_lrp_concerns' | 'children_at_risk' | 'cicl'`) and dispatches it directly to Make.com Webhook (`MAKE_WEBHOOK_URL`). Make.com can route by `report_type` and append rows directly to Microsoft 365 Excel sheets on OneDrive.
+
+
+
+
+
 
 
 
