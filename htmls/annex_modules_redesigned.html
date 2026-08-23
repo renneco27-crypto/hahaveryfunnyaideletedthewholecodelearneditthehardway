@@ -207,7 +207,7 @@ button,input,select,textarea { font:inherit; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-image: url('/OIP (1).webp');
+  background-image: url('/OIP (1).jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -311,13 +311,20 @@ const ModuleAReportingPanel = () => {
   const savedPrepared = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('lrp_prepared_by') || 'null') : null;
   const savedValidated = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('lrp_validated_by') || 'null') : null;
 
-  const [schoolMetadata, setSchoolMetadata] = useState(savedMeta || {
-    schoolName: '',
-    schoolId: '',
-    reportingYear: String(new Date().getFullYear()) + '-' + String(new Date().getFullYear() + 1),
-    address: '',
-    classification: 'Public',
-    level: 'Elementary'
+  const [schoolMetadata, setSchoolMetadata] = useState(() => {
+    var u = typeof window !== 'undefined' ? window.__user : null;
+    var base = savedMeta || {
+      schoolName: '',
+      schoolId: '',
+      reportingYear: String(new Date().getFullYear()) + '-' + String(new Date().getFullYear() + 1),
+      address: '',
+      classification: 'Public',
+      level: 'Elementary'
+    };
+    if (u && u.schoolName) {
+      base = Object.assign({}, base, { schoolName: u.schoolName, schoolId: u.schoolId || base.schoolId || '' });
+    }
+    return base;
   });
 
   const [categoryData, setCategoryData] = useState({
@@ -333,23 +340,18 @@ const ModuleAReportingPanel = () => {
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(function() {
-    var u = window.__user;
-    if (u && u.schoolName) {
-      setSchoolMetadata(function(prev) {
-        if (prev.schoolName) return prev;
-        return Object.assign({}, prev, { schoolName: u.schoolName, schoolId: u.schoolId || '' });
-      });
-    }
-    var iv = setInterval(function() {
-      u = window.__user;
+    function syncUserSchool() {
+      var u = window.__user;
       if (u && u.schoolName) {
-        clearInterval(iv);
         setSchoolMetadata(function(prev) {
-          if (prev.schoolName) return prev;
-          return Object.assign({}, prev, { schoolName: u.schoolName, schoolId: u.schoolId || '' });
+          if (prev.schoolName === u.schoolName && (!u.schoolId || prev.schoolId === u.schoolId)) return prev;
+          return Object.assign({}, prev, { schoolName: u.schoolName, schoolId: u.schoolId || prev.schoolId || '' });
         });
       }
-    }, 200);
+    }
+    syncUserSchool();
+    window.addEventListener('user_updated', syncUserSchool);
+    var iv = setInterval(syncUserSchool, 200);
 
     // Load draft if ?draft=REF is in URL
     var params = new URLSearchParams(window.location.search);
@@ -360,7 +362,14 @@ const ModuleAReportingPanel = () => {
         .then(function(draft) {
           var d = draft.report_data || {};
           setDraftRef(draft.reference_number);
-          if (d.schoolMetadata) setSchoolMetadata(d.schoolMetadata);
+          if (d.schoolMetadata) {
+            setSchoolMetadata(function(prev) {
+              var merged = Object.assign({}, d.schoolMetadata);
+              var u = window.__user;
+              if (u && u.schoolName) merged.schoolName = u.schoolName;
+              return merged;
+            });
+          }
           if (d.categoryData) setCategoryData(d.categoryData);
           if (d.preparedBy) setPreparedBy(d.preparedBy);
           if (d.validatedBy) setValidatedBy(d.validatedBy);
@@ -376,7 +385,10 @@ const ModuleAReportingPanel = () => {
         .catch(function(e) { console.error('Failed to load draft:', e); });
     }
 
-    return function() { clearInterval(iv); };
+    return function() {
+      clearInterval(iv);
+      window.removeEventListener('user_updated', syncUserSchool);
+    };
   }, []);
 
   // Persist school metadata + preparedBy/validatedBy to localStorage
@@ -486,11 +498,11 @@ const ModuleAReportingPanel = () => {
   const currentCategoryData = categoryData[activeCategory];
 
   const categoryOptions = [
-    { id: 'A-1', label: 'A-1: Physical Bullying (Unwanted physical contact: punching, shoving, kicking, headlocks, etc.)' },
-    { id: 'A-2', label: 'A-2: Verbal Bullying (Acts/words debasing, degrading, or demeaning human dignity)' },
-    { id: 'A-3', label: 'A-3: Bullying in Written Form (Derogatory remarks written in notebooks, walls, lockers, etc.)' },
-    { id: 'A-4', label: 'A-4: Cyberbullying (Bullying through technology/electronic means: texting, email, chat, online games)' },
-    { id: 'A-5', label: 'A-5: Retaliation (Acts against a person who reports, provides info, or witnesses bullying)' }
+    { id: 'A-1', name: 'Physical Bullying', desc: 'Unwanted physical contact: punching, shoving, kicking, headlocks, inflicting bodily harm, etc.', label: 'A-1: Physical Bullying (Unwanted physical contact: punching, shoving, kicking, headlocks, etc.)' },
+    { id: 'A-2', name: 'Verbal Bullying', desc: 'Acts or words debasing, degrading, or demeaning human dignity, slander, profanity, name-calling, etc.', label: 'A-2: Verbal Bullying (Acts/words debasing, degrading, or demeaning human dignity)' },
+    { id: 'A-3', name: 'Bullying in Written Form', desc: 'Derogatory or threatening remarks written in notebooks, walls, lockers, posters, etc.', label: 'A-3: Bullying in Written Form (Derogatory remarks written in notebooks, walls, lockers, etc.)' },
+    { id: 'A-4', name: 'Cyberbullying', desc: 'Bullying through technology or electronic means: texting, email, chat, social media, online gaming, etc.', label: 'A-4: Cyberbullying (Bullying through technology/electronic means: texting, email, chat, online games)' },
+    { id: 'A-5', name: 'Retaliation', desc: 'Acts against a person who reports, provides information, or acts as a witness to bullying incidents.', label: 'A-5: Retaliation (Acts against a person who reports, provides info, or witnesses bullying)' }
   ];
 
   const motiveOptions = [
@@ -1177,10 +1189,17 @@ const ModuleAReportingPanel = () => {
     if (!reportPayload || submitting) return;
     setSubmitting(true);
     try {
+      var finalPayload = Object.assign({}, reportPayload);
+      if (window.__user) {
+        finalPayload.userEmail = window.__user.email;
+      }
       const res = await fetch('/api/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reportPayload)
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (window.__token || '')
+        },
+        body: JSON.stringify(finalPayload)
       });
       if (!res.ok) throw new Error('Server returned ' + res.status);
       setFormState('submitted');
@@ -1300,7 +1319,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="School Name" style={{ backgroundColor: '#f1f5f9', cursor: 'not-allowed' }} />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1356,14 +1375,40 @@ const ModuleAReportingPanel = () => {
                 <div className="card-header-subtitle">OFFENSE &amp; VIOLATION DETAILS</div>
               </div>
             </div>
-            <div className="category-pills">
-              {categoryOptions.map(cat => (
-                <button key={cat.id} className={`category-btn ${activeCategory === cat.id ? 'active' : ''}`} onClick={() => setActiveCategory(cat.id)}>
-                  {cat.id}
-                </button>
-              ))}
+            <div className="grid grid-cols-1 gap-sm">
+              {categoryOptions.map(cat => {
+                const isActive = activeCategory === cat.id;
+                return (
+                  <div
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`flex items-start gap-md p-md rounded-xl border cursor-pointer transition-all ${
+                      isActive
+                        ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary'
+                        : 'border-outline-variant/60 bg-surface-container-lowest hover:border-primary/50 hover:bg-surface-container-low'
+                    }`}
+                  >
+                    <div className="pt-0.5">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isActive ? 'border-primary' : 'border-outline'}`}>
+                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-xs">
+                        <span className={`font-bold text-sm ${isActive ? 'text-primary' : 'text-on-surface'}`}>{cat.id}</span>
+                        <span className="text-on-surface-variant text-sm font-semibold">— {cat.name}</span>
+                      </div>
+                      <p className="text-xs text-on-surface-variant/90 mt-0.5 leading-relaxed">{cat.desc}</p>
+                    </div>
+                    {isActive && (
+                      <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full self-center">
+                        Active Category
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-            <div style={{ fontSize: '12px', color: '#44474e', marginTop: '8px' }}>{categoryOptions.find(c => c.id === activeCategory)?.label}</div>
           </div>
 
           <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
@@ -1596,7 +1641,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="School Name" style={{ backgroundColor: '#f1f5f9', cursor: 'not-allowed' }} />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -1854,7 +1899,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="School Name" style={{ backgroundColor: '#f1f5f9', cursor: 'not-allowed' }} />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>
@@ -2041,7 +2086,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School</label>
-                <input className="field-input" value={schoolMetadata.schoolName} readOnly />
+                <input className="field-input" value={schoolMetadata.schoolName} readOnly placeholder="School Name" style={{ backgroundColor: '#f1f5f9', cursor: 'not-allowed' }} />
               </div>
               <div>
                 <label className="field-label">School Year</label>
@@ -2174,7 +2219,7 @@ const ModuleAReportingPanel = () => {
             <div className="panel-grid">
               <div>
                 <label className="field-label">School Name <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="School Name" style={{ backgroundColor: '#f1f5f9', cursor: 'not-allowed' }} />
                 {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
               </div>
               <div>

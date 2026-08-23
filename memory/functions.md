@@ -227,7 +227,32 @@ Description:
 - Created dedicated Reporting History page `htmls/reporting_history_wired.html` at route `/history` displaying all historical compliance submissions and drafts.
 - Added search bar and filter controls for Annex Modules (A–E) and submission status (Submitted / Draft).
 - Added `Reporting History` item into `htmls/sidebar.js` for both admin and school coordinator accounts.
-- Added blurred background image `OIP (1).webp` to `htmls/annex_modules_redesigned.html`, `htmls/school_dashboard_access_management_analytics.html`, and `htmls/reporting_history_wired.html`.
+### htmls/annex_modules_redesigned.html & server.js
+
+Keywords: dynamic school metadata sync, tamper proof submission, authenticated profile school lock, localstorage override fix
+
+Function Names: syncUserSchool, confirmSubmit, POST /api/submit, flushUserQueue
+
+Description:
+- Fixed school metadata in React forms being trapped by stale `localStorage` (`lrp_school_meta`) cache. React now synchronizes `schoolMetadata.schoolName` directly with authenticated `window.__user.schoolName` on initial render and on `user_updated` events.
+- Enforced server-side tamper-proofing in `server.js` `/api/submit`. Submissions authenticate via `Authorization: Bearer <token>` and force `school_name` and `school_id` from the verified user profile in Supabase DB, preventing malicious client HTML/JS DOM attribute editing from altering the submitted school or database profile.
+- Removed auto-profile updates in `flushUserQueue` and `/api/verify-session` to ensure database profiles remain the single immutable source of truth for user school assignment.
+
+### Custom Blurred Background Image Update
+
+Keywords: background image, OIP (1).jpg, panels mesh background
+
+Description:
+- Copied updated background image `OIP (1).jpg` into `htmls/OIP (1).jpg`.
+- Updated `.login-mesh` CSS background-image URL from `/OIP (1).webp` to `/OIP (1).jpg` across `htmls/annex_modules_redesigned.html`, `htmls/reporting_history_wired.html`, and `htmls/school_dashboard_access_management_analytics.html`.
+
+### Incident Categories (Annex A) UI Redesign
+
+Keywords: incident categories redesign, annex a typography legibility, design harmony with annex b
+
+Description:
+- Redesigned the "Incident Categories" section in `htmls/annex_modules_redesigned.html` from small pills to full structured interactive option cards with bold category codes (`A-1` through `A-5`), category titles, readable descriptions, and active highlight borders, aligning directly with the design principles and typography legibility of Annex B ("Nature of Child Abuse").
+
 
 
 

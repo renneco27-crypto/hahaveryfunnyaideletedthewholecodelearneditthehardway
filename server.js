@@ -93,9 +93,6 @@ async function processUserQueue(email) {
       scheduleUserQueue(email, null);
     } else {
       console.log(`Inserted ${inserts.length} reports for ${email}`);
-      if (inserts[0]?.school_name && email) {
-        await db.from('profiles').update({ school_name: inserts[0].school_name }).eq('email', email);
-      }
       // Dispatch formatted JSON to Make.com webhook according to deped_lrp_report_schema.json
       const webhookUrl = process.env.MAKE_WEBHOOK_URL || 'https://hook.eu1.make.com/9acokbud64bqr23nugs4gfhjvfdzyj8f';
       for (const row of inserts) {
@@ -410,8 +407,35 @@ function getToken(req) {
 app.post('/api/submit', async (req, res) => {
   try {
     const reportData = req.body;
+    let email = reportData.userEmail || 'unknown';
+    const token = getToken(req);
+    const db = serviceClient || supabase;
+
+    if (token) {
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        email = user.email || email;
+        reportData.userEmail = email;
+        const { data: profile } = await db
+          .from('profiles')
+          .select('role, school_name, school_id')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        // Enforce authentic server-side school from profile for non-admins (or when profile school exists)
+        if (profile?.school_name && profile.role !== 'admin') {
+          if (!reportData.metadata) reportData.metadata = {};
+          reportData.metadata.schoolName = profile.school_name;
+          if (profile.school_id) reportData.metadata.schoolId = profile.school_id;
+          if (reportData.schoolMetadata) {
+            reportData.schoolMetadata.schoolName = profile.school_name;
+            if (profile.school_id) reportData.schoolMetadata.schoolId = profile.school_id;
+          }
+        }
+      }
+    }
+
     const refNum = reportData.referenceNumber || `LRP-${Date.now()}`;
-    const email = reportData.userEmail || 'unknown';
     const userDir = path.join(TEMP_DIR, email);
     if (!fs.existsSync(userDir)) fs.mkdirSync(userDir, { recursive: true });
     const filename = `${refNum}.json`;
@@ -743,19 +767,7 @@ app.post('/api/verify-session', async (req, res) => {
   const fullName = user.user_metadata?.full_name || user.email || 'User';
   const email = user.email;
 
-  // If schoolName is not in profile, look up recent submissions for this user
-  if (!schoolName && email) {
-    const { data: recentReports } = await db
-      .from('bullying_reports')
-      .select('school_name')
-      .eq('user_email', email)
-      .order('created_at', { ascending: false })
-      .limit(1);
-    if (recentReports && recentReports.length > 0 && recentReports[0].school_name) {
-      schoolName = recentReports[0].school_name;
-      await db.from('profiles').update({ school_name: schoolName }).eq('id', user.id);
-    }
-  }
+
 
   // Check if user is revoked
   if (revokedUsers[email]) {
