@@ -219,10 +219,15 @@ Description:
 
 Keywords: unauthorized rejection, profiles whitelist, access requests queue, admin approval
 
+### htmls/reporting_history_wired.html, Custom Blurred Background
+
+Keywords: reporting history panel, historical compliance submissions, blurred background webp, search and filter
+
 Description:
-- Enforced strict whitelist authentication in `server.js` (`/api/verify-session`), `auth-guard.js`, `auth-callback.html`, and `login_ormoc_city_division_lrp_wired_1.html`.
-- Google OAuth logins for accounts NOT found in the `profiles` table are immediately rejected, signed out from Supabase, logged into `blockedRequests` queue for Admin review, and redirected to `/pending?reason=unauthorized`.
-- When an admin approves an account in Access Management (`/access`), the user profile is created in `profiles` and authorized.
+- Created dedicated Reporting History page `htmls/reporting_history_wired.html` at route `/history` displaying all historical compliance submissions and drafts.
+- Added search bar and filter controls for Annex Modules (A–E) and submission status (Submitted / Draft).
+- Added `Reporting History` item into `htmls/sidebar.js` for both admin and school coordinator accounts.
+- Added blurred background image `OIP (1).webp` to `htmls/annex_modules_redesigned.html`, `htmls/school_dashboard_access_management_analytics.html`, and `htmls/reporting_history_wired.html`.
 
 
 

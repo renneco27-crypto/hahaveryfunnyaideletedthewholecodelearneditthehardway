@@ -203,8 +203,19 @@ button,input,select,textarea { font:inherit; }
 .success-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 999px; background: #16a34a; color: #fff; font-weight: 800; font-size: 13px; letter-spacing: .04em; }
 .success-badge .check-icon { animation: checkBounce .4s ease-out; }
 
-/* ── Responsive ── */
-@media (max-width:900px) { .panel-grid, .counter-row { grid-template-columns:1fr; } }
+.login-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/OIP (1).webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  filter: blur(14px);
+  transform: scale(1.08);
+  opacity: 0.35;
+  pointer-events: none;
+}
 .signout-btn { transition: all 0.3s ease; }
 .signout-btn:hover {
   background-color: #ba1a1a !important;

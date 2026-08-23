@@ -810,6 +810,7 @@ app.get('/auth/callback', (req, res) => {
 const protectedPages = [
   { path: '/submissions', file: 'annex_modules_redesigned.html' },
   { path: '/analytics', file: 'school_dashboard_access_management_analytics.html' },
+  { path: '/history', file: 'reporting_history_wired.html' },
   { path: '/admin', file: 'admin_overview_wired.html' },
 ];
 protectedPages.forEach(({ path: routePath, file }) => {

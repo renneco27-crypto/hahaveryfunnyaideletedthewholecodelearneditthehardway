@@ -235,57 +235,54 @@
 <div class="max-w-7xl mx-auto flex flex-col gap-lg">
 <!-- Header Card -->
 <section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
 <div>
-<h1 class="font-display text-display text-primary tracking-tight">School Overview &amp; Analytics</h1>
-<p class="text-on-surface-variant font-body-md text-body-md mt-xs"><span id="school-name-header" class="font-semibold text-primary"></span> Review your school's reporting performance and historical submission records.</p>
+<div class="flex items-center gap-xs text-secondary font-label-md text-label-md uppercase tracking-wider mb-xs">
+<span class="material-symbols-outlined text-sm">history</span>
+<span>Compliance Records</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary"><span id="school-name-header" class="font-semibold text-primary"></span>Reporting History</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">
+Detailed archive of official Annex A–E compliance submissions, historical incident counts, and saved drafts.
+</p>
+</div>
+<div class="flex flex-wrap items-center gap-sm">
+<a href="/submissions" class="inline-flex items-center gap-xs px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-all shadow-sm">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+<span>New Submission</span>
+</a>
+</div>
 </div>
 </section>
 
-<!-- Hero Metrics -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-md">
-<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg flex flex-col gap-sm shadow-sm">
-<div class="flex items-center justify-between text-on-surface-variant">
-<h3 class="font-label-md text-label-md">Total Incidents Reported</h3>
-<span class="material-symbols-outlined text-primary">analytics</span>
+<!-- Filter and Search Toolbar -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm flex flex-col md:flex-row gap-md justify-between items-center">
+<div class="w-full md:w-80 relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input id="search-input" type="text" placeholder="Search reference, period, annex..." class="w-full pl-9 pr-sm py-2 border border-outline-variant rounded-lg font-body-md text-sm focus:outline-none focus:ring-2 focus:ring-primary" oninput="applyFilters()">
 </div>
-<div class="font-display text-display text-primary" id="total-incidents">0</div>
-<div class="font-caption text-caption text-outline">Year to date</div>
+<div class="w-full md:w-auto flex flex-wrap items-center gap-sm">
+<select id="module-filter" class="px-md py-2 border border-outline-variant rounded-lg font-body-md text-sm bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" onchange="applyFilters()">
+<option value="all">All Annex Modules</option>
+<option value="A">Annex A — Bullying</option>
+<option value="B">Annex B — Child Abuse</option>
+<option value="C">Annex C — Risk Registry</option>
+<option value="D">Annex D — CICL</option>
+<option value="E">Annex E — Other Learner Rights</option>
+</select>
+<select id="status-filter" class="px-md py-2 border border-outline-variant rounded-lg font-body-md text-sm bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" onchange="applyFilters()">
+<option value="all">All Statuses</option>
+<option value="Submitted">Submitted</option>
+<option value="Draft">Draft</option>
+</select>
 </div>
+</section>
 
-<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg flex flex-col gap-sm shadow-sm">
-<div class="flex items-center justify-between text-on-surface-variant">
-<h3 class="font-label-md text-label-md">Last Submission Date</h3>
-<span class="material-symbols-outlined text-primary">history</span>
-</div>
-<div class="font-headline-md text-headline-md text-on-surface mt-sm" id="last-submission">—</div>
-<div class="font-caption text-caption text-outline mt-auto">Processed successfully</div>
-</div>
-</div>
-<!-- Analytics Visualizations -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-md mb-lg">
-<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant p-md rounded-lg">
-<h3 class="font-label-md text-label-md text-on-surface mb-md">Incidents Reported Over Time</h3>
-        <div class="w-full h-[300px] flex items-end gap-sm pt-lg border-b border-l border-outline-variant px-sm relative" id="chart-container">
-            <div class="absolute left-[-20px] top-0 bottom-0 flex flex-col justify-between text-caption text-outline py-xs">
-                <span>50</span>
-                <span>25</span>
-                <span>0</span>
-            </div>
-            <div class="w-full flex justify-around items-end h-full" id="chart-bars">
-                <div class="text-caption text-outline w-full text-center py-md">Loading...</div>
-            </div>
-        </div>
-        <div class="flex justify-around text-caption text-outline mt-xs pl-sm" id="chart-labels">
-            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-        </div>
-</div>
-
-</div>
 <!-- Reporting History Table -->
 <section class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm">
 <div class="p-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
-<h3 class="font-headline-md text-headline-md text-primary">Reporting History</h3>
-<span class="text-caption font-caption text-on-surface-variant font-medium">Historical Compliance Submissions</span>
+<h3 class="font-headline-md text-headline-md text-primary">Historical Compliance Submissions</h3>
+<span id="report-count-badge" class="text-caption font-caption text-on-surface-variant font-medium">Loading submissions...</span>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
@@ -302,10 +299,12 @@
 </tr>
 </thead>
 <tbody class="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/30" id="history-tbody">
+<tr><td colspan="8" class="p-md text-center text-outline">Loading reports...</td></tr>
 </tbody>
 </table>
 </div>
 </section>
+
 </div>
 </main>
 </div>
@@ -319,107 +318,31 @@
 </div>
 </footer>
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="auth-guard.js"></script>
 <script src="sidebar.js"></script>
 <script>
-  const API_BASE = '';
-  const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const STATUS_CONFIG = {
     'Submitted': { bg: '#E6F4EA', color: '#137333', icon: 'check_circle' },
     'Pending Review': { bg: '#FEF7E0', color: '#B06000', icon: 'pending' },
     'Draft': { bg: '#E8EAF6', color: '#3F51B5', icon: 'edit_note' }
   };
 
+  var allReports = [];
+
   function annexLabel(mod) {
-    return mod === 'A' ? 'Annex A — School-Based Incident Report on Bullying' : mod === 'B' ? 'Annex B — School-Based Incident Report on Child Abuse' : mod === 'C' ? 'Annex C — Risk Registry Report' : mod === 'D' ? 'Annex D — School-Based Consolidated Report on Incidents of CICL' : mod === 'E' ? 'Annex E — School-Based Consolidated Report on Other Learner Rights' : mod || '—';
-  }
-
-  async function loadAnalytics() {
-    try {
-      const token = window.__token;
-      if (!token) throw new Error('No auth token');
-
-      const headers = { 'Authorization': 'Bearer ' + token };
-      const statsUrl = `${API_BASE}/api/stats`;
-      const draftsUrl = `${API_BASE}/api/drafts`;
-      const statsOpts = { headers };
-      const draftsOpts = { headers };
-
-      const [statsRes, draftsRes] = await Promise.all([
-        fetch(statsUrl, statsOpts),
-        fetch(draftsUrl, draftsOpts)
-      ]);
-
-      if (!statsRes.ok) throw new Error(`Stats HTTP ${statsRes.status}`);
-      const data = await statsRes.json();
-
-      var drafts = [];
-      if (draftsRes.ok) drafts = await draftsRes.json();
-
-      // School header
-      var schoolName = window.__user?.schoolName || '';
-      var schoolEl = document.getElementById('school-name-header');
-      if (schoolEl) schoolEl.textContent = schoolName ? schoolName + ' — ' : '';
-
-      // Total incidents
-      document.getElementById('total-incidents').textContent = data.total;
-
-      // Last submission date
-      const lastDate = data.lastSubmission ? new Date(data.lastSubmission).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
-      document.getElementById('last-submission').textContent = lastDate + (data.total > 0 ? ` · ${data.total} report${data.total !== 1 ? 's' : ''} submitted` : '');
-
-      // Bar chart
-      renderChart(data.monthly);
-
-      // History table — merge submitted reports + drafts
-      var all = (data.reports || []).concat(drafts || []);
-      all.sort(function(a, b) {
-        return new Date(b.created_at || b.submitted_at) - new Date(a.created_at || a.submitted_at);
-      });
-      renderHistory(all);
-    } catch (err) {
-      console.error('Failed to load analytics:', err);
-      document.getElementById('chart-bars').innerHTML = '<div class="text-caption text-outline w-full text-center py-md">Could not load data</div>';
-    }
-  }
-
-  function renderChart(monthly) {
-    const barsContainer = document.getElementById('chart-bars');
-    const labelsContainer = document.getElementById('chart-labels');
-
-    const entries = Object.entries(monthly || {}).sort();
-    if (entries.length === 0) {
-      barsContainer.innerHTML = '<div class="text-caption text-outline w-full text-center py-md">No data yet</div>';
-      labelsContainer.innerHTML = '';
-      return;
-    }
-
-    const maxVal = Math.max(...entries.map(([,v]) => v), 1);
-    const heightPct = v => Math.max((v / maxVal) * 100, 4);
-
-    const barCount = entries.length;
-    barsContainer.innerHTML = entries.map(([key, val]) => {
-      const [, mm] = key.split('-');
-      const monthLabel = MONTHS_SHORT[parseInt(mm, 10) - 1] || key;
-      const color = parseInt(mm, 10) % 2 === 0 ? 'bg-secondary-container' : 'bg-primary';
-      const barWidth = barCount <= 3 ? `${Math.max(30, 90 / barCount)}%` : '100%';
-      return `<div class="${color} rounded-t-sm" style="width:${barWidth};max-width:80px;height:${heightPct(val)}%" title="${monthLabel}: ${val}"></div>`;
-    }).join('');
-
-    labelsContainer.innerHTML = entries.map(([key]) => {
-      const [, mm] = key.split('-');
-      const monthLabel = MONTHS_SHORT[parseInt(mm, 10) - 1] || key;
-      return `<span>${monthLabel}</span>`;
-    }).join('');
+    return mod === 'A' ? 'Annex A — Bullying Report'
+      : mod === 'B' ? 'Annex B — Child Abuse Report'
+      : mod === 'C' ? 'Annex C — Risk Registry'
+      : mod === 'D' ? 'Annex D — CICL Consolidated'
+      : mod === 'E' ? 'Annex E — Other Learner Rights'
+      : mod || '—';
   }
 
   function getIncidentCount(r) {
     var mod = (r.module || '').toUpperCase();
     var rd = r.report_data || {};
     var data = rd.data || rd;
-    // Check for summaryCounts in report_data.data or report_data
     var sc = data.summaryCounts || rd.summaryCounts;
     if (sc) {
       return {
@@ -435,14 +358,70 @@
     }
     var cats = data.categories || rd.categories || {};
     var keys = Object.keys(cats);
-    var total = keys.length || data.length || 0;
+    var total = keys.length || (Array.isArray(data) ? data.length : 0);
     return { total: total, resolved: 0, ongoing: 0, referred: 0 };
   }
 
-  function renderHistory(reports) {
+  async function loadHistory() {
+    try {
+      const token = window.__token;
+      if (!token) throw new Error('No auth token');
+
+      const headers = { 'Authorization': 'Bearer ' + token };
+      const [statsRes, draftsRes] = await Promise.all([
+        fetch('/api/stats', { headers }),
+        fetch('/api/drafts', { headers })
+      ]);
+
+      var statsData = statsRes.ok ? await statsRes.json() : { reports: [] };
+      var drafts = draftsRes.ok ? await draftsRes.json() : [];
+
+      var schoolName = window.__user?.schoolName || '';
+      var schoolEl = document.getElementById('school-name-header');
+      if (schoolEl) schoolEl.textContent = schoolName ? schoolName + ' — ' : '';
+
+      allReports = (statsData.reports || []).concat(drafts || []);
+      allReports.sort(function(a, b) {
+        return new Date(b.created_at || b.submitted_at) - new Date(a.created_at || a.submitted_at);
+      });
+
+      applyFilters();
+    } catch (err) {
+      console.error('Failed to load history:', err);
+      document.getElementById('history-tbody').innerHTML = '<tr><td colspan="8" class="p-md text-center text-red-500 font-medium py-lg">Error loading reports</td></tr>';
+    }
+  }
+
+  function applyFilters() {
+    var search = (document.getElementById('search-input').value || '').toLowerCase().trim();
+    var modFilter = document.getElementById('module-filter').value;
+    var statusFilter = document.getElementById('status-filter').value;
+
+    var filtered = allReports.filter(function(r) {
+      var mod = (r.module || r.report_data?.metadata?.annexType || '').toUpperCase();
+      var isDraft = r.status === 'Draft' || r.report_data?.status === 'Draft';
+      var status = isDraft ? 'Draft' : (r.status || 'Submitted');
+      var ref = (r.reference_number || '').toLowerCase();
+      var period = (r.report_data?.metadata?.reportingYear || r.report_data?.schoolMetadata?.reportingYear || '').toLowerCase();
+      var label = annexLabel(mod).toLowerCase();
+
+      if (modFilter !== 'all' && mod !== modFilter) return false;
+      if (statusFilter !== 'all' && status !== statusFilter) return false;
+      if (search && !ref.includes(search) && !period.includes(search) && !label.includes(search)) return false;
+
+      return true;
+    });
+
+    renderTable(filtered);
+  }
+
+  function renderTable(reports) {
     const tbody = document.getElementById('history-tbody');
+    const countBadge = document.getElementById('report-count-badge');
+    countBadge.textContent = reports.length + ' report' + (reports.length !== 1 ? 's' : '') + ' found';
+
     if (!reports || reports.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" class="p-md text-center text-outline">No reports submitted yet</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="p-md text-center text-outline font-medium py-lg">No reports submitted yet</td></tr>';
       return;
     }
 
@@ -463,55 +442,27 @@
       var alt = idx % 2 === 1 ? 'bg-[#F9FAFB]' : '';
 
       var draftBtn = isDraft
-        ? '<a href="/submissions?draft=' + encodeURIComponent(r.reference_number) + '" class="inline-flex items-center gap-xs text-primary hover:underline font-label-md text-label-md"><span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span> Continue</a>'
-        : '';
+        ? '<a href="/submissions?draft=' + encodeURIComponent(r.reference_number) + '" class="inline-flex items-center gap-xs text-primary hover:underline font-label-md text-label-md"><span class="material-symbols-outlined" style="font-size:16px">edit</span> Continue</a>'
+        : '<a href="/submissions" class="inline-flex items-center gap-xs text-secondary hover:underline font-label-md text-label-md"><span class="material-symbols-outlined" style="font-size:16px">visibility</span> View</a>';
 
       return `<tr class="border-b border-outline-variant ${alt} hover:bg-surface-variant transition-colors">
-        <td class="p-md">${date}</td>
-        <td class="p-md text-on-surface-variant">${periodDisplay}</td>
-        <td class="p-md text-right">${incidents}</td>
-        <td class="p-md text-right">${resolved}</td>
-        <td class="p-md text-right">${ongoing}</td>
-        <td class="p-md text-right">${referred}</td>
+        <td class="p-md font-medium">${date}</td>
+        <td class="p-md text-on-surface-variant font-medium">${periodDisplay}</td>
+        <td class="p-md text-right font-bold text-primary">${incidents}</td>
+        <td class="p-md text-right text-emerald-700 font-semibold">${resolved}</td>
+        <td class="p-md text-right text-amber-700 font-semibold">${ongoing}</td>
+        <td class="p-md text-right text-blue-700 font-semibold">${referred}</td>
         <td class="p-md">
-          <span class="inline-flex items-center gap-xs px-2 py-1 rounded" style="background:${cfg.bg};color:${cfg.color};font-size:14px;">
+          <span class="inline-flex items-center gap-xs px-2 py-1 rounded font-medium" style="background:${cfg.bg};color:${cfg.color};font-size:13px;">
             <span class="material-symbols-outlined" style="font-size:16px;font-variation-settings:'FILL' 1;">${cfg.icon}</span>
             ${status}
           </span>
         </td>
-        <td class="p-md">${draftBtn}</td>
+        <td class="p-md text-right">${draftBtn}</td>
       </tr>`;
     }).join('');
   }
 
-  loadAnalytics();
-
-  // Timer banner for pending submissions
-  (function() {
-    var ts = sessionStorage.getItem('submitted_pending');
-    if (!ts) return;
-    var elapsed = Date.now() - parseInt(ts, 10);
-    var remaining = Math.max(0, 180000 - elapsed);
-    sessionStorage.removeItem('submitted_pending');
-
-    var banner = document.createElement('div');
-    banner.id = 'sync-banner';
-    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#FEF3C7;border-top:2px solid #F59E0B;padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:14px;color:#92400E;font-weight:600;';
-    banner.innerHTML = '<span class="material-symbols-outlined" style="color:#D97706">sync</span> <span id="sync-msg">Processing submission... Refreshing in <span id="sync-timer">' + Math.ceil(remaining/1000) + '</span>s</span>';
-    document.body.appendChild(banner);
-
-    var start = Date.now();
-    var iv = setInterval(function() {
-      var left = Math.max(0, remaining - (Date.now() - start));
-      document.getElementById('sync-timer').textContent = Math.ceil(left/1000);
-      if (left <= 0) {
-        clearInterval(iv);
-        banner.style.background = '#DCFCE7';
-        banner.style.borderColor = '#22C55E';
-        banner.innerHTML = '<span class="material-symbols-outlined" style="color:#16A34A">check_circle</span> Ready! Refreshing data...';
-        setTimeout(function() { location.reload(); }, 1000);
-      }
-    }, 1000);
-  })();
+  loadHistory();
 </script>
 </body></html>

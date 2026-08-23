@@ -43,10 +43,12 @@
       ? [
           { label: 'Overview', icon: 'dashboard', href: '/admin' },
           { label: 'Reports', icon: 'description', href: '/reports' },
+          { label: 'Reporting History', icon: 'history', href: '/history' },
           { label: 'Access Management', icon: 'admin_panel_settings', href: '/access' }
         ]
       : [
           { label: 'Submissions', icon: 'description', href: '/submissions' },
+          { label: 'Reporting History', icon: 'history', href: '/history' },
           { label: 'Access Management', icon: 'admin_panel_settings', href: '/analytics' }
         ];
 
