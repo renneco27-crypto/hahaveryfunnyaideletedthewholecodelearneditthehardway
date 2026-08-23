@@ -1074,20 +1074,20 @@
         '</div>';
 
         if (activeExcelSheet === 'bullying') {
-            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
-                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Physical<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
-                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Social<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
-                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Gender-based<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
-                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Cyber-<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
-                '<th class="px-2 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[70px]">Retaliation<br><span class="text-[10px] text-blue-200 font-normal">M / F</span></th>' +
-                '<th class="px-3 py-2.5 bg-[#1B3A6B] border-r border-slate-700 text-right min-w-[80px]">Total<br>Incidents</th>' +
-                '<th class="px-3 py-2.5 bg-[#1B3A6B] border-r border-slate-700 text-center min-w-[90px]">Resolved<br>Cases</th>' +
-                '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Actions Taken / Intervention</th>' +
+            thead.innerHTML = '<tr class="text-on-surface-variant text-xs font-bold tracking-wider bg-surface-container-high border-b border-outline-variant">' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[85px]">District</th>' +
+                '<th class="px-2 py-2.5 border-r border-outline-variant/60 text-center min-w-[70px]">Physical<br><span class="text-[10px] font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 border-r border-outline-variant/60 text-center min-w-[70px]">Social<br><span class="text-[10px] font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 border-r border-outline-variant/60 text-center min-w-[70px]">Gender-based<br><span class="text-[10px] font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 border-r border-outline-variant/60 text-center min-w-[70px]">Cyber-<br><span class="text-[10px] font-normal">M / F</span></th>' +
+                '<th class="px-2 py-2.5 border-r border-outline-variant/60 text-center min-w-[70px]">Retaliation<br><span class="text-[10px] font-normal">M / F</span></th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-right min-w-[80px]">Total<br>Incidents</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">Resolved<br>Cases</th>' +
+                '<th class="px-3 py-2.5 text-left min-w-[220px]">Actions Taken / Intervention</th>' +
             '</tr>';
             var totPhysM = 0, totPhysF = 0, totSocM = 0, totSocF = 0, totGenM = 0, totGenF = 0, totCybM = 0, totCybF = 0, totRetM = 0, totRetF = 0, grandIncidents = 0, totalResolved = 0;
             var rowsHtml = list.map(function(r, i) {
@@ -1116,26 +1116,26 @@
             }).join('');
             if (list.length === 0) rowsHtml = '<tr><td colspan="13" class="px-md py-md text-center text-on-surface-variant">No Bullying (Annex A) submissions found</td></tr>';
             else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700">' +
-                '<td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td>' +
-                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totPhysM + '/' + totPhysF + '</td>' +
-                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totSocM + '/' + totSocF + '</td>' +
-                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totGenM + '/' + totGenF + '</td>' +
-                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totCybM + '/' + totCybF + '</td>' +
-                '<td class="px-2 py-3 text-center border-r border-slate-700 font-mono text-blue-100">' + totRetM + '/' + totRetF + '</td>' +
-                '<td class="px-3 py-3 text-right font-mono text-amber-300 text-sm border-r border-slate-700 font-bold">' + grandIncidents + '</td>' +
-                '<td class="px-3 py-3 text-center border-r border-slate-700 text-emerald-300">' + totalResolved + ' Resolved</td>' +
+                '<td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-outline-variant/60">TOTAL (' + list.length + ' Reports Consolidated)</td>' +
+                '<td class="px-2 py-3 text-center border-r border-outline-variant/60 font-mono text-blue-100">' + totPhysM + '/' + totPhysF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-outline-variant/60 font-mono text-blue-100">' + totSocM + '/' + totSocF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-outline-variant/60 font-mono text-blue-100">' + totGenM + '/' + totGenF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-outline-variant/60 font-mono text-blue-100">' + totCybM + '/' + totCybF + '</td>' +
+                '<td class="px-2 py-3 text-center border-r border-outline-variant/60 font-mono text-blue-100">' + totRetM + '/' + totRetF + '</td>' +
+                '<td class="px-3 py-3 text-right font-mono text-amber-300 text-sm border-r border-outline-variant/60 font-bold">' + grandIncidents + '</td>' +
+                '<td class="px-3 py-3 text-center border-r border-outline-variant/60 text-emerald-300">' + totalResolved + ' Resolved</td>' +
                 '<td class="px-3 py-3 text-blue-200">Excel Formulas Active (=SUM / =COUNTIF)</td>' +
             '</tr>';
             tbody.innerHTML = rowsHtml;
         } else if (activeExcelSheet === 'child_abuse') {
-            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Physical / Nature of Abuse</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[90px]">Status</th>' +
+            thead.innerHTML = '<tr class="text-on-surface-variant text-xs font-bold tracking-wider bg-surface-container-high border-b border-outline-variant">' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[160px]">Physical / Nature of Abuse</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">Status</th>' +
                 '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Actions Taken</th>' +
             '</tr>';
             var totalAbuseCount = 0;
@@ -1156,18 +1156,18 @@
                 '</tr>';
             }).join('');
             if (list.length === 0) rowsHtml = '<tr><td colspan="8" class="px-md py-md text-center text-on-surface-variant">No Child Abuse (Annex B) submissions found</td></tr>';
-            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="3" class="px-3 py-3 text-amber-300">' + totalAbuseCount + ' Total Incidents Managed Under DepEd Child Protection Policy</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-outline-variant/60">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="3" class="px-3 py-3 text-amber-300">' + totalAbuseCount + ' Total Incidents Managed Under DepEd Child Protection Policy</td></tr>';
             tbody.innerHTML = rowsHtml;
         } else if (activeExcelSheet === 'children_at_risk') {
-            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[150px]">Children at Risk (CAR)</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Identified Risk Factors</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[85px]">Resolved<br>Cases</th>' +
+            thead.innerHTML = '<tr class="text-on-surface-variant text-xs font-bold tracking-wider bg-surface-container-high border-b border-outline-variant">' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[150px]">Children at Risk (CAR)</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[160px]">Identified Risk Factors</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-center min-w-[85px]">Resolved<br>Cases</th>' +
                 '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Interventions Provided</th>' +
             '</tr>';
             var totalCarCount = 0;
@@ -1190,18 +1190,18 @@
                 '</tr>';
             }).join('');
             if (list.length === 0) rowsHtml = '<tr><td colspan="9" class="px-md py-md text-center text-on-surface-variant">No Children at Risk (Annex C) submissions found</td></tr>';
-            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="4" class="px-3 py-3 text-blue-200">' + totalCarCount + ' Total Children at Risk Assisted</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-outline-variant/60">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="4" class="px-3 py-3 text-blue-200">' + totalCarCount + ' Total Children at Risk Assisted</td></tr>';
             tbody.innerHTML = rowsHtml;
         } else if (activeExcelSheet === 'cicl') {
-            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[150px]">Learner Details (LRN)</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Offenses Documented</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[85px]">Status</th>' +
+            thead.innerHTML = '<tr class="text-on-surface-variant text-xs font-bold tracking-wider bg-surface-container-high border-b border-outline-variant">' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[150px]">Learner Details (LRN)</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[160px]">Offenses Documented</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-center min-w-[85px]">Status</th>' +
                 '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Intervention / Diversion</th>' +
             '</tr>';
             var totalCiclCount = 0;
@@ -1224,17 +1224,17 @@
                 '</tr>';
             }).join('');
             if (list.length === 0) rowsHtml = '<tr><td colspan="9" class="px-md py-md text-center text-on-surface-variant">No CICL (Annex D) submissions found</td></tr>';
-            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="4" class="px-3 py-3 text-blue-200">' + totalCiclCount + ' Total CICL Cases Under Program</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-outline-variant/60">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="4" class="px-3 py-3 text-blue-200">' + totalCiclCount + ' Total CICL Cases Under Program</td></tr>';
             tbody.innerHTML = rowsHtml;
         } else if (activeExcelSheet === 'other_lrp_concerns') {
-            thead.innerHTML = '<tr class="text-white text-xs font-bold tracking-wider bg-[#1B3A6B]">' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[90px]">School ID</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[180px]">School Name</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[75px]">School<br>Sector</th>' +
-                '<th class="px-2.5 py-2.5 border-r border-slate-700 text-center min-w-[90px]">School<br>Level</th>' +
-                '<th class="px-3 py-2.5 border-r border-slate-700 text-left min-w-[85px]">District</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-left min-w-[160px]">Special Concerns Count</th>' +
-                '<th class="px-3 py-2.5 bg-[#2D5FA0] border-r border-blue-700 text-center min-w-[90px]">Status</th>' +
+            thead.innerHTML = '<tr class="text-on-surface-variant text-xs font-bold tracking-wider bg-surface-container-high border-b border-outline-variant">' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[90px]">School ID</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[180px]">School Name</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[75px]">School<br>Sector</th>' +
+                '<th class="px-2.5 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">School<br>Level</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[85px]">District</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-left min-w-[160px]">Special Concerns Count</th>' +
+                '<th class="px-3 py-2.5 border-r border-outline-variant/60 text-center min-w-[90px]">Status</th>' +
                 '<th class="px-3 py-2.5 bg-[#1B3A6B] text-left min-w-[220px]">Details &amp; Interventions</th>' +
             '</tr>';
             var totalOtherCount = 0;
@@ -1256,7 +1256,7 @@
                 '</tr>';
             }).join('');
             if (list.length === 0) rowsHtml = '<tr><td colspan="8" class="px-md py-md text-center text-on-surface-variant">No Other LRP Concerns (Annex E) submissions found</td></tr>';
-            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-slate-700">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="3" class="px-3 py-3 text-blue-200">' + totalOtherCount + ' Other Learner Rights Concerns Logged</td></tr>';
+            else rowsHtml += '<tr class="bg-[#1B3A6B] text-white font-bold text-xs border-t-2 border-slate-700"><td colspan="5" class="px-3 py-3 uppercase text-blue-200 border-r border-outline-variant/60">TOTAL (' + list.length + ' Reports Consolidated)</td><td colspan="3" class="px-3 py-3 text-blue-200">' + totalOtherCount + ' Other Learner Rights Concerns Logged</td></tr>';
             tbody.innerHTML = rowsHtml;
         }
 
