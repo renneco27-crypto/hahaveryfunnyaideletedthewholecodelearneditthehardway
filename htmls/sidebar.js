@@ -66,7 +66,7 @@
       '<p class="text-xs text-on-surface-variant truncate">' + (user.schoolName || (isAdmin ? 'Division Office' : '—')) + '</p>',
       '</div>',
       '</div>',
-      '<nav class="space-y-xs flex-1">',
+      '<nav class="space-y-xs">',
       navItems.map(function(item) {
         var isActive = path === item.href;
         var cls = isActive
@@ -78,12 +78,6 @@
         '</a>';
       }).join(''),
       '</nav>',
-      '<div class="pt-xs mt-auto border-t border-outline-variant/40">',
-      '<a href="#" onclick="event.preventDefault(); typeof signOut === \'function\' ? signOut() : (typeof handleSignOut === \'function\' ? handleSignOut() : window.location.href=\'/login\');" class="flex items-center justify-center lg:justify-start gap-sm p-sm lg:px-md lg:py-sm rounded-lg font-label-md text-on-surface-variant hover:text-white hover:bg-error hover:shadow-[0_0_15px_rgba(186,26,26,0.75)] transition-all duration-300 group" title="Sign Out">',
-      '<span class="material-symbols-outlined flex-shrink-0 text-error group-hover:text-white transition-colors">logout</span>',
-      '<span class="hidden lg:inline whitespace-nowrap">Sign Out</span>',
-      '</a>',
-      '</div>',
       '</aside>'
     ].join('');
   }
