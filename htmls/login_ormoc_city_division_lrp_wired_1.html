@@ -157,6 +157,34 @@
 </svg>
                     Sign in with Google
                 </button>
+
+<!-- Divider -->
+<div class="flex items-center gap-sm my-md">
+  <div class="flex-1 border-t border-outline-variant"></div>
+  <span class="font-caption text-caption text-on-surface-variant px-xs">or</span>
+  <div class="flex-1 border-t border-outline-variant"></div>
+</div>
+
+<!-- Email / Password Form -->
+<form id="emailLoginForm" class="flex flex-col gap-sm" novalidate>
+  <div class="flex flex-col gap-xs">
+    <label for="loginEmail" class="font-label-md text-label-md text-on-surface">Email</label>
+    <input id="loginEmail" type="email" autocomplete="email" placeholder="you@deped.gov.ph"
+      class="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface bg-surface focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-on-surface-variant/50" />
+  </div>
+  <div class="flex flex-col gap-xs">
+    <label for="loginPassword" class="font-label-md text-label-md text-on-surface">Password</label>
+    <input id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••••"
+      class="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface bg-surface focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-on-surface-variant/50" />
+  </div>
+  <div id="emailLoginError" class="hidden text-xs text-red-600 font-medium py-xs px-sm bg-red-50 border border-red-200 rounded-lg"></div>
+  <button id="emailLoginBtn" type="submit"
+    class="w-full flex items-center justify-center gap-xs bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+    <span class="material-symbols-outlined text-lg">login</span>
+    Sign in with Email
+  </button>
+</form>
+
 <!-- Restriction Notice -->
 <div class="mt-lg p-sm bg-surface-container-low border-l-4 border-primary rounded">
 <div class="flex gap-xs">
@@ -172,6 +200,7 @@
                         Having trouble signing in?
                     </a>
 </div>
+
 </div>
 </div>
 </main>
@@ -251,6 +280,39 @@
           }
         });
         if (error) alert(error.message);
+      });
+
+      // Email / Password login
+      document.getElementById('emailLoginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var errorEl = document.getElementById('emailLoginError');
+        var btn = document.getElementById('emailLoginBtn');
+        var email = document.getElementById('loginEmail').value.trim();
+        var password = document.getElementById('loginPassword').value;
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+
+        if (!email || !password) {
+          errorEl.textContent = 'Please enter your email and password.';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Signing in…';
+
+        var { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+
+        if (error) {
+          errorEl.textContent = error.message || 'Invalid email or password.';
+          errorEl.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined text-lg">login</span> Sign in with Email';
+          return;
+        }
+
+        // Reuse the same auth routing logic
+        await checkAuthAndRoute();
       });
 
       // Button hover effects
