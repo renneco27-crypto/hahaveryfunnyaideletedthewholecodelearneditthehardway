@@ -197,6 +197,14 @@ Keywords: excel master table preview, multi-sheet xlsx export, sheetjs, division
 
 Description: Added interactive **Excel Master Table** preview directly inside the reports screen with sub-tabs for all 5 sheets (Bullying, Child Abuse, Children at Risk, CICL, Other LRP Concerns). Added **Download Excel (.xlsx)** button powered by SheetJS that generates the complete 5-sheet workbook `DepEd_Ormoc_Division_Master_Database.xlsx` directly in the browser with live database entries and summary totals.
 
+### content.js
+
+Keywords: blunder push parsing, combined type format, triggerFeedback, analyzeOpponentMoveAndHint, mate detection, depth 6
+
+Function Names: triggerFeedback, analyzeOpponentMoveAndHint, attachStatusPill, evaluateCandidateMove
+
+Description: Chess coach extension (FreeChess Coach). Stockfish evaluates positions via offscreen worker. `triggerFeedback()` at L203 parses combined type labels like `inaccuracy-push`/`blunder-capture` by splitting on `-` (parts[0]=main type, parts[1]=hint). `analyzeOpponentMoveAndHint()` at L736 builds `${cls}-${hint}` hints when the opponent plays an inaccuracy/mistake/blunder. All Stockfish evaluation depths were changed from 4 to 6 (`stockfish.evaluate(fen, 6, 2000)` at L592, L617, L749, L757, L770). Added mate-first logic in `analyzeOpponentMoveAndHint`: if `afterLine.mateIn > 0` (opponent's move allows a forced mate), show "Mate in N" instead of "blunder-push"/"mistake-push". `mateIn` is parsed from Stockfish `score mate N` in offscreen.js `parseLines()`, where positive = side to move wins. Existing mate display for the player's own moves is at content.js L634-639 (mate_win/mate_loss).
+
 
 
 

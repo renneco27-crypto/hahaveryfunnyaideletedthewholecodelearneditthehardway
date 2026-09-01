@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "FreeChess Move Hint & Blunder Coach",
+  "version": "1.0.0",
+  "description": "Evaluates candidate moves on your chess website, providing shake and border flash feedback for blunders, inaccuracies, and brilliant moves before finalizing.",
+  "permissions": [
+    "activeTab",
+    "offscreen"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["chess.js", "classifier.js", "engine.js", "content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["stockfish.js", "stockfish.wasm", "chess.js", "offscreen.html", "offscreen.js", "icon.png", "icon128.png", "icon48.png", "icon16.png"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "FreeChess Coach",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  }
+}
