@@ -1,0 +1,800 @@
+/**
+ * Universal Content Script for FreeChess Coach Browser Extension
+ * - Real-time autonomous chessboard detection (Chessground, Chess.com, Lichess, custom DOM)
+ * - DOM-to-FEN piece scanner & live state sync
+ * - Real-time candidate move hover/drag evaluation + move commitment tracking
+ * - High-visibility Fixed HUD Badge & Vibrant Red/Blue Glows
+ */
+
+(function () {
+  console.log(
+    "%c[FreeChess Coach] Extension loaded. Scanning for chessboards...",
+    "background: #1e3a8a; color: #93c5fd; font-size: 13px; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
+  );
+
+  let stockfish = null;
+  let game = new Chess();
+  let boardElement = null;
+  let boardConfirmed = false;
+  let boardOrientation = "w"; // 'w' or 'b'
+  let currentFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  let lastScannedFen = "";
+  let isEvaluating = false;
+  let startSquare = null;
+  let draggedPiece = null;
+  let tabResetDetected = false; // Track if we just had a tab reset
+  let positionCheckTimer = null; // 5-second timer for position verification
+  let originalPositionDetected = false; // Track if we detected original position temporarily
+
+  // 1. Initialize Stockfish Engine Bridge
+  function initEngine() {
+    try {
+      stockfish = new StockfishEngine();
+    } catch (e) {
+      console.error("[FreeChess Coach] Failed to initialize engine bridge:", e);
+    }
+  }
+
+  // 2. Universal Board Detector
+  function findBoard() {
+    // Priority 1: Direct board components (Chessground, Chess.com, Lichess)
+    const directSelectors = [
+      "cg-board",
+      "chess-board",
+      "div#board",
+      ".chessboard",
+      ".cg-wrap",
+      "cg-container",
+      ".board-wrap",
+      ".board-container",
+      ".main-board",
+      "div.board"
+    ];
+
+    for (let s of directSelectors) {
+      const el = document.querySelector(s);
+      if (el) {
+        // Find best visual bounding container
+        const target = el.closest(".board-wrap, .board-container, chess-board, cg-container") || el;
+        if (target.offsetWidth > 120 || el.offsetWidth > 120) {
+          if (!boardConfirmed) showBoardAttachedConfirmation(target);
+          return target;
+        }
+      }
+    }
+
+    // Priority 2: Coordinate SVGs or labels
+    const svgCoords = document.querySelector('svg.coordinates, svg[viewBox="0 0 100 100"].coordinates, coords');
+    if (svgCoords) {
+      const boardContainer = svgCoords.closest("chess-board, .board-container, .board, #board, div[class*='board']") || svgCoords.parentElement;
+      if (boardContainer) {
+        if (!boardConfirmed) showBoardAttachedConfirmation(boardContainer);
+        return boardContainer;
+      }
+    }
+
+    // Priority 3: Element containing 6+ chess piece elements
+    const pieces = document.querySelectorAll('piece, .piece, [class*="piece"], div[class*="square-"] img');
+    if (pieces.length >= 6) {
+      let commonParent = pieces[0].parentElement;
+      while (commonParent && commonParent !== document.body) {
+        if (commonParent.offsetWidth > 150 && commonParent.offsetHeight > 150) {
+          if (!boardConfirmed) showBoardAttachedConfirmation(commonParent);
+          return commonParent;
+        }
+        commonParent = commonParent.parentElement;
+      }
+    }
+
+    return null;
+  }
+
+  // 3. Detect Board Orientation (White vs Black on bottom)
+  function detectOrientation(board) {
+    if (!board) return "w";
+    const classStr = (board.className || "") + " " + (board.parentElement ? board.parentElement.className : "");
+    if (classStr.includes("flipped") || classStr.includes("orientation-black") || classStr.includes("black")) {
+      return "b";
+    }
+    const attr = board.getAttribute("orientation") || (board.parentElement ? board.parentElement.getAttribute("orientation") : null);
+    if (attr === "black") return "b";
+    if (attr === "white") return "w";
+
+    // Check rank labels
+    const rankLabels = board.querySelectorAll('.ranks coord, text.rank-label, .coordinates text');
+    if (rankLabels && rankLabels.length > 0) {
+      const firstText = rankLabels[0].textContent.trim();
+      const firstRect = rankLabels[0].getBoundingClientRect();
+      const boardRect = board.getBoundingClientRect();
+      if (firstText === "1" && firstRect.top > boardRect.top + boardRect.height * 0.5) return "w";
+      if (firstText === "8" && firstRect.top > boardRect.top + boardRect.height * 0.5) return "b";
+    }
+
+    return "w";
+  }
+
+  // 4. Update Fixed Floating Status Pill Position (Farther Up)
+  function updatePillPosition(pill, board) {
+    if (!pill || !board) return;
+    const rect = board.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      const topPos = Math.max(12, rect.top - 58);
+      const leftPos = rect.left + rect.width / 2;
+      pill.style.top = topPos + "px";
+      pill.style.left = leftPos + "px";
+      pill.style.transform = "translateX(-50%)";
+    }
+  }
+
+  // 5. Visual Confirmation & Toast Pill
+  function showBoardAttachedConfirmation(board) {
+    if (boardConfirmed) return;
+    boardConfirmed = true;
+
+    attachStatusPill(board, "Coach Connected · Monitoring Board", "normal", true);
+
+    console.log(
+      "%c[FreeChess Coach] ✓ Chess Board Found & Hooked Successfully!",
+      "background: #064e3b; color: #34d399; font-size: 13px; font-weight: bold; padding: 5px 12px; border-radius: 4px;"
+    );
+  }
+
+  function attachStatusPill(board, text, mood = "normal", keepVisible = false) {
+    let pill = document.getElementById("freechess-connected-pill");
+    if (!pill) {
+      pill = document.createElement("div");
+      pill.id = "freechess-connected-pill";
+      document.body.appendChild(pill);
+
+      window.addEventListener("resize", () => {
+        if (boardElement) updatePillPosition(pill, boardElement);
+      });
+      window.addEventListener("scroll", () => {
+        if (boardElement) updatePillPosition(pill, boardElement);
+      });
+    }
+
+    updatePillPosition(pill, board);
+
+    pill.className = "";
+    if (mood === "blunder") pill.classList.add("blunder");
+    if (mood === "brilliant") pill.classList.add("brilliant");
+
+    pill.innerHTML = `<span class="dot"></span> ${text}`;
+    pill.style.opacity = "1";
+
+    clearTimeout(pill._timer);
+    if (!keepVisible) {
+      pill._timer = setTimeout(() => {
+        // Return to normal ready badge
+        pill.className = "";
+        pill.innerHTML = `<span class="dot"></span> Coach Active`;
+        updatePillPosition(pill, board);
+      }, 4000);
+    }
+  }
+
+  // 6. Visual Glow Dispatcher (Clean & Smooth — No Screen Shake)
+  function triggerFeedback(type, detailMsg = "") {
+    const board = boardElement || findBoard();
+    if (!board) return;
+
+    // Manage Inner Glow Overlay
+    let overlay = board.querySelector(".freechess-glow-overlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.className = "freechess-glow-overlay";
+      if (window.getComputedStyle(board).position === "static") {
+        board.style.position = "relative";
+      }
+      board.appendChild(overlay);
+    }
+
+    overlay.classList.remove("blunder", "brilliant");
+    void overlay.offsetWidth; // Force reflow
+
+    if (type === "blunder" || type === "mistake" || type === "inaccuracy" || type === "mate_loss") {
+      overlay.classList.add("blunder");
+      let label;
+      if (type === "mate_loss") {
+        label = "Mate Loss";
+      } else {
+        label = type === "blunder" ? "Blunder!!" : type === "mistake" ? "Mistake?" : "Inaccuracy?!";
+      }
+      attachStatusPill(board, `🔴 ${label} ${detailMsg}`, "blunder");
+      console.log(`%c[FreeChess Coach] 🔴 RED GLOW (${type.toUpperCase()}) ${detailMsg}`, "color: #ef4444; font-weight: bold; font-size: 13px;");
+    } else if (type === "brilliant" || type === "great" || type === "best" || type === "mate_win") {
+      overlay.classList.add("brilliant");
+      let label;
+      if (type === "mate_win") {
+        label = "Mate Found";
+      } else {
+        label = type === "brilliant" ? "Brilliant!!" : type === "great" ? "Great Move!" : "Best Move ★";
+      }
+      attachStatusPill(board, `🔵 ${label} ${detailMsg}`, "brilliant");
+      console.log(`%c[FreeChess Coach] 🔵 BLUE GLOW (${type.toUpperCase()}) ${detailMsg}`, "color: #38bdf8; font-weight: bold; font-size: 13px;");
+    }
+  }
+
+  // 7. Universal DOM Piece Scanner -> FEN Generator
+  function parsePieceElement(el) {
+    if (!el) return null;
+    
+    // Ignore captured pieces stored in Chess.com recycling pool
+    if (el.classList.contains("element-pool") || el.closest(".element-pool")) {
+      return null;
+    }
+
+    const cls = (el.className || "").toString();
+    const tag = (el.tagName || "").toLowerCase();
+
+    // 1. Direct 2-character token match: e.g. "br", "wp", "bn", "wq", "bk", "bb", etc.
+    const tokenMatch = cls.match(/\b([wb])([pnbrqk])\b/i);
+    if (tokenMatch) {
+      return {
+        color: tokenMatch[1].toLowerCase(),
+        type: tokenMatch[2].toLowerCase()
+      };
+    }
+
+    let color = null;
+    let type = null;
+
+    if (cls.includes("white")) color = "w";
+    else if (cls.includes("black")) color = "b";
+
+    const pieceTypes = [
+      { name: "pawn", code: "p" },
+      { name: "knight", code: "n" },
+      { name: "bishop", code: "b" },
+      { name: "rook", code: "r" },
+      { name: "queen", code: "q" },
+      { name: "king", code: "k" }
+    ];
+
+    for (let pt of pieceTypes) {
+      if (cls.includes(pt.name)) {
+        type = pt.code;
+        break;
+      }
+    }
+
+    if (!type && el.dataset && el.dataset.piece) {
+      const p = el.dataset.piece;
+      color = p[0].toLowerCase() === "w" ? "w" : "b";
+      type = p[1].toLowerCase();
+    }
+
+    if (!type && tag === "img") {
+      const src = el.getAttribute("src") || "";
+      const match = src.match(/([wb])([pnbrqk])\./i);
+      if (match) {
+        color = match[1].toLowerCase();
+        type = match[2].toLowerCase();
+      }
+    }
+
+    if (color && type) {
+      return { color, type };
+    }
+    return null;
+  }
+
+  function getSquareForPieceElement(el, board, orientation) {
+    if (!el || el.classList.contains("element-pool") || el.closest(".element-pool")) {
+      return null;
+    }
+
+    const cls = (el.className || "").toString();
+
+    const namedSqMatch = cls.match(/square-([a-h][1-8])/);
+    if (namedSqMatch) return namedSqMatch[1];
+
+    const numSqMatch = cls.match(/square-(\d)(\d)/);
+    if (numSqMatch) {
+      const fileIdx = parseInt(numSqMatch[1], 10) - 1;
+      const rankIdx = parseInt(numSqMatch[2], 10);
+      const files = "abcdefgh";
+      if (fileIdx >= 0 && fileIdx < 8 && rankIdx >= 1 && rankIdx <= 8) {
+        return `${files[fileIdx]}${rankIdx}`;
+      }
+    }
+
+    if (el.dataset && el.dataset.square) return el.dataset.square;
+
+    const boardRect = board.getBoundingClientRect();
+    const squareW = (boardRect.width || 540) / 8;
+    const squareH = (boardRect.height || 540) / 8;
+
+    let posX = 0;
+    let posY = 0;
+
+    const transform = el.style.transform || "";
+    const translateMatch = transform.match(/translate(?:3d)?\(\s*(-?[\d.]+)px\s*,\s*(-?[\d.]+)px/);
+    const percentMatch = transform.match(/translate(?:3d)?\(\s*(-?[\d.]+)%\s*,\s*(-?[\d.]+)%/);
+
+    if (translateMatch) {
+      posX = parseFloat(translateMatch[1]);
+      posY = parseFloat(translateMatch[2]);
+    } else if (percentMatch) {
+      posX = (parseFloat(percentMatch[1]) / 100) * squareW;
+      posY = (parseFloat(percentMatch[2]) / 100) * squareH;
+    } else {
+      const pRect = el.getBoundingClientRect();
+      posX = pRect.left + pRect.width / 2 - boardRect.left;
+      posY = pRect.top + pRect.height / 2 - boardRect.top;
+    }
+
+    let col = Math.round(posX / squareW);
+    let row = Math.round(posY / squareH);
+    col = Math.max(0, Math.min(7, col));
+    row = Math.max(0, Math.min(7, row));
+
+    const files = "abcdefgh";
+    if (orientation === "w") {
+      const file = files[col];
+      const rank = 8 - row;
+      return `${file}${rank}`;
+    } else {
+      const file = files[7 - col];
+      const rank = row + 1;
+      return `${file}${rank}`;
+    }
+  }
+
+  // 10.5. Verify position after tab reset to handle the window where pieces are in original position
+  function verifyPositionAfterReset(board) {
+    if (!board) return;
+    
+    const scannedFen = scanBoardToFen(board);
+    if (!scannedFen) return;
+    
+    const boardFen = scannedFen.split(" ")[0];
+    
+    // If still in original position after 3 seconds, it's actually a new game
+    if (boardFen === "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") {
+      console.log("%c[FreeChess Coach] Position still original after 3 seconds - confirmed new game", "color: #10b981; font-weight: bold; font-size: 13px;");
+      game = new Chess();
+      currentFen = game.fen();
+      tabResetDetected = false;
+    } else {
+      // Position changed from original, so it was a tab reset mid-game
+      console.log("%c[FreeChess Coach] Position changed from original - confirmed tab reset mid-game", "color: #f59e0b; font-weight: bold; font-size: 13px;");
+      // Keep tabResetDetected = true to track first move
+    }
+    
+    positionCheckTimer = null;
+  }
+
+  function scanBoardToFen(board) {
+    if (!board) return null;
+    const orientation = detectOrientation(board);
+    boardOrientation = orientation;
+
+    const pieceEls = board.querySelectorAll('piece, .piece, [class*="piece"], div[class*="square-"] img, div.square img');
+    if (pieceEls.length < 2) return null;
+
+    const grid = Array.from({ length: 8 }, () => Array(8).fill(null));
+    const files = "abcdefgh";
+
+    pieceEls.forEach((el) => {
+      const p = parsePieceElement(el);
+      if (!p) return;
+      const sq = getSquareForPieceElement(el, board, orientation);
+      if (!sq || sq.length !== 2) return;
+
+      const fIdx = files.indexOf(sq[0]);
+      const rIdx = 8 - parseInt(sq[1], 10);
+      if (fIdx >= 0 && fIdx < 8 && rIdx >= 0 && rIdx < 8) {
+        grid[rIdx][fIdx] = p.color === "w" ? p.type.toUpperCase() : p.type.toLowerCase();
+      }
+    });
+
+    const fenRows = [];
+    for (let r = 0; r < 8; r++) {
+      let emptyCount = 0;
+      let rowStr = "";
+      for (let c = 0; c < 8; c++) {
+        const piece = grid[r][c];
+        if (!piece) {
+          emptyCount++;
+        } else {
+          if (emptyCount > 0) {
+            rowStr += emptyCount;
+            emptyCount = 0;
+          }
+          rowStr += piece;
+        }
+      }
+      if (emptyCount > 0) rowStr += emptyCount;
+      fenRows.push(rowStr);
+    }
+
+    const boardFen = fenRows.join("/");
+    let turn = game ? game.turn() : "w";
+
+    // Detect tab reset: if we're not at starting position on first scan
+    if (!lastScannedFen && boardFen !== "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") {
+      originalPositionDetected = false;
+      tabResetDetected = true;
+      console.log("%c[FreeChess Coach] Tab reset detected - starting 3-second position check", "color: #f59e0b; font-weight: bold; font-size: 13px;");
+      
+      // Start 3-second timer to check if position changes
+      if (positionCheckTimer) clearTimeout(positionCheckTimer);
+      positionCheckTimer = setTimeout(() => {
+        verifyPositionAfterReset(board);
+      }, 3000);
+    }
+    
+    // Detect if board is in original position (new game)
+    if (boardFen === "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") {
+      if (!originalPositionDetected) {
+        originalPositionDetected = true;
+        console.log("%c[FreeChess Coach] Original position detected - new game", "color: #10b981; font-weight: bold; font-size: 13px;");
+      }
+      // Reset to starting position
+      game = new Chess();
+      currentFen = game.fen();
+      if (positionCheckTimer) clearTimeout(positionCheckTimer);
+      tabResetDetected = false;
+    }
+
+    try {
+      const currentMoves = game.moves({ verbose: true });
+      for (let m of currentMoves) {
+        const testGame = new Chess(game.fen());
+        testGame.move(m);
+        if (testGame.fen().split(" ")[0] === boardFen) {
+          game = testGame;
+          return game.fen();
+        }
+      }
+    } catch (e) {}
+
+    const fullFen = `${boardFen} ${turn} KQkq - 0 1`;
+    return fullFen;
+  }
+
+  // 8. Get Square from Mouse/Pointer Event
+  function getSquareFromEvent(e, board) {
+    if (!board) board = boardElement || findBoard();
+    if (!board) return null;
+
+    const target = e.target;
+    if (target) {
+      if (target.dataset && target.dataset.square) return target.dataset.square;
+      const namedSq = (target.className || "").toString().match(/square-([a-h][1-8])/);
+      if (namedSq) return namedSq[1];
+      const parentSq = target.closest("[data-square], [class*='square-']");
+      if (parentSq) {
+        if (parentSq.dataset && parentSq.dataset.square) return parentSq.dataset.square;
+        const pMatch = (parentSq.className || "").toString().match(/square-([a-h][1-8])/);
+        if (pMatch) return pMatch[1];
+      }
+    }
+
+    const boardRect = board.getBoundingClientRect();
+    if (
+      e.clientX >= boardRect.left &&
+      e.clientX <= boardRect.right &&
+      e.clientY >= boardRect.top &&
+      e.clientY <= boardRect.bottom
+    ) {
+      const squareW = boardRect.width / 8;
+      const squareH = boardRect.height / 8;
+      let col = Math.floor((e.clientX - boardRect.left) / squareW);
+      let row = Math.floor((e.clientY - boardRect.top) / squareH);
+      col = Math.max(0, Math.min(7, col));
+      row = Math.max(0, Math.min(7, row));
+
+      const files = "abcdefgh";
+      const orientation = boardOrientation || "w";
+      if (orientation === "w") {
+        return `${files[col]}${8 - row}`;
+      } else {
+        return `${files[7 - col]}${row + 1}`;
+      }
+    }
+
+    return null;
+  }
+
+  // 9. Position Pre-caching for 0ms Pre-move Feedback
+  let cachedPositionLines = null;
+  let cachedFen = null;
+  let lastPreviewCandidate = null;
+  let hoverDebounce = null;
+
+  async function precomputeCurrentPosition(fen) {
+    if (!stockfish || !fen) return;
+    if (cachedFen === fen && cachedPositionLines) return;
+    try {
+      const lines = await stockfish.evaluate(fen, 12, 300);
+      if (lines && lines.length > 0) {
+        cachedPositionLines = lines;
+        cachedFen = fen;
+      }
+    } catch (e) {}
+  }
+
+  // 10. Real-time Pre-Move & Candidate Evaluation (While Dragging/Hovering)
+  async function evaluateCandidateMove(uciMove, baseFen, isPreview = false) {
+    if (!stockfish) return;
+    const from = uciMove.slice(0, 2);
+    const to = uciMove.slice(2, 4);
+
+    const fenBefore = baseFen || game.fen();
+    let tempGame;
+    try {
+      tempGame = new Chess(fenBefore);
+    } catch (e) {
+      return;
+    }
+
+    const moveRes = tempGame.move({ from, to, promotion: uciMove[4] || "q" });
+    if (!moveRes) return;
+
+    const fenAfter = tempGame.fen();
+
+    try {
+      // 1. Get Before Lines (from cache or fast eval)
+      let beforeLines = (cachedFen === fenBefore && cachedPositionLines) ? cachedPositionLines : null;
+      if (!beforeLines) {
+        beforeLines = await stockfish.evaluate(fenBefore, 10, 150);
+        cachedPositionLines = beforeLines;
+        cachedFen = fenBefore;
+      }
+
+      const topBefore = beforeLines[0] || null;
+      const secondBefore = beforeLines[1] || null;
+
+      // 2. Instant classification for Top Move
+      if (topBefore && uciMove === topBefore.move) {
+        triggerFeedback("best", "(Top Engine Choice ★)");
+        return;
+      }
+
+      // 3. Fast Evaluation of Move Destination
+      const afterLines = await stockfish.evaluate(fenAfter, 8, 120);
+      const afterLine = afterLines[0] || null;
+
+      if (topBefore && afterLine) {
+        const tag = isPreview ? " [Preview]" : "";
+        
+        // Handle mate display first - when Stockfish finds mate, show "mate in X"
+        if (typeof afterLine.mateIn === 'number' && afterLine.mateIn !== null) {
+          const mateCount = Math.abs(afterLine.mateIn);
+          const isMateWin = afterLine.mateIn > 0;
+          const feedbackType = isMateWin ? 'mate_win' : 'mate_loss';
+          const detailMsg = `Mate in ${mateCount}${tag}`;
+          triggerFeedback(feedbackType, detailMsg);
+        } else {
+          // Normal classification for non-mate positions
+          const cls = ChessClassifier.classifyMove(topBefore, secondBefore, afterLine, uciMove, new Chess(fenBefore));
+          const cpVal = typeof afterLine.cp === "number" ? (-afterLine.cp / 100).toFixed(1) : "";
+          const sign = cpVal && parseFloat(cpVal) > 0 ? "+" : "";
+          const detailMsg = cpVal ? `(${sign}${cpVal})${tag}` : tag;
+          triggerFeedback(cls, detailMsg);
+        }
+      }
+    } catch (err) {
+      console.error("[FreeChess Coach] Eval error:", err);
+    }
+  }
+
+  // 11. Attach Real-Time Pointer & Drag Listeners for Instant Pre-Move Glow
+  function attachListeners() {
+    // When piece is picked up / clicked
+    const onDragStart = (e) => {
+      const board = boardElement || findBoard();
+      if (!board) return;
+      const sq = getSquareFromEvent(e, board);
+      if (sq) {
+        startSquare = sq;
+        draggedPiece = e.target.closest("piece, .piece, [class*='piece'], img");
+        lastPreviewCandidate = null;
+      }
+    };
+
+    // While dragging / hovering over destination squares BEFORE releasing
+    const onDragMove = (e) => {
+      if (!startSquare) return;
+      const board = boardElement || findBoard();
+      if (!board) return;
+
+      const hoverSq = getSquareFromEvent(e, board);
+      if (!hoverSq || hoverSq === startSquare) return;
+
+      const candidateUci = `${startSquare}${hoverSq}`;
+      if (candidateUci === lastPreviewCandidate) return;
+
+      // Verify move legality from current position
+      try {
+        const legalMoves = game.moves({ verbose: true });
+        const isLegal = legalMoves.some((m) => m.from === startSquare && m.to === hoverSq);
+        if (!isLegal) return;
+
+        lastPreviewCandidate = candidateUci;
+
+        // Debounce slightly to allow smooth cursor tracking
+        clearTimeout(hoverDebounce);
+        hoverDebounce = setTimeout(() => {
+          console.log(`%c[FreeChess Coach] 🔍 Pre-Move Preview: ${candidateUci}`, "color: #eab308; font-weight: bold;");
+          evaluateCandidateMove(candidateUci, game.fen(), true);
+        }, 30);
+      } catch (err) {}
+    };
+
+    // When piece is dropped / move released
+    const onDragEnd = (e) => {
+      if (!startSquare) return;
+      clearTimeout(hoverDebounce);
+
+      const board = boardElement || findBoard();
+      const destSq = getSquareFromEvent(e, board);
+
+      if (destSq && destSq !== startSquare) {
+        const uciCandidate = `${startSquare}${destSq}`;
+        try {
+          const legalMoves = game.moves({ verbose: true });
+          const isLegal = legalMoves.some((m) => m.from === startSquare && m.to === destSq);
+          if (isLegal) {
+            evaluateCandidateMove(uciCandidate, game.fen(), false);
+          }
+        } catch (err) {}
+      }
+
+      startSquare = null;
+      draggedPiece = null;
+      lastPreviewCandidate = null;
+    };
+
+    window.addEventListener("pointerdown", onDragStart, true);
+    window.addEventListener("mousedown", onDragStart, true);
+
+    window.addEventListener("pointermove", onDragMove, true);
+    window.addEventListener("mousemove", onDragMove, true);
+    window.addEventListener("dragover", onDragMove, true);
+
+    window.addEventListener("pointerup", onDragEnd, true);
+    window.addEventListener("mouseup", onDragEnd, true);
+    window.addEventListener("drop", onDragEnd, true);
+  }
+
+  // 11. Analyze opponent move and provide hint when they make inaccuracy
+  async function analyzeOpponentMoveAndHint(playedUci, prevFen, currentFen) {
+    if (!stockfish) return;
+    
+    try {
+      // Evaluate the opponent's move to classify it
+      const oldGame = new Chess(prevFen);
+      const from = playedUci.slice(0, 2);
+      const to = playedUci.slice(2, 4);
+      const promotion = playedUci[4] || "q";
+      
+      // Get evaluation before opponent's move
+      const beforeLines = await stockfish.evaluate(prevFen, 10, 150);
+      const topBefore = beforeLines[0] || null;
+      const secondBefore = beforeLines[1] || null;
+      
+      // Simulate opponent's move and evaluate after
+      const tempGame = new Chess(prevFen);
+      tempGame.move({ from, to, promotion });
+      const afterLines = await stockfish.evaluate(tempGame.fen(), 8, 120);
+      const afterLine = afterLines[0] || null;
+      
+      // Classify opponent's move
+      if (topBefore && afterLine) {
+        const cls = ChessClassifier.classifyMove(topBefore, secondBefore, afterLine, playedUci, oldGame);
+        
+        // If opponent made inaccuracy, mistake, or blunder, give hint
+        if (cls === 'inaccuracy' || cls === 'mistake' || cls === 'blunder') {
+          // Find best move for current position (after opponent's move)
+          const currentLines = await stockfish.evaluate(currentFen, 10, 150);
+          const bestMove = currentLines[0];
+          
+          if (bestMove && bestMove.move) {
+            const bestFrom = bestMove.move.slice(0, 2);
+            const bestTo = bestMove.move.slice(2, 4);
+            
+            // Check if best move is a capture by simulating the move
+            const currentGame = new Chess(currentFen);
+            const moveObj = currentGame.move({ from: bestFrom, to: bestTo, promotion: 'q' });
+            
+            // Undo the move to get back to current state
+            currentGame.undo();
+            
+            // Check if the move captured a piece
+            const isCapture = moveObj && moveObj.captured !== null;
+            
+            const hint = isCapture ? "Capture" : "Push";
+            
+            // Show hint with neutral color
+            const board = boardElement || findBoard();
+            if (board) {
+              attachStatusPill(board, `💡 Hint: ${hint}`, "normal", false);
+              console.log(`%c[FreeChess Coach] 💡 Opponent made ${cls}. Your hint: ${hint}`, "color: #f59e0b; font-weight: bold; font-size: 13px;");
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("[FreeChess Coach] Opponent analysis error:", err);
+    }
+  }
+
+  // 12. Observe Game Board & Piece Mutations
+  function observeGameMutations() {
+    let debounceTimer = null;
+
+    const checkBoardAndSync = () => {
+      boardElement = findBoard();
+      if (!boardElement) return;
+
+      const scannedFen = scanBoardToFen(boardElement);
+      if (scannedFen && scannedFen !== lastScannedFen) {
+        const prevFen = lastScannedFen;
+        lastScannedFen = scannedFen;
+
+        try {
+          const testGame = new Chess(scannedFen);
+
+          if (prevFen) {
+            const oldGame = new Chess(prevFen);
+            const legalMoves = oldGame.moves({ verbose: true });
+            for (let m of legalMoves) {
+              const sim = new Chess(prevFen);
+              sim.move(m);
+              if (sim.fen().split(" ")[0] === scannedFen.split(" ")[0]) {
+                const playedUci = `${m.from}${m.to}${m.promotion || ""}`;
+                console.log(`%c[FreeChess Coach] ♟ Move Played: ${playedUci} (${m.san})`, "color: #10b981; font-weight: bold; font-size: 13px;");
+                
+                // If tab reset detected, track who moved to fix turn
+                if (tabResetDetected) {
+                  const movedColor = m.color; // 'w' or 'b'
+                  const nextTurn = movedColor === 'w' ? 'b' : 'w';
+                  
+                  // Update game with correct turn
+                  const correctedGame = new Chess(scannedFen.split(" ")[0] + " " + nextTurn + " KQkq - 0 1");
+                  game = correctedGame;
+                  currentFen = correctedGame.fen();
+                  
+                  tabResetDetected = false;
+                  console.log(`%c[FreeChess Coach] Turn corrected: ${movedColor} moved, now ${nextTurn}'s turn`, "color: #10b981; font-weight: bold; font-size: 13px;");
+                }
+                
+                evaluateCandidateMove(playedUci, prevFen, false);
+                
+                // Check if opponent made inaccuracy and give hint
+                analyzeOpponentMoveAndHint(playedUci, prevFen, scannedFen);
+                break;
+              }
+            }
+          }
+
+          game = testGame;
+          currentFen = scannedFen;
+
+          // Pre-cache position for 0ms drag response on the new turn
+          precomputeCurrentPosition(scannedFen);
+        } catch (e) {}
+      }
+    };
+
+    checkBoardAndSync();
+
+    const observer = new MutationObserver(() => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(checkBoardAndSync, 60);
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+  }
+
+  // Run initialization
+  initEngine();
+  attachListeners();
+  observeGameMutations();
+})();
+
+
