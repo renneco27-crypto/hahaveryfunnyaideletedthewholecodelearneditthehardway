@@ -7,7 +7,9 @@
     var email = window.__user?.email;
     if (email) {
       try { await fetch('/api/signout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+      try { localStorage.removeItem('avatar_cache_' + email); } catch(e) {}
     }
+    try { localStorage.removeItem('avatar_cache'); } catch(e) {}
     sessionStorage.removeItem('auth_cache');
     await supabase.auth.signOut();
     window.location.href = '/login';
@@ -33,7 +35,7 @@
     var { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       sessionStorage.removeItem('auth_cache');
-      window.location.href = '/pending';
+      window.location.href = '/login';
       return;
     }
     var res = await fetch('/api/verify-session', {
@@ -45,7 +47,9 @@
 
     if (!result.valid) {
       sessionStorage.removeItem('auth_cache');
-      var target = result.singleSession ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '') : '/pending';
+      var target = result.reason === 'single_session' ? '/pending?reason=single_session&email=' + encodeURIComponent(result.email || '')
+        : result.reason === 'ip_limit' ? '/pending?reason=ip_limit&email=' + encodeURIComponent(result.email || '')
+        : '/pending';
       window.location.href = target;
       return;
     }
@@ -53,12 +57,14 @@
     sessionStorage.setItem('auth_cache', JSON.stringify({ user: result.user, token: session.access_token }));
     window.__user = result.user;
     window.__token = session.access_token;
+    window.dispatchEvent(new CustomEvent('user_updated'));
+    if (typeof window.renderSidebar === 'function') window.renderSidebar();
 
     if (window.location.pathname === '/admin' && result.user.role !== 'admin') {
       window.location.href = '/analytics';
     }
   } catch (e) {
     console.error('Auth guard error:', e);
-    if (!window.__user) window.location.href = '/pending';
+    if (!window.__user) window.location.href = '/login';
   }
 })();

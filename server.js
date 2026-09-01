@@ -93,21 +93,285 @@ async function processUserQueue(email) {
       scheduleUserQueue(email, null);
     } else {
       console.log(`Inserted ${inserts.length} reports for ${email}`);
-      // Fire Make.com webhook (fire-and-forget)
-      try {
-        const webhookUrl = 'https://hook.eu1.make.com/9acokbud64bqr23nugs4gfhjvfdzyj8f';
-        fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'INSERT', table: 'bullying_reports', count: inserts.length, email: email })
-        }).catch(function(err) {
-          console.error('Webhook failed:', err.message);
-        });
-      } catch (whErr) {
-        console.error('Webhook error:', whErr.message);
+      // Dispatch formatted JSON to Make.com webhook according to deped_lrp_report_schema.json
+      const webhookUrl = process.env.MAKE_WEBHOOK_URL || 'https://hook.eu1.make.com/9acokbud64bqr23nugs4gfhjvfdzyj8f';
+      for (const row of inserts) {
+        const payloads = transformReportToMakePayloads(row);
+        for (const payload of payloads) {
+          fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).then(() => console.log(`Make.com webhook dispatched for [${payload.report_type}]: ${payload.school_name}`))
+            .catch(err => console.error('Make.com webhook error:', err.message));
+        }
       }
     }
   }
+}
+
+// Transformer function mapping submitted report row to deped_lrp_report_schema.json
+function transformReportToMakePayloads(row) {
+  const mod = (row.module || row.report_data?.module || '').toUpperCase();
+  const rd = row.report_data || {};
+  const meta = rd.metadata || {};
+  const data = rd.data || rd.categories || {};
+  const prepared = row.prepared_by || rd.preparedBy || {};
+  const validated = row.validated_by || rd.validatedBy || {};
+
+  const common = {
+    division: 'Ormoc City Division',
+    submission_date: row.created_at ? new Date(row.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    submitted_by: prepared.name || '—',
+    designation: prepared.designation || 'Guidance Counselor',
+    validated_by: validated.name || 'School Principal',
+    school_sector: meta.classification || 'Public',
+    school_level: meta.level || 'Elementary',
+    school_name: row.school_name || meta.schoolName || 'Unknown School',
+    school_id: String(row.school_id || meta.schoolId || '000000')
+  };
+
+  const results = [];
+
+  if (mod === 'A') {
+    const payload = {
+      report_type: 'bullying',
+      school_year: meta.reportingYear || '2024-2025',
+      ...common,
+      physical_male: 0, physical_female: 0,
+      social_male: 0, social_female: 0,
+      gender_based_male: 0, gender_based_female: 0,
+      cyber_bullying_male: 0, cyber_bullying_female: 0,
+      retaliation_male: 0, retaliation_female: 0,
+      total_male_victims: 0, total_female_victims: 0, total_incidents: 0,
+      resolved_cases: 0, cases_for_monitoring: 0,
+      referred_government_agencies: 0, referred_ngo: 0,
+      action_taken: '', remarks: ''
+    };
+
+    const actions = [];
+    Object.keys(data).forEach(catKey => {
+      const cat = data[catKey];
+      if (!cat) return;
+      if (cat.actionsTaken) actions.push(`${catKey}: ${cat.actionsTaken}`);
+      const st = (cat.status || '').toLowerCase();
+      if (st.includes('resolved')) payload.resolved_cases++;
+      else if (st.includes('ongoing') || st.includes('on-going') || st.includes('monitoring')) payload.cases_for_monitoring++;
+      else if (st.includes('gov')) payload.referred_government_agencies++;
+      else if (st.includes('ngo') || st.includes('non-gov')) payload.referred_ngo++;
+
+      (cat.affectedStudents || []).forEach(stu => {
+        const g = (stu.gender || 'M').toUpperCase();
+        if (g === 'M') {
+          payload.total_male_victims++;
+          if (catKey === 'A-1') payload.physical_male++;
+          else if (catKey === 'A-2') payload.social_male++;
+          else if (catKey === 'A-3') payload.gender_based_male++;
+          else if (catKey === 'A-4') payload.cyber_bullying_male++;
+          else if (catKey === 'A-5') payload.retaliation_male++;
+        } else {
+          payload.total_female_victims++;
+          if (catKey === 'A-1') payload.physical_female++;
+          else if (catKey === 'A-2') payload.social_female++;
+          else if (catKey === 'A-3') payload.gender_based_female++;
+          else if (catKey === 'A-4') payload.cyber_bullying_female++;
+          else if (catKey === 'A-5') payload.retaliation_female++;
+        }
+      });
+    });
+
+    payload.total_incidents = payload.total_male_victims + payload.total_female_victims;
+    payload.action_taken = actions.join(' | ');
+    results.push(payload);
+  } else if (mod === 'B') {
+    const nature = data.nature || [];
+    const victims = data.victims || [];
+    const perps = data.perpetrators || [];
+
+    const payload = {
+      report_type: 'child_abuse',
+      school_year: meta.reportingYear || '2024-2025',
+      ...common,
+      physical_male: 0, physical_female: 0,
+      sexual_male: 0, sexual_female: 0,
+      verbal_psychological_male: 0, verbal_psychological_female: 0,
+      total_male_victims: 0, total_female_victims: 0, total_incidents: 0,
+      perpetrator_relatives: 0, perpetrator_school_personnel: 0,
+      resolved_cases: 0, cases_for_monitoring: 0,
+      referred_government_agencies: 0, referred_ngo: 0,
+      action_taken: data.actionsTaken || '', remarks: ''
+    };
+
+    const st = (data.status || '').toLowerCase();
+    if (st.includes('resolved')) payload.resolved_cases = 1;
+    else if (st.includes('ongoing') || st.includes('on-going') || st.includes('intervention')) payload.cases_for_monitoring = 1;
+    else if (st.includes('gov')) payload.referred_government_agencies = 1;
+    else if (st.includes('ngo') || st.includes('non-gov')) payload.referred_ngo = 1;
+
+    victims.forEach(v => {
+      const g = (v.gender || 'M').toUpperCase();
+      if (g === 'M') {
+        payload.total_male_victims++;
+        if (nature.includes('N-1')) payload.physical_male++;
+        if (nature.includes('N-2')) payload.sexual_male++;
+        if (nature.includes('N-3') || nature.includes('N-4')) payload.verbal_psychological_male++;
+      } else {
+        payload.total_female_victims++;
+        if (nature.includes('N-1')) payload.physical_female++;
+        if (nature.includes('N-2')) payload.sexual_female++;
+        if (nature.includes('N-3') || nature.includes('N-4')) payload.verbal_psychological_female++;
+      }
+    });
+
+    payload.total_incidents = payload.total_male_victims + payload.total_female_victims;
+
+    perps.forEach(p => {
+      const r = (p.relationship || '').toLowerCase();
+      if (r.includes('relative')) payload.perpetrator_relatives++;
+      else if (r.includes('personnel') || r.includes('teacher')) payload.perpetrator_school_personnel++;
+    });
+
+    results.push(payload);
+  } else if (mod === 'C') {
+    const children = data.children || [];
+    const payload = {
+      report_type: 'children_at_risk',
+      period_covered: data.periodCovered || meta.reportingYear || 'SY 2024-2025',
+      ...common,
+      victim_of_abuse_male: 0, victim_of_abuse_female: 0,
+      victim_of_neglect_male: 0, victim_of_neglect_female: 0,
+      dysfunctional_family_male: 0, dysfunctional_family_female: 0,
+      gang_member_male: 0, gang_member_female: 0,
+      high_criminality_community_male: 0, high_criminality_community_female: 0,
+      armed_conflict_male: 0, armed_conflict_female: 0,
+      status_offense_ra9344_male: 0, status_offense_ra9344_female: 0,
+      mendicant_pd1563_male: 0, mendicant_pd1563_female: 0,
+      solvent_rugby_user_male: 0, solvent_rugby_user_female: 0,
+      drug_use_dependency_male: 0, drug_use_dependency_female: 0,
+      smoking_male: 0, smoking_female: 0,
+      others_male: 0, others_female: 0, others_description: 'Involved in gambling / other risks',
+      action_taken: '',
+      division_alleviation_actions: data.narrative || '',
+      remarks: ''
+    };
+
+    const actions = [];
+    children.forEach(c => {
+      const g = (c.gender || 'M').toUpperCase();
+      const code = String(c.classification || '');
+      if (c.actionTaken) actions.push(c.actionTaken);
+
+      if (g === 'M') {
+        if (code === '1') payload.dysfunctional_family_male++;
+        else if (code === '2') payload.gang_member_male++;
+        else if (code === '3') payload.high_criminality_community_male++;
+        else if (code === '4') payload.armed_conflict_male++;
+        else if (code === '5') payload.status_offense_ra9344_male++;
+        else if (code === '6') payload.mendicant_pd1563_male++;
+        else if (code === '7') payload.solvent_rugby_user_male++;
+        else if (code === '8') payload.drug_use_dependency_male++;
+        else if (code === '9') payload.smoking_male++;
+        else payload.others_male++;
+      } else {
+        if (code === '1') payload.dysfunctional_family_female++;
+        else if (code === '2') payload.gang_member_female++;
+        else if (code === '3') payload.high_criminality_community_female++;
+        else if (code === '4') payload.armed_conflict_female++;
+        else if (code === '5') payload.status_offense_ra9344_female++;
+        else if (code === '6') payload.mendicant_pd1563_female++;
+        else if (code === '7') payload.solvent_rugby_user_female++;
+        else if (code === '8') payload.drug_use_dependency_female++;
+        else if (code === '9') payload.smoking_female++;
+        else payload.others_female++;
+      }
+    });
+
+    payload.action_taken = actions.join(' | ');
+    results.push(payload);
+  } else if (mod === 'D') {
+    const list = data.ciclList || [];
+    if (list.length === 0) {
+      list.push({ lrn: '—', age: null, gender: 'M', caseViolation: 'None reported', status: 'Resolved' });
+    }
+
+    list.forEach(c => {
+      const st = (c.status || '').toLowerCase();
+      results.push({
+        report_type: 'cicl',
+        school_year: meta.reportingYear || '2024-2025',
+        period_covered: data.periodCovered || 'SY 2024-2025',
+        ...common,
+        learner_reference_number: c.lrn || '',
+        age: c.age ? parseInt(c.age, 10) : null,
+        sex: c.gender === 'F' ? 'F' : 'M',
+        case_violation: c.caseViolation || '',
+        action_taken: c.actionsTaken || '',
+        intervention_diversion_program: c.status || '',
+        resolved_cases: st.includes('resolved') ? 1 : 0,
+        cases_for_monitoring: (st.includes('ongoing') || st.includes('monitoring')) ? 1 : 0,
+        referred_government_agencies: st.includes('gov') ? 1 : 0,
+        referred_ngo: (st.includes('ngo') || st.includes('non-gov')) ? 1 : 0,
+        diversion_program_description: data.interventionNarrative || '',
+        remarks: ''
+      });
+    });
+  } else if (mod === 'E') {
+    const rows = data.rows || [];
+    const payload = {
+      report_type: 'other_lrp_concerns',
+      school_year: meta.reportingYear || '2024-2025',
+      ...common,
+      child_labor_male: 0, child_labor_female: 0,
+      child_trafficking_male: 0, child_trafficking_female: 0,
+      online_sexual_exploitation_male: 0, online_sexual_exploitation_female: 0,
+      sexual_exploitation_male: 0, sexual_exploitation_female: 0,
+      corporal_punishment_male: 0, corporal_punishment_female: 0,
+      other_learner_to_learner_abuse_male: 0, other_learner_to_learner_abuse_female: 0,
+      total_male_victims: 0, total_female_victims: 0, total_incidents: 0,
+      resolved_cases: 0, cases_for_monitoring: 0,
+      referred_government_agencies: 0, referred_ngo: 0,
+      action_taken: '', remarks: ''
+    };
+
+    const actions = [];
+    rows.forEach(r => {
+      const type = (r.concernType || '').toUpperCase();
+      if (r.actionsTaken) actions.push(`${type}: ${r.actionsTaken}`);
+
+      const st = (r.status || '').toLowerCase();
+      if (st.includes('resolved')) payload.resolved_cases++;
+      else if (st.includes('ongoing') || st.includes('intervention')) payload.cases_for_monitoring++;
+      else if (st.includes('gov')) payload.referred_government_agencies++;
+      else if (st.includes('ngo') || st.includes('non-gov')) payload.referred_ngo++;
+
+      (r.victims || []).forEach(v => {
+        const g = (v.sexGender || 'M').toUpperCase();
+        if (g === 'M') {
+          payload.total_male_victims++;
+          if (type === 'EC-1') payload.child_labor_male++;
+          else if (type === 'EC-2') payload.child_trafficking_male++;
+          else if (type === 'EC-3') payload.corporal_punishment_male++;
+          else if (type === 'EC-6') payload.online_sexual_exploitation_male++;
+          else if (type === 'EC-8' || type === 'EC-9') payload.sexual_exploitation_male++;
+          else payload.other_learner_to_learner_abuse_male++;
+        } else {
+          payload.total_female_victims++;
+          if (type === 'EC-1') payload.child_labor_female++;
+          else if (type === 'EC-2') payload.child_trafficking_female++;
+          else if (type === 'EC-3') payload.corporal_punishment_female++;
+          else if (type === 'EC-6') payload.online_sexual_exploitation_female++;
+          else if (type === 'EC-8' || type === 'EC-9') payload.sexual_exploitation_female++;
+          else payload.other_learner_to_learner_abuse_female++;
+        }
+      });
+    });
+
+    payload.total_incidents = payload.total_male_victims + payload.total_female_victims;
+    payload.action_taken = actions.join(' | ');
+    results.push(payload);
+  }
+
+  return results;
 }
 
 // 10-Minute Temp File Cleanup Task (recurses into per-user subdirectories)
@@ -355,13 +619,49 @@ app.get('/api/reports', async (req, res) => {
   }
 });
 
+// GET /api/schools — list all division schools from database (with JSON fallback)
+app.get('/api/schools', async (req, res) => {
+  try {
+    const db = serviceClient || supabase;
+    const { data, error } = await db.from('division_schools').select('*').order('district').order('name');
+    if (!error && data && data.length > 0) {
+      // Group by district to match expected format
+      const districtMap = {};
+      data.forEach(s => {
+        if (!districtMap[s.district]) {
+          districtMap[s.district] = { district: s.district, psds: s.psds, schools: [] };
+        }
+        districtMap[s.district].schools.push(s.name);
+      });
+      return res.json(Object.values(districtMap));
+    }
+    // Fallback to JSON file if table is not yet seeded
+    const jsonPath = path.join(HTML_DIR, 'ormoc_city_division_schools.json');
+    if (fs.existsSync(jsonPath)) {
+      const fallback = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      return res.json(fallback);
+    }
+    res.json([]);
+  } catch (error) {
+    console.error('Schools API Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ===== FRONTEND ROUTES WITH AUTH + CLEAN URLs =====
 const HTML_DIR = path.join(__dirname, 'htmls');
 
-// Single-session enforcement: map email -> token
-const activeSessions = {};
-const blockedRequests = []; // { email, schoolName, deviceId, timestamp }
+// IP-limit enforcement: registered IPs are persisted in the registered_ips table.
+// Each non-admin account may register up to 3 IPs before requiring admin approval.
+const blockedRequests = []; // { email, schoolName, deviceId: clientIp, timestamp }
 const revokedUsers = {}; // email -> true
+
+// getClientIp() - extract the client IP address from headers or socket
+function getClientIp(req) {
+  const fwd = req.headers['x-forwarded-for'];
+  if (fwd) return fwd.split(',')[0].trim();
+  return req.socket.remoteAddress || 'unknown';
+}
 
 // GET /api/access-requests — list pending blocked session attempts (latest per email)
 app.get('/api/access-requests', (req, res) => {
@@ -371,24 +671,25 @@ app.get('/api/access-requests', (req, res) => {
   res.json(Object.values(latest));
 });
 
-// POST /api/access-requests/:email/approve — clear old session so new device can log in
-app.post('/api/access-requests/:email/approve', (req, res) => {
+// POST /api/access-requests/:email/approve — clear IP history so new location can log in
+app.post('/api/access-requests/:email/approve', async (req, res) => {
   const { email } = req.params;
-  delete activeSessions[email];
-  const idx = blockedRequests.findIndex(r => r.email === email);
-  if (idx !== -1) blockedRequests.splice(idx, 1);
-  // Remove all remaining entries for this email
-  for (var i = blockedRequests.length - 1; i >= 0; i--) { if (blockedRequests[i].email === email) blockedRequests.splice(i, 1); }
+  // Clear all registered IPs for this account in Supabase
+  if (serviceClient) {
+    const { error } = await serviceClient.from('registered_ips').delete().eq('email', email);
+    if (error) console.error('approve: clear IPs failed:', error.message);
+  }
+  // Remove all remaining entries for this email from the pending queue
+  for (var i = blockedRequests.length - 1; i >= 0; i--) {
+    if (blockedRequests[i].email === email) blockedRequests.splice(i, 1);
+  }
   res.json({ success: true });
 });
 
 // POST /api/access-requests/:email/revoke — permanently block user
 app.post('/api/access-requests/:email/revoke', (req, res) => {
   const { email } = req.params;
-  delete activeSessions[email];
   revokedUsers[email] = true;
-  const idx = blockedRequests.findIndex(r => r.email === email);
-  if (idx !== -1) blockedRequests.splice(idx, 1);
   // Remove all remaining entries for this email
   for (var i = blockedRequests.length - 1; i >= 0; i--) { if (blockedRequests[i].email === email) blockedRequests.splice(i, 1); }
   res.json({ success: true });
@@ -416,28 +717,37 @@ app.post('/api/verify-session', async (req, res) => {
   const fullName = user.user_metadata?.full_name || user.email || 'User';
   const email = user.email;
 
-  // Track token changes for admin visibility (don't block — Supabase rotates tokens)
-  if (activeSessions[email] && activeSessions[email] !== token) {
-    blockedRequests.push({ email, schoolName, deviceId: token.slice(-8), timestamp: new Date().toISOString() });
-  }
-  // Always update to the latest token
-  activeSessions[email] = token;
-
   // Check if user is revoked
   if (revokedUsers[email]) {
     return res.json({ valid: false });
   }
 
-  // Register this session
-  activeSessions[email] = token;
+  // Admins bypass the IP limit entirely
+  if (role === 'admin') {
+    return res.json({ valid: true, user: { email, role, schoolName, avatarUrl, fullName } });
+  }
+
+  // Enforce 3 IP limit for non-admin accounts (persisted in Supabase)
+  const clientIp = getClientIp(req);
+  const { data: existing } = await db
+    .from('registered_ips').select('ip_address').eq('email', email);
+  const registeredIps = existing ? existing.map(r => r.ip_address) : [];
+
+  if (!registeredIps.includes(clientIp)) {
+    if (registeredIps.length >= 3) {
+      blockedRequests.push({ email, schoolName, deviceId: clientIp, timestamp: new Date().toISOString() });
+      return res.json({ valid: false, reason: 'ip_limit', email });
+    }
+    const { error: insertErr } = await db
+      .from('registered_ips').insert({ email, ip_address: clientIp });
+    if (insertErr) console.error('register IP failed:', insertErr.message);
+  }
 
   res.json({ valid: true, user: { email, role, schoolName, avatarUrl, fullName } });
 });
 
-// Sign-out endpoint — clears the active session
+// Sign-out endpoint — nothing in-memory to clear (IPs persist until approved)
 app.post('/api/signout', (req, res) => {
-  const { email } = req.body;
-  if (email) delete activeSessions[email];
   res.json({ success: true });
 });
 

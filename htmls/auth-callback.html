@@ -11,11 +11,34 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zdHlxY2V5amtnZXZuaWJmcWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NDMwMzcsImV4cCI6MjA5ODIxOTAzN30.EUozeDCEFqvkLSNOpaBEaXA2D8ZbdPrhGdrNFelpRCU'
     );
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session && window.opener) {
-      window.opener.postMessage({ type: 'supabase-auth', session }, window.origin);
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error || !session) {
+        window.location.href = '/login';
+        return;
+      }
+
+      const user = session.user;
+      let role = user.app_metadata?.role;
+      if (!role) {
+        const { data: profile } = await supabase
+          .from('profiles').select('role, school_name, school_id').eq('id', user.id).maybeSingle();
+        role = profile?.role || 'user';
+      }
+
+      // If opened as popup, notify opener
+      if (window.opener) {
+        window.opener.postMessage({ type: 'supabase-auth', session }, window.origin);
+        window.close();
+        return;
+      }
+
+      // Main window direct redirect
+      window.location.href = role === 'admin' ? '/admin' : '/analytics';
+    } catch (e) {
+      console.error('Auth callback error:', e);
+      window.location.href = '/login';
     }
-    window.close();
   })();
 </script>
 </body>

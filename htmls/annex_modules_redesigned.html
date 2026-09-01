@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -265,7 +265,7 @@ tailwind.config = {
 </header>
 <div class="flex min-h-[calc(100vh-64px)]">
 <div id="sidebar-root"></div>
-<main class="flex-1 lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
+<main class="flex-1 ml-[64px] lg:ml-64 p-lg max-w-container-max mx-auto overflow-y-auto">
 <div id="root"></div>
 </main>
 </div>
@@ -477,7 +477,7 @@ const ModuleAReportingPanel = () => {
     { id: 'M-3', label: 'M-3: Emotional Intelligence' }
   ];
 
-  const impactFlags = ['E-1: Emotional Damage', 'E-2: Physical Harm', 'E-3: Attempted Suicide', 'E-4: Suicide Death', 'E-5: Death'];
+  const impactFlags = ['E-1: Emotional Damage', 'E-2: Physical Harm', 'E-3: Attempted Suicide', 'E-4: Suicide Death', 'E-5: Death', 'E-6: Psychological / Emotional Damage'];
   const enrollmentOptions = ['Maintained Attendance', 'Dropped Out', 'Transferred'];
   const performanceOptions = ['Advanced', 'Proficient', 'Developing', 'Beginning'];
   const statusOptions = ['Resolved', 'Ongoing Intervention', 'Referred to Government Agencies', 'Referred to NGO'];
@@ -895,7 +895,7 @@ const ModuleAReportingPanel = () => {
       'EC-8': 'Gender-based Sexual Harassment', 'EC-9': 'Rape Cases',
       'E-1': 'Emotional Damage', 'E-2': 'Social Damage',
       'E-3': 'Physical Injury', 'E-4': 'Academic Decline',
-      'E-5': 'Death'
+      'E-5': 'Death', 'E-6': 'Psychological / Emotional Damage'
     };
     return codeMap[code] || code;
   }
@@ -1155,7 +1155,7 @@ const ModuleAReportingPanel = () => {
     if (!reportPayload || submitting) return;
     setSubmitting(true);
     try {
-      const res = await fetch('http://localhost:5000/api/submit', {
+      const res = await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reportPayload)
@@ -1521,6 +1521,40 @@ const ModuleAReportingPanel = () => {
                 </select>
                 {validationErrors.caseStatus && <div className="error-text">{validationErrors.caseStatus}</div>}
               </div>
+          </div>
+
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">menu_book</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Definitions & Legend</div>
+                <div className="card-header-subtitle">ANNEX A REFERENCE GUIDE</div>
+              </div>
+            </div>
+            <div style={{ fontSize: '13px', color: '#44474e', lineHeight: '1.6' }} className="grid grid-cols-1 md:grid-cols-3 gap-md">
+              <div>
+                <h4 className="font-bold text-primary mb-xs">Forms of Bullying</h4>
+                <p><strong>A-1 Physical:</strong> Unwanted physical contact (punching, pushing, kicking, beating).</p>
+                <p><strong>A-2 Verbal:</strong> Statements causing emotional distress, slanderous remarks, teasing, name-calling.</p>
+                <p><strong>A-3 Cyberbullying:</strong> Bullying through technology, electronic devices, internet, SMS, social media.</p>
+                <p><strong>A-4 Written:</strong> Hurtful or humiliating physical letters, notes, posters, drawings.</p>
+                <p><strong>A-5 Retaliation:</strong> Any retaliatory acts against a person who reports or witnesses bullying.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-primary mb-xs">Motives of Bullying</h4>
+                <p><strong>M-1 Social:</strong> Intentional exclusion, rumor spreading, humiliation to alter social status.</p>
+                <p><strong>M-2 Gender-Based:</strong> Targeted humiliation or exclusion based on SOGIE / perceived gender identity.</p>
+                <p><strong>M-3 Emotional Intelligence:</strong> Psychological domination, emotional insecurity, inability to regulate conflict.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-primary mb-xs">Effects / Impacts</h4>
+                <p><strong>E-1:</strong> Emotional Damage</p>
+                <p><strong>E-2:</strong> Physical Harm</p>
+                <p><strong>E-3:</strong> Attempted Suicide</p>
+                <p><strong>E-4:</strong> Suicide Death</p>
+                <p><strong>E-5:</strong> Death (Non-suicide fatal result)</p>
+                <p><strong>E-6:</strong> Psychological / Emotional Damage</p>
+              </div>
             </div>
           </div>
         </>
@@ -1644,8 +1678,8 @@ const ModuleAReportingPanel = () => {
                 <button className="remove-btn" type="button" onClick={() => removeModuleBVictim(idx)} title="Remove">✕</button>
                 <div className="panel-grid">
                   <div>
-                    <label className="field-label">Name <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['bVictim' + idx + 'Name'] ? 'field-error' : ''}`} value={victim.name} onChange={e => updateModuleBVictim(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                    <label className="field-label">Name (Last Name, First Name, M.I.) <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['bVictim' + idx + 'Name'] ? 'field-error' : ''}`} value={victim.name} onChange={e => updateModuleBVictim(idx, 'name', e.target.value)} placeholder="e.g., Dela Cruz, Juan A." />
                   </div>
                   <div>
                     <label className="field-label">Age <span className="required">*</span></label>
@@ -1689,8 +1723,8 @@ const ModuleAReportingPanel = () => {
                 <button className="remove-btn" type="button" onClick={() => removeModuleBPerpetrator(idx)} title="Remove">✕</button>
                 <div className="panel-grid">
                   <div>
-                    <label className="field-label">Name <span className="required">*</span></label>
-                    <input className={`field-input ${validationErrors['bPerp' + idx + 'Name'] ? 'field-error' : ''}`} value={perp.name} onChange={e => updateModuleBPerpetrator(idx, 'name', e.target.value)} placeholder="Last, First M.I." />
+                    <label className="field-label">Name (Last Name, First Name, M.I.) <span className="required">*</span></label>
+                    <input className={`field-input ${validationErrors['bPerp' + idx + 'Name'] ? 'field-error' : ''}`} value={perp.name} onChange={e => updateModuleBPerpetrator(idx, 'name', e.target.value)} placeholder="e.g., Santos, Pedro B." />
                   </div>
                   <div>
                     <label className="field-label">Gender <span className="required">*</span></label>
@@ -1748,6 +1782,35 @@ const ModuleAReportingPanel = () => {
                   <option value="Referred to other Non-Government Organizations">Referred to other Non-Government Organizations</option>
                 </select>
                 {validationErrors.bCaseStatus && <div className="error-text">{validationErrors.bCaseStatus}</div>}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">info</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Policy Notes & Definitions</div>
+                <div className="card-header-subtitle">ANNEX B MANDATORY GUIDELINES</div>
+              </div>
+            </div>
+            <div className="p-sm bg-red-50 border-l-4 border-red-600 text-red-900 rounded mb-md text-xs font-semibold">
+              ⚠️ MANDATORY POLICY NOTE: Amicable settlement is strictly PROHIBITED in all cases involving Child Abuse, Exploitation, Violence, and Discrimination under DepEd Order No. 40, s. 2012 (DepEd Child Protection Policy).
+            </div>
+            <div style={{ fontSize: '13px', color: '#44474e', lineHeight: '1.6' }} className="grid grid-cols-1 md:grid-cols-2 gap-md">
+              <div>
+                <h4 className="font-bold text-primary mb-xs">Types of Child Abuse</h4>
+                <p><strong>N-1 Physical Abuse:</strong> Acts that inflict bodily harm, physical punishment, or subject children to hazardous tasks.</p>
+                <p><strong>N-2 Sexual Abuse:</strong> Acts of sexual nature including rape, acts of lasciviousness, sexual harassment, indecent exposure.</p>
+                <p><strong>N-3 Verbal Abuse:</strong> Statements or words debasing, degrading, or demeaning the intrinsic worth and dignity of a child.</p>
+                <p><strong>N-4 Psychological Abuse:</strong> Intimidation, harassment, stalking, public ridicule, unreasonable grade threats causing mental distress.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-primary mb-xs">Relationship to Victim</h4>
+                <p><strong>DepEd Teaching Personnel:</strong> Classroom teachers, master teachers, head teachers.</p>
+                <p><strong>DepEd Non-Teaching Personnel:</strong> Administrative staff, guards, utility personnel.</p>
+                <p><strong>Relatives / Household:</strong> Parents, guardians, siblings, cousins, relatives.</p>
+                <p><strong>Peers / Community:</strong> Fellow learners, school visitors, community members.</p>
               </div>
             </div>
           </div>
@@ -1919,8 +1982,25 @@ const ModuleAReportingPanel = () => {
                 {validationErrors.cNarrative && <div className="error-text">{validationErrors.cNarrative}</div>}
               </div>
             </div>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">gavel</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">Legal Notes & Definitions</div>
+                <div className="card-header-subtitle">ANNEX C STATUTORY FRAMEWORK</div>
+              </div>
+            </div>
+            <div style={{ fontSize: '13px', color: '#44474e', lineHeight: '1.6' }} className="grid grid-cols-1 md:grid-cols-2 gap-md">
+              <div>
+                <h4 className="font-bold text-primary mb-xs">Section 57 of RA 9344 (Status Offenses)</h4>
+                <p>Any conduct not considered an offense or not penalized if committed by an adult (e.g., curfew violations, truancy, running away from home, parental disobedience) shall not be considered an offense when committed by a child. No penalty shall be imposed; the child shall be brought to appropriate guidance and community intervention programs.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-primary mb-xs">Presidential Decree 1563 (Mendicancy Law of 1978)</h4>
+                <p>Children found begging, exploited for mendicancy, or used by adults/syndicates to solicit alms on streets and public places are classified as Children at Risk (CAR) and shall immediately be protected and provided with social welfare and school reintegration assistance.</p>
+              </div>
+            </div>
           </div>
-
         </>
       )}
 
@@ -2059,6 +2139,65 @@ const ModuleAReportingPanel = () => {
 
       {activeModule === 'E' && moduleEData && (
         <>
+          <div className="bg-surface-container-lowest border border-outline-variant p-lg mb-lg">
+            <div className="card-header mb-md">
+              <div className="card-header-icon"><span className="material-symbols-outlined">school</span></div>
+              <div className="card-header-text">
+                <div className="card-header-title">School Metadata</div>
+                <div className="card-header-subtitle">INSTITUTIONAL METADATA</div>
+              </div>
+            </div>
+            <div className="panel-grid">
+              <div>
+                <label className="field-label">School Name <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolName ? 'field-error' : ''}`} value={schoolMetadata.schoolName} readOnly placeholder="e.g., Ipil CS" />
+                {validationErrors.schoolName && <div className="error-text">{validationErrors.schoolName}</div>}
+              </div>
+              <div>
+                <label className="field-label">School ID <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.schoolId ? 'field-error' : ''}`} value={schoolMetadata.schoolId} onChange={e => setSchoolMetadata(p => ({ ...p, schoolId: e.target.value }))} placeholder="e.g., SCH-302501" />
+                {validationErrors.schoolId && <div className="error-text">{validationErrors.schoolId}</div>}
+              </div>
+              <div>
+                <label className="field-label">Reporting Year <span className="required">*</span></label>
+                <select className={`field-select ${validationErrors.reportingYear ? 'field-error' : ''}`} value={schoolMetadata.reportingYear} onChange={e => setSchoolMetadata(p => ({ ...p, reportingYear: e.target.value }))}>
+                  <option value="">Select Year</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+                {validationErrors.reportingYear && <div className="error-text">{validationErrors.reportingYear}</div>}
+              </div>
+              <div>
+                <label className="field-label">Address <span className="required">*</span></label>
+                <input className={`field-input ${validationErrors.address ? 'field-error' : ''}`} value={schoolMetadata.address} onChange={e => setSchoolMetadata(p => ({ ...p, address: e.target.value }))} placeholder="City, Province" />
+                {validationErrors.address && <div className="error-text">{validationErrors.address}</div>}
+              </div>
+              <div>
+                <label className="field-label">Classification <span className="required">*</span></label>
+                <div className={`radio-group ${validationErrors.classification ? 'field-error' : ''}`}>
+                  {['Public', 'Private'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="e-classification" value={opt} checked={schoolMetadata.classification === opt} onChange={e => setSchoolMetadata(p => ({ ...p, classification: e.target.value }))} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+                {validationErrors.classification && <div className="error-text">{validationErrors.classification}</div>}
+              </div>
+              <div>
+                <label className="field-label">Level <span className="required">*</span></label>
+                <div className={`radio-group ${validationErrors.level ? 'field-error' : ''}`}>
+                  {['Kindergarten', 'Elementary', 'Secondary'].map(opt => (
+                    <label key={opt} className="radio-option">
+                      <input type="radio" name="e-level" value={opt} checked={schoolMetadata.level === opt} onChange={e => setSchoolMetadata(p => ({ ...p, level: e.target.value }))} />
+                      <span style={{ fontSize: '12px' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+                {validationErrors.level && <div className="error-text">{validationErrors.level}</div>}
+              </div>
+            </div>
+          </div>
+
           <div className="annex-e-wrapper">
             <div className="card-header mb-md">
               <div className="card-header-icon"><span className="material-symbols-outlined">table_chart</span></div>
@@ -2253,7 +2392,7 @@ const ModuleAReportingPanel = () => {
           </div>
           <div className="row-card">
             <div className="sig-header">
-              <span className="material-symbols-outlined">verified</span> Validated By
+              <span className="material-symbols-outlined">verified</span> Validated By {activeModule === 'C' || activeModule === 'D' ? '(School Principal / Head)' : ''}
             </div>
             <div className="panel-grid-1">
               <div>
@@ -2262,7 +2401,7 @@ const ModuleAReportingPanel = () => {
               </div>
               <div>
                 <label className="field-label">Designation <span className="required">*</span></label>
-                <input className={`field-input ${validationErrors.validatedDesignation ? 'field-error' : ''}`} value={validatedBy.designation} onChange={e => setValidatedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., School Principal" />
+                <input className={`field-input ${validationErrors.validatedDesignation ? 'field-error' : ''}`} value={validatedBy.designation} onChange={e => setValidatedBy(p => ({ ...p, designation: e.target.value }))} placeholder="e.g., School Principal / Head" />
                 {validationErrors.validatedDesignation && <div className="error-text">{validationErrors.validatedDesignation}</div>}
               </div>
               <div>

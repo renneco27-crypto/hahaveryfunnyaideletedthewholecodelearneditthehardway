@@ -1,0 +1,389 @@
+{
+  "_meta": {
+    "description": "DepEd Division LRP (Learner Rights & Protection) Report Schema for Make.com Webhook → Excel",
+    "version": "1.0.0",
+    "instructions": "Send one report object at a time to your Make.com webhook. The 'report_type' field tells Make.com which Excel sheet/table to route the data to. All M/F fields are integers. 'action_taken' and 'remarks' are free-text strings.",
+    "webhook_tip": "In Make.com, use a Router module after the Webhook to branch by 'report_type', then map each branch to its own Excel 'Add a Row' module.",
+    "report_types": [
+      "bullying",
+      "child_abuse",
+      "other_lrp_concerns",
+      "children_at_risk",
+      "cicl",
+      "cp_policy_status"
+    ]
+  },
+
+  "schemas": {
+
+    "bullying": {
+      "_description": "Division Consolidated Report on Incidents of Bullying (DepEd Memo No.59 s.2015 Enclosure 2A). One row = one school entry.",
+      "_excel_sheet": "Bullying Report",
+      "sample_payload": {
+        "report_type": "bullying",
+        "school_year": "2024-2025",
+        "division": "Ormoc City Division",
+        "submission_date": "2025-06-30",
+        "submitted_by": "Juan Dela Cruz",
+        "designation": "Guidance Counselor",
+        "validated_by": "Maria Santos",
+
+        "school_sector": "Public",
+        "school_level": "Elementary",
+        "school_name": "Alta Vista Elementary School",
+        "school_id": "124143",
+
+        "physical_male": 0,
+        "physical_female": 0,
+        "social_male": 0,
+        "social_female": 0,
+        "gender_based_male": 0,
+        "gender_based_female": 0,
+        "cyber_bullying_male": 0,
+        "cyber_bullying_female": 0,
+        "retaliation_male": 0,
+        "retaliation_female": 0,
+
+        "total_male_victims": 0,
+        "total_female_victims": 0,
+        "total_incidents": 0,
+
+        "resolved_cases": 0,
+        "cases_for_monitoring": 0,
+        "referred_government_agencies": 0,
+        "referred_ngo": 0,
+
+        "action_taken": "",
+        "remarks": ""
+      },
+      "field_definitions": {
+        "report_type": "Must be exactly: bullying",
+        "school_year": "e.g. 2024-2025",
+        "division": "Name of the DepEd Division",
+        "submission_date": "ISO 8601 date: YYYY-MM-DD",
+        "submitted_by": "Full name of preparer",
+        "designation": "Job title of preparer",
+        "validated_by": "Full name of validator",
+        "school_sector": "Public or Private",
+        "school_level": "Kindergarten, Elementary, Junior High School, or Senior High School",
+        "school_name": "Official school name",
+        "school_id": "DepEd assigned school ID number",
+        "physical_male": "Count of male victims of physical bullying",
+        "physical_female": "Count of female victims of physical bullying",
+        "social_male": "Count of male victims of social bullying",
+        "social_female": "Count of female victims of social bullying",
+        "gender_based_male": "Count of male victims of gender-based bullying",
+        "gender_based_female": "Count of female victims of gender-based bullying",
+        "cyber_bullying_male": "Count of male victims of cyberbullying",
+        "cyber_bullying_female": "Count of female victims of cyberbullying",
+        "retaliation_male": "Count of male victims of retaliation",
+        "retaliation_female": "Count of female victims of retaliation",
+        "total_male_victims": "Sum of all male victims across all bullying types",
+        "total_female_victims": "Sum of all female victims across all bullying types",
+        "total_incidents": "Grand total of all victims",
+        "resolved_cases": "Number of cases resolved",
+        "cases_for_monitoring": "Number of cases still being monitored",
+        "referred_government_agencies": "Number of cases referred to government agencies",
+        "referred_ngo": "Number of cases referred to non-government agencies",
+        "action_taken": "Free text description of action taken",
+        "remarks": "Any additional remarks"
+      }
+    },
+
+    "child_abuse": {
+      "_description": "Division Consolidated Report on Incidents of Child Abuse (DepEd Memo No.59 s.2015 Enclosure 2B). One row = one school entry.",
+      "_excel_sheet": "Child Abuse Report",
+      "sample_payload": {
+        "report_type": "child_abuse",
+        "school_year": "2024-2025",
+        "division": "Ormoc City Division",
+        "submission_date": "2025-06-30",
+        "submitted_by": "Juan Dela Cruz",
+        "designation": "Guidance Counselor",
+        "validated_by": "Maria Santos",
+
+        "school_sector": "Public",
+        "school_level": "Elementary",
+        "school_name": "Alta Vista Elementary School",
+        "school_id": "124143",
+
+        "physical_male": 0,
+        "physical_female": 0,
+        "sexual_male": 0,
+        "sexual_female": 0,
+        "verbal_psychological_male": 0,
+        "verbal_psychological_female": 0,
+
+        "total_male_victims": 0,
+        "total_female_victims": 0,
+        "total_incidents": 0,
+
+        "perpetrator_relatives": 0,
+        "perpetrator_school_personnel": 0,
+
+        "resolved_cases": 0,
+        "cases_for_monitoring": 0,
+        "referred_government_agencies": 0,
+        "referred_ngo": 0,
+
+        "action_taken": "",
+        "remarks": ""
+      },
+      "field_definitions": {
+        "report_type": "Must be exactly: child_abuse",
+        "physical_male": "Male victims of physical abuse",
+        "physical_female": "Female victims of physical abuse",
+        "sexual_male": "Male victims of sexual abuse",
+        "sexual_female": "Female victims of sexual abuse",
+        "verbal_psychological_male": "Male victims of verbal/psychological abuse",
+        "verbal_psychological_female": "Female victims of verbal/psychological abuse",
+        "total_male_victims": "Sum of all male victims",
+        "total_female_victims": "Sum of all female victims",
+        "total_incidents": "Grand total",
+        "perpetrator_relatives": "Number of incidents where perpetrator is a relative",
+        "perpetrator_school_personnel": "Number of incidents where perpetrator is school personnel",
+        "resolved_cases": "Number of cases resolved",
+        "cases_for_monitoring": "Number of cases still being monitored",
+        "referred_government_agencies": "Cases referred to government agencies",
+        "referred_ngo": "Cases referred to NGOs",
+        "action_taken": "Free text description of action taken",
+        "remarks": "Any additional remarks"
+      }
+    },
+
+    "other_lrp_concerns": {
+      "_description": "Division Consolidated Report on Other LRP Concerns. One row = one school entry.",
+      "_excel_sheet": "Other LRP Concerns",
+      "sample_payload": {
+        "report_type": "other_lrp_concerns",
+        "school_year": "2024-2025",
+        "division": "Ormoc City Division",
+        "submission_date": "2025-06-30",
+        "submitted_by": "Juan Dela Cruz",
+        "designation": "Guidance Counselor",
+        "validated_by": "Maria Santos",
+
+        "school_sector": "Public",
+        "school_level": "Elementary",
+        "school_name": "Alta Vista Elementary School",
+        "school_id": "124143",
+
+        "child_labor_male": 0,
+        "child_labor_female": 0,
+        "child_trafficking_male": 0,
+        "child_trafficking_female": 0,
+        "online_sexual_exploitation_male": 0,
+        "online_sexual_exploitation_female": 0,
+        "sexual_exploitation_male": 0,
+        "sexual_exploitation_female": 0,
+        "corporal_punishment_male": 0,
+        "corporal_punishment_female": 0,
+        "other_learner_to_learner_abuse_male": 0,
+        "other_learner_to_learner_abuse_female": 0,
+
+        "total_male_victims": 0,
+        "total_female_victims": 0,
+        "total_incidents": 0,
+
+        "resolved_cases": 0,
+        "cases_for_monitoring": 0,
+        "referred_government_agencies": 0,
+        "referred_ngo": 0,
+
+        "action_taken": "",
+        "remarks": ""
+      },
+      "field_definitions": {
+        "report_type": "Must be exactly: other_lrp_concerns",
+        "child_labor_male": "Male victims of child labor",
+        "child_labor_female": "Female victims of child labor",
+        "child_trafficking_male": "Male victims of child trafficking",
+        "child_trafficking_female": "Female victims of child trafficking",
+        "online_sexual_exploitation_male": "Male victims of online sexual exploitation (OSEC)",
+        "online_sexual_exploitation_female": "Female victims of OSEC",
+        "sexual_exploitation_male": "Male victims of sexual exploitation",
+        "sexual_exploitation_female": "Female victims of sexual exploitation",
+        "corporal_punishment_male": "Male victims of corporal punishment",
+        "corporal_punishment_female": "Female victims of corporal punishment",
+        "other_learner_to_learner_abuse_male": "Male victims of other learner-to-learner abuse",
+        "other_learner_to_learner_abuse_female": "Female victims of other learner-to-learner abuse",
+        "total_male_victims": "Sum of all male victims",
+        "total_female_victims": "Sum of all female victims",
+        "total_incidents": "Grand total"
+      }
+    },
+
+    "children_at_risk": {
+      "_description": "Division Consolidated Report on Cases of Children-at-Risk (CAR). One row = one risk classification per school.",
+      "_excel_sheet": "Children At Risk",
+      "sample_payload": {
+        "report_type": "children_at_risk",
+        "period_covered": "SY 2024-2025",
+        "division": "Ormoc City Division",
+        "submission_date": "2025-06-30",
+        "submitted_by": "Juan Dela Cruz",
+        "designation": "Guidance Counselor",
+        "validated_by": "Maria Santos",
+
+        "school_sector": "Public",
+        "school_level": "Elementary",
+        "school_name": "Alta Vista Elementary School",
+        "school_id": "124143",
+
+        "victim_of_abuse_male": 0,
+        "victim_of_abuse_female": 0,
+        "victim_of_neglect_male": 0,
+        "victim_of_neglect_female": 0,
+        "dysfunctional_family_male": 0,
+        "dysfunctional_family_female": 0,
+        "gang_member_male": 0,
+        "gang_member_female": 0,
+        "high_criminality_community_male": 0,
+        "high_criminality_community_female": 0,
+        "armed_conflict_male": 0,
+        "armed_conflict_female": 0,
+        "status_offense_ra9344_male": 0,
+        "status_offense_ra9344_female": 0,
+        "mendicant_pd1563_male": 0,
+        "mendicant_pd1563_female": 0,
+        "solvent_rugby_user_male": 0,
+        "solvent_rugby_user_female": 0,
+        "drug_use_dependency_male": 0,
+        "drug_use_dependency_female": 0,
+        "smoking_male": 0,
+        "smoking_female": 0,
+        "others_male": 0,
+        "others_female": 0,
+        "others_description": "",
+
+        "action_taken": "",
+        "division_alleviation_actions": "",
+        "remarks": ""
+      },
+      "field_definitions": {
+        "report_type": "Must be exactly: children_at_risk",
+        "period_covered": "Reporting period e.g. SY 2024-2025 or Q1 2025",
+        "victim_of_abuse_male": "Male students who are victims of abuse (sexual, physical, psychological, mental, economic)",
+        "victim_of_abuse_female": "Female students who are victims of abuse",
+        "victim_of_neglect_male": "Male students who are victims of neglect",
+        "victim_of_neglect_female": "Female students who are victims of neglect",
+        "dysfunctional_family_male": "Male students from dysfunctional family or without parent/guardian",
+        "dysfunctional_family_female": "Female students from dysfunctional family or without parent/guardian",
+        "gang_member_male": "Male students who are gang members",
+        "gang_member_female": "Female students who are gang members",
+        "high_criminality_community_male": "Male students living in high-criminality community",
+        "high_criminality_community_female": "Female students living in high-criminality community",
+        "armed_conflict_male": "Male students living in armed conflict situation",
+        "armed_conflict_female": "Female students living in armed conflict situation",
+        "status_offense_ra9344_male": "Male students who committed status offense under Sec.57 RA 9344",
+        "status_offense_ra9344_female": "Female students under Sec.57 RA 9344",
+        "mendicant_pd1563_male": "Male students who are mendicants under PD 1563",
+        "mendicant_pd1563_female": "Female mendicants under PD 1563",
+        "solvent_rugby_user_male": "Male solvent/rugby users",
+        "solvent_rugby_user_female": "Female solvent/rugby users",
+        "drug_use_dependency_male": "Male students with marijuana/drug use or dependency",
+        "drug_use_dependency_female": "Female students with marijuana/drug use or dependency",
+        "smoking_male": "Male students who smoke",
+        "smoking_female": "Female students who smoke",
+        "others_male": "Male students under other CAR categories",
+        "others_female": "Female students under other CAR categories",
+        "others_description": "Describe what 'Others' refers to",
+        "division_alleviation_actions": "Narrative description of division actions to alleviate CAR risk factors"
+      }
+    },
+
+    "cicl": {
+      "_description": "Division Consolidated Report on Children in Conflict with the Law (CICL). One row = one CICL case.",
+      "_excel_sheet": "CICL Report",
+      "sample_payload": {
+        "report_type": "cicl",
+        "school_year": "2024-2025",
+        "division": "Ormoc City Division",
+        "period_covered": "SY 2024-2025",
+        "submission_date": "2025-06-30",
+        "submitted_by": "Juan Dela Cruz",
+        "designation": "Guidance Counselor",
+        "validated_by": "Maria Santos",
+
+        "school_sector": "Public",
+        "school_level": "Junior High School",
+        "school_name": "Linao National High School",
+        "school_id": "303656",
+
+        "learner_reference_number": "",
+        "age": null,
+        "sex": "M",
+        "case_violation": "",
+        "action_taken": "",
+        "intervention_diversion_program": "",
+
+        "resolved_cases": 0,
+        "cases_for_monitoring": 0,
+        "referred_government_agencies": 0,
+        "referred_ngo": 0,
+
+        "diversion_program_description": "",
+        "remarks": ""
+      },
+      "field_definitions": {
+        "report_type": "Must be exactly: cicl",
+        "learner_reference_number": "DepEd LRN of the learner involved",
+        "age": "Age of the learner (integer)",
+        "sex": "M for Male, F for Female",
+        "case_violation": "Description of the case or violation committed",
+        "action_taken": "Action taken by the school/division",
+        "intervention_diversion_program": "Name or type of intervention or diversion program applied",
+        "resolved_cases": "Number of resolved cases",
+        "cases_for_monitoring": "Number of cases for continued monitoring",
+        "referred_government_agencies": "Cases referred to government agencies",
+        "referred_ngo": "Cases referred to NGOs",
+        "diversion_program_description": "Narrative: description of division-initiated diversion/reintegration programs"
+      }
+    },
+
+    "cp_policy_status": {
+      "_description": "Division Consolidated Report on Schools with CP Policy, Anti-Bullying Policy, and CPC. One row = one school.",
+      "_excel_sheet": "CP Policy Status",
+      "sample_payload": {
+        "report_type": "cp_policy_status",
+        "period_covered": "SY 2024-2025",
+        "division": "Ormoc City Division",
+        "submission_date": "2025-06-30",
+        "submitted_by": "Juan Dela Cruz",
+        "designation": "Guidance Counselor",
+        "validated_by": "Maria Santos",
+
+        "school_sector": "Public",
+        "school_level": "Elementary",
+        "school_name": "Alta Vista Elementary School",
+        "school_id": "124143",
+
+        "has_cp_policy_with_anti_bullying": true,
+        "has_cp_policy_only": false,
+        "has_anti_bullying_policy_only": false,
+        "has_no_policy": false,
+        "has_child_protection_committee": true,
+
+        "remarks": ""
+      },
+      "field_definitions": {
+        "report_type": "Must be exactly: cp_policy_status",
+        "has_cp_policy_with_anti_bullying": "true if school has BOTH Child Protection Policy AND Anti-Bullying Policy",
+        "has_cp_policy_only": "true if school has Child Protection Policy only",
+        "has_anti_bullying_policy_only": "true if school has Anti-Bullying Policy only",
+        "has_no_policy": "true if school has no policy at all",
+        "has_child_protection_committee": "true if school has an established Child Protection Committee"
+      }
+    }
+
+  },
+
+  "make_com_setup_guide": {
+    "step_1_webhook": "Create a Webhook (Custom) module in Make.com. Copy the webhook URL and paste it into your website's form submission handler.",
+    "step_2_router": "After the Webhook module, add a Router. Create one route per report_type (bullying, child_abuse, other_lrp_concerns, children_at_risk, cicl, cp_policy_status).",
+    "step_3_filter": "On each router branch, set a Filter: report_type = [the matching type]. Use 'Text operator: Equal to'.",
+    "step_4_excel": "In each branch, add a Microsoft Excel 'Add a Row' module (or Google Sheets 'Append a Row'). Map each JSON field to its corresponding column in your spreadsheet.",
+    "step_5_columns": "Pre-create your Excel file with column headers matching the field names exactly from each schema's sample_payload. One sheet per report_type.",
+    "tip_auto_totals": "For total_male_victims, total_female_victims, and total_incidents, you can either calculate on the website before sending, or use Excel formulas in a separate summary row."
+  }
+}
