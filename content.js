@@ -25,13 +25,29 @@
   let tabResetDetected = false; // Track if we just had a tab reset
   let positionCheckTimer = null; // 5-second timer for position verification
   let originalPositionDetected = false; // Track if we detected original position temporarily
+  let stockfishAwake = false; // Track if Stockfish is responding
 
-  // 1. Initialize Stockfish Engine Bridge
+  // 1. Initialize Stockfish Engine Bridge immediately and keep it running
   function initEngine() {
     try {
+      console.log("[FreeChess Coach] Initializing Stockfish engine...");
       stockfish = new StockfishEngine();
+      console.log("[FreeChess Coach] Stockfish engine initialized and warming up...");
+      
+      // Warm up Stockfish with a simple position to ensure it's ready
+      setTimeout(async () => {
+        try {
+          const warmupResult = await stockfish.evaluate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 4, 1000);
+          console.log("[FreeChess Coach] Stockfish warmup complete:", warmupResult ? "ready" : "failed");
+          stockfishAwake = warmupResult && warmupResult.length > 0;
+        } catch (e) {
+          console.error("[FreeChess Coach] Stockfish warmup failed:", e);
+          stockfishAwake = false;
+        }
+      }, 500);
     } catch (e) {
       console.error("[FreeChess Coach] Failed to initialize engine bridge:", e);
+      stockfishAwake = false;
     }
   }
 
@@ -166,9 +182,10 @@
     clearTimeout(pill._timer);
     if (!keepVisible) {
       pill._timer = setTimeout(() => {
-        // Return to normal ready badge
+        // Return to normal ready badge showing Stockfish status
         pill.className = "";
-        pill.innerHTML = `<span class="dot"></span> Coach Active`;
+        const statusText = stockfishAwake ? "Stockfish Ready" : "Stockfish Sleeping";
+        pill.innerHTML = `<span class="dot"></span> Coach Active · ${statusText}`;
         updatePillPosition(pill, board);
       }, 4000);
     }
@@ -178,6 +195,20 @@
   function triggerFeedback(type, detailMsg = "") {
     const board = boardElement || findBoard();
     if (!board) return;
+
+    // Handle combined format like "inaccuracy-push"
+    if (type.includes('-')) {
+      const parts = type.split('-');
+      const mainType = parts[0]; // inaccuracy, mistake, blunder
+      const hintType = parts[1]; // capture, push
+      
+      const label = mainType === 'blunder' ? 'Blunder!!' : mainType === 'mistake' ? 'Mistake?' : 'Inaccuracy?!';
+      const hintLabel = hintType === 'capture' ? 'Capture' : 'Push';
+      
+      attachStatusPill(board, `🔴 ${label} - ${hintLabel}`, "blunder");
+      console.log(`%c[FreeChess Coach] 🔴 RED GLOW (${mainType.toUpperCase()}) - ${hintLabel}`, "color: #ef4444; font-weight: bold; font-size: 13px;");
+      return;
+    }
 
     // Manage Inner Glow Overlay
     let overlay = board.querySelector(".freechess-glow-overlay");
@@ -199,7 +230,7 @@
       if (type === "mate_loss") {
         label = "Mate Loss";
       } else {
-        label = type === "blunder" ? "Blunder!!" : type === "mistake" ? "Mistake?" : "Inaccuracy?!";
+        label = type === "blunder" ? "Blunder!!" : type === "mistake" ? "Mistake?' : 'Inaccuracy?!';
       }
       attachStatusPill(board, `🔴 ${label} ${detailMsg}`, "blunder");
       console.log(`%c[FreeChess Coach] 🔴 RED GLOW (${type.toUpperCase()}) ${detailMsg}`, "color: #ef4444; font-weight: bold; font-size: 13px;");
@@ -519,7 +550,11 @@
 
   // 10. Real-time Pre-Move & Candidate Evaluation (While Dragging/Hovering)
   async function evaluateCandidateMove(uciMove, baseFen, isPreview = false) {
-    if (!stockfish) return;
+    console.log("[FreeChess Coach] DEBUG: evaluateCandidateMove called with", uciMove, isPreview);
+    if (!stockfish) {
+      console.log("[FreeChess Coach] DEBUG: Stockfish not available");
+      return;
+    }
     const from = uciMove.slice(0, 2);
     const to = uciMove.slice(2, 4);
 
@@ -528,35 +563,61 @@
     try {
       tempGame = new Chess(fenBefore);
     } catch (e) {
+      console.log("[FreeChess Coach] DEBUG: Chess initialization failed for", fenBefore);
       return;
     }
 
     const moveRes = tempGame.move({ from, to, promotion: uciMove[4] || "q" });
-    if (!moveRes) return;
+    if (!moveRes) {
+      console.log("[FreeChess Coach] DEBUG: Invalid move", uciMove);
+      return;
+    }
 
     const fenAfter = tempGame.fen();
+    console.log("[FreeChess Coach] DEBUG: FEN before:", fenBefore, "FEN after:", fenAfter);
 
     try {
       // 1. Get Before Lines (from cache or fast eval)
       let beforeLines = (cachedFen === fenBefore && cachedPositionLines) ? cachedPositionLines : null;
       if (!beforeLines) {
-        beforeLines = await stockfish.evaluate(fenBefore, 10, 150);
+        console.log("[FreeChess Coach] DEBUG: Evaluating before position");
+        beforeLines = await stockfish.evaluate(fenBefore, 4, 2000);
+        console.log("[FreeChess Coach] DEBUG: Before evaluation result:", beforeLines);
+        if (!beforeLines || beforeLines.length === 0) {
+          console.log("[FreeChess Coach] WARNING: Stockfish returned empty results for before evaluation");
+          stockfishAwake = false;
+          return;
+        }
         cachedPositionLines = beforeLines;
         cachedFen = fenBefore;
+        stockfishAwake = true;
       }
 
       const topBefore = beforeLines[0] || null;
       const secondBefore = beforeLines[1] || null;
+      console.log("[FreeChess Coach] DEBUG: Top before move:", topBefore ? topBefore.move : "none");
 
       // 2. Instant classification for Top Move
       if (topBefore && uciMove === topBefore.move) {
+        console.log("[FreeChess Coach] DEBUG: Move matches top engine choice");
         triggerFeedback("best", "(Top Engine Choice ★)");
         return;
       }
 
       // 3. Fast Evaluation of Move Destination
-      const afterLines = await stockfish.evaluate(fenAfter, 8, 120);
+      console.log("[FreeChess Coach] DEBUG: Evaluating after position");
+      const afterLines = await stockfish.evaluate(fenAfter, 4, 2000);
+      console.log("[FreeChess Coach] DEBUG: After evaluation result:", afterLines);
+      
+      if (!afterLines || afterLines.length === 0) {
+        console.log("[FreeChess Coach] WARNING: Stockfish returned empty results for after evaluation");
+        stockfishAwake = false;
+        return;
+      }
+      
+      stockfishAwake = true;
       const afterLine = afterLines[0] || null;
+      console.log("[FreeChess Coach] DEBUG: After line:", afterLine);
 
       if (topBefore && afterLine) {
         const tag = isPreview ? " [Preview]" : "";
@@ -571,6 +632,7 @@
         } else {
           // Normal classification for non-mate positions
           const cls = ChessClassifier.classifyMove(topBefore, secondBefore, afterLine, uciMove, new Chess(fenBefore));
+          console.log("[FreeChess Coach] DEBUG: Classification result:", cls);
           const cpVal = typeof afterLine.cp === "number" ? (-afterLine.cp / 100).toFixed(1) : "";
           const sign = cpVal && parseFloat(cpVal) > 0 ? "+" : "";
           const detailMsg = cpVal ? `(${sign}${cpVal})${tag}` : tag;
@@ -579,6 +641,7 @@
       }
     } catch (err) {
       console.error("[FreeChess Coach] Eval error:", err);
+      stockfishAwake = false;
     }
   }
 
@@ -666,6 +729,8 @@
     if (!stockfish) return;
     
     try {
+      console.log("[FreeChess Coach] HINT DEBUG: Analyzing opponent move", playedUci, "prevFen:", prevFen, "currentFen:", currentFen);
+      
       // Evaluate the opponent's move to classify it
       const oldGame = new Chess(prevFen);
       const from = playedUci.slice(0, 2);
@@ -673,50 +738,61 @@
       const promotion = playedUci[4] || "q";
       
       // Get evaluation before opponent's move
-      const beforeLines = await stockfish.evaluate(prevFen, 10, 150);
+      const beforeLines = await stockfish.evaluate(prevFen, 4, 2000);
       const topBefore = beforeLines[0] || null;
       const secondBefore = beforeLines[1] || null;
+      console.log("[FreeChess Coach] HINT DEBUG: Before evaluation:", topBefore);
       
       // Simulate opponent's move and evaluate after
       const tempGame = new Chess(prevFen);
       tempGame.move({ from, to, promotion });
-      const afterLines = await stockfish.evaluate(tempGame.fen(), 8, 120);
+      const afterLines = await stockfish.evaluate(tempGame.fen(), 4, 2000);
       const afterLine = afterLines[0] || null;
+      console.log("[FreeChess Coach] HINT DEBUG: After evaluation:", afterLine);
       
       // Classify opponent's move
       if (topBefore && afterLine) {
         const cls = ChessClassifier.classifyMove(topBefore, secondBefore, afterLine, playedUci, oldGame);
+        console.log("[FreeChess Coach] HINT DEBUG: Opponent move classified as:", cls);
         
         // If opponent made inaccuracy, mistake, or blunder, give hint
         if (cls === 'inaccuracy' || cls === 'mistake' || cls === 'blunder') {
           // Find best move for current position (after opponent's move)
-          const currentLines = await stockfish.evaluate(currentFen, 10, 150);
+          console.log("[FreeChess Coach] HINT DEBUG: Getting best move for current position");
+          const currentLines = await stockfish.evaluate(currentFen, 4, 2000);
           const bestMove = currentLines[0];
+          console.log("[FreeChess Coach] HINT DEBUG: Best move found:", bestMove);
           
           if (bestMove && bestMove.move) {
             const bestFrom = bestMove.move.slice(0, 2);
             const bestTo = bestMove.move.slice(2, 4);
             
-            // Check if best move is a capture by simulating the move
+            // Check if best move is a capture by checking destination square
             const currentGame = new Chess(currentFen);
-            const moveObj = currentGame.move({ from: bestFrom, to: bestTo, promotion: 'q' });
+            const destinationPiece = currentGame.get(bestTo);
+            const movingPiece = currentGame.get(bestFrom);
             
-            // Undo the move to get back to current state
-            currentGame.undo();
+            // It's a capture if there's an opponent piece at the destination
+            const isCapture = destinationPiece !== null && movingPiece && destinationPiece.color !== movingPiece.color;
             
-            // Check if the move captured a piece
-            const isCapture = moveObj && moveObj.captured !== null;
+            const hint = isCapture ? "capture" : "push";
             
-            const hint = isCapture ? "Capture" : "Push";
+            console.log("[FreeChess Coach] HINT DEBUG: Best move analysis - move:", bestMove.move, "isCapture:", isCapture, "destinationPiece:", destinationPiece, "movingPiece:", movingPiece, "hint:", hint);
             
-            // Show hint with neutral color
+            // Show hint as accuracy-prompt format
             const board = boardElement || findBoard();
             if (board) {
-              attachStatusPill(board, `💡 Hint: ${hint}`, "normal", false);
-              console.log(`%c[FreeChess Coach] 💡 Opponent made ${cls}. Your hint: ${hint}`, "color: #f59e0b; font-weight: bold; font-size: 13px;");
+              attachStatusPill(board, `� ${cls}-${hint}`, "blunder", false);
+              console.log(`%c[FreeChess Coach] � ${cls}-${hint} (best: ${bestMove.move})`, "color: #f59e0b; font-weight: bold; font-size: 13px;");
             }
+          } else {
+            console.log("[FreeChess Coach] HINT DEBUG: No best move found");
           }
+        } else {
+          console.log("[FreeChess Coach] HINT DEBUG: Opponent move not inaccuracy/mistake/blunder:", cls);
         }
+      } else {
+        console.log("[FreeChess Coach] HINT DEBUG: Missing evaluation data for classification");
       }
     } catch (err) {
       console.error("[FreeChess Coach] Opponent analysis error:", err);

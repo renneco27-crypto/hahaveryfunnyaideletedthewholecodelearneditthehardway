@@ -10,11 +10,12 @@ function toCp(line) {
 
 function getThresh(category, prevCp) {
   const a = Math.abs(prevCp);
+  // Adjusted thresholds for depth 8 evaluations with normal fluctuations
   if (category === 'best') return Math.max(0, 0.0001 * a * a + 0.0236 * a - 3.7143);
-  if (category === 'excellent') return Math.max(0, 0.0002 * a * a + 0.1231 * a + 27.5455);
-  if (category === 'good') return Math.max(0, 0.0002 * a * a + 0.2643 * a + 60.5455);
-  if (category === 'inaccuracy') return Math.max(0, 0.0002 * a * a + 0.3624 * a + 108.0909);
-  if (category === 'mistake') return Math.max(0, 0.0003 * a * a + 0.4027 * a + 225.8182);
+  if (category === 'excellent') return Math.max(0, 0.0002 * a * a + 0.1231 * a + 20.5455); // Reduced from 27.5
+  if (category === 'good') return Math.max(0, 0.0002 * a * a + 0.2643 * a + 50.5455); // Reduced from 60.5
+  if (category === 'inaccuracy') return Math.max(0, 0.0002 * a * a + 0.3624 * a + 80.0909); // Reduced from 108.1
+  if (category === 'mistake') return Math.max(0, 0.0003 * a * a + 0.4027 * a + 150.8182); // Reduced from 225.8
   return Infinity;
 }
 
@@ -39,32 +40,63 @@ function isSquareAttacked(board, sq, attackerColor) {
 }
 
 function detectBrilliantSacrifice(playedUci, evBefore, evAfter, boardBefore, isTopMove) {
-  if (!boardBefore) return false;
+  console.log("[Brilliant Detection] Checking move:", playedUci, "evBefore:", evBefore, "evAfter:", evAfter, "isTopMove:", isTopMove);
+  
+  if (!boardBefore) {
+    console.log("[Brilliant Detection] No board provided");
+    return false;
+  }
   const from = playedUci.slice(0, 2);
   const to = playedUci.slice(2, 4);
   const piece = boardBefore.get(from);
-  if (!piece) return false;
+  if (!piece) {
+    console.log("[Brilliant Detection] No piece at from square");
+    return false;
+  }
 
   const pieceVal = PIECE_VAL[piece.type] || 0;
-  if (pieceVal < 3) return false; // Pawns and Kings excluded
+  if (pieceVal < 3) {
+    console.log("[Brilliant Detection] Piece value too low:", pieceVal);
+    return false; // Pawns and Kings excluded
+  }
 
-  if (evBefore >= 700 || evBefore <= -700) return false;
+  if (evBefore >= 700 || evBefore <= -700) {
+    console.log("[Brilliant Detection] Position too good/bad:", evBefore);
+    return false;
+  }
 
   const delta = Math.max(0, evBefore - evAfter);
-  if (delta > 35 && !isTopMove) return false;
+  
+  // REQUIRE minimum evaluation swing of 4 points (400 centipawns) for brilliant
+  if (delta < 400) {
+    console.log("[Brilliant Detection] Evaluation swing too small:", delta, "required: 400");
+    return false;
+  }
+  
+  if (delta > 35 && !isTopMove) {
+    console.log("[Brilliant Detection] Delta too high for non-top move:", delta);
+    return false;
+  }
 
-  if (evAfter < -50) return false;
+  if (evAfter < -50) {
+    console.log("[Brilliant Detection] Final evaluation too low:", evAfter);
+    return false;
+  }
 
   try {
     const clone = new Chess(boardBefore.fen());
     const m = clone.move({ from, to, promotion: playedUci[4] || 'q' });
-    if (!m) return false;
+    if (!m) {
+      console.log("[Brilliant Detection] Move invalid");
+      return false;
+    }
 
     const capturedVal = m.captured ? PIECE_VAL[m.captured] : 0;
     const oppMoves = clone.moves({ verbose: true });
     const squareAttacked = oppMoves.some(oppM => oppM.to === to);
 
     let isMaterialSacrifice = squareAttacked && (pieceVal > capturedVal);
+    console.log("[Brilliant Detection] Primary sacrifice check:", isMaterialSacrifice, "pieceVal:", pieceVal, "capturedVal:", capturedVal, "squareAttacked:", squareAttacked);
 
     if (!isMaterialSacrifice) {
       const attackedPieces = oppMoves.filter(oppM => {
@@ -73,11 +105,14 @@ function detectBrilliantSacrifice(playedUci, evBefore, evAfter, boardBefore, isT
       });
       if (attackedPieces.length > 0 && delta <= 15) {
         isMaterialSacrifice = true;
+        console.log("[Brilliant Detection] Secondary sacrifice check passed, attackedPieces:", attackedPieces.length);
       }
     }
 
+    console.log("[Brilliant Detection] Final result:", isMaterialSacrifice);
     return isMaterialSacrifice;
   } catch (e) {
+    console.log("[Brilliant Detection] Error:", e);
     return false;
   }
 }

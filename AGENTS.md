@@ -1,11 +1,28 @@
 # AGENTS.md
 
-# OPENCODE, KILO, ANTIGRAVITY,CLINE MEMORY DIRECTIVE
+# OPENCODE, KILO, ANTIGRAVITY,CLINE MEMORY MEMORY DIRECTIVE
 
 ## 1. PRE-TASK RECALL BEFORE SEARCHING
 - Read `memory/functions.md` before using `grep`, searching the codebase, or writing code.
 - Use it to locate functions, architecture, and file relationships.
 - Only search the codebase if the answer is not in memory.
+
+---
+
+# CHESS EXTENSION ARCHITECTURE
+
+## Stockfish Engine Management (PREFERRED APPROACH)
+- **Initialize immediately on extension load** - Don't wait for board detection
+- **Keep Stockfish warm throughout session** - Engine stays running from load until tab close
+- **Warmup on startup** - Run initial evaluation with simple position to ensure readiness
+- **No on-demand initialization** - Avoid per-evaluation engine startup delays
+- **Session lifecycle** - Engine initialized on extension load, dies when tab closed
+
+## Rationale
+- Eliminates evaluation timeouts caused by engine initialization delays
+- Provides immediate feedback when moves are played
+- Reduces latency between move detection and evaluation
+- More reliable performance during gameplay
 
 ---
 
