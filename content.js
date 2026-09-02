@@ -959,6 +959,10 @@
       if (button) {
         console.log("[FreeChess Coach] Game Review button clicked");
         
+        // Prevent default navigation
+        event.preventDefault();
+        event.stopPropagation();
+        
         // Extract game ID from current URL
         const currentUrl = window.location.href;
         const gameIdMatch = currentUrl.match(/\/game\/(\d+)/);
@@ -969,6 +973,15 @@
           // Store game ID for later use
           sessionStorage.setItem('chessCoachGameId', gameId);
           sessionStorage.setItem('chessCoachAutomatingReview', 'true');
+          
+          // Extract the analysis URL from the button
+          const analysisUrl = button.getAttribute('href');
+          const fullAnalysisUrl = analysisUrl.startsWith('http') ? analysisUrl : `https://www.chess.com${analysisUrl}`;
+          
+          console.log("[FreeChess Coach] Navigating to analysis page:", fullAnalysisUrl);
+          
+          // Navigate to analysis page
+          window.location.href = fullAnalysisUrl;
         }
       }
     }, true);
@@ -1020,12 +1033,44 @@
             console.error("[FreeChess Coach] Failed to read clipboard:", err);
           });
         }, 500);
+      } else {
+        console.log("[FreeChess Coach] FEN button not found yet, checking for paywall...");
+        // Check if there's a paywall or different structure
+        const paywallElements = document.querySelectorAll('[class*="premium"], [class*="upgrade"], [class*="member"]');
+        if (paywallElements.length > 0) {
+          console.log("[FreeChess Coach] Paywall detected, trying alternative FEN extraction");
+          clearInterval(checkForFenButton);
+          
+          // Try to extract FEN from the game board directly
+          try {
+            const board = findBoard();
+            if (board) {
+              const fen = scanBoardToFen(board);
+              console.log("[FreeChess Coach] Extracted FEN from board:", fen);
+              sessionStorage.setItem('chessCoachExtractedFen', fen);
+              
+              const gameId = sessionStorage.getItem('chessCoachGameId');
+              const originalGameUrl = `https://www.chess.com/game/${gameId}`;
+              
+              if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                chrome.runtime.sendMessage({
+                  action: 'OPEN_CHESSDA',
+                  fen: fen,
+                  originalGameUrl: originalGameUrl
+                });
+              }
+            }
+          } catch (err) {
+            console.error("[FreeChess Coach] Alternative FEN extraction failed:", err);
+          }
+        }
       }
     }, 500);
 
     // Timeout after 10 seconds
     setTimeout(() => {
       clearInterval(checkForFenButton);
+      console.log("[FreeChess Coach] FEN extraction timeout");
     }, 10000);
   }
 
