@@ -242,7 +242,7 @@
     if (type.includes('-')) {
       const parts = type.split('-');
       const mainType = parts[0]; // inaccuracy, mistake, blunder
-      const hintType = parts[1]; // capture, push, N, B, R, Q, K
+      const hintType = parts[1]; // capture, push, piece
       
       const label = mainType === 'blunder' ? 'Blunder!!' : mainType === 'mistake' ? 'Mistake?' : 'Inaccuracy?!';
       
@@ -250,11 +250,7 @@
       const hintLabels = {
         'capture': 'Capture',
         'push': 'Push',
-        'N': 'Knight',
-        'B': 'Bishop', 
-        'R': 'Rook',
-        'Q': 'Queen',
-        'K': 'King'
+        'piece': 'Piece'
       };
       const hintLabel = hintLabels[hintType] || hintType;
       
@@ -834,6 +830,10 @@
             const destinationPiece = currentGame.get(bestTo);
             const movingPiece = currentGame.get(bestFrom);
             
+            console.log("[FreeChess Coach] HINT DEBUG: Game state check - currentFen:", currentFen);
+            console.log("[FreeChess Coach] HINT DEBUG: Coordinates - bestFrom:", bestFrom, "bestTo:", bestTo);
+            console.log("[FreeChess Coach] HINT DEBUG: Pieces - destinationPiece:", destinationPiece, "movingPiece:", movingPiece);
+            
             // It's a capture if there's an opponent piece at the destination
             const isCapture = destinationPiece !== null && movingPiece && destinationPiece.color !== movingPiece.color;
             
@@ -842,18 +842,8 @@
               hint = "capture";
             } else if (movingPiece && movingPiece.type === 'p') {
               hint = "push";
-            } else if (movingPiece) {
-              // For non-pawn, non-capture moves, show the piece type
-              const pieceSymbols = {
-                'n': 'N',  // Knight
-                'b': 'B',  // Bishop
-                'r': 'R',  // Rook
-                'q': 'Q',  // Queen
-                'k': 'K'   // King
-              };
-              hint = pieceSymbols[movingPiece.type] || 'piece';
             } else {
-              hint = "push";
+              hint = "piece";
             }
             
             console.log("[FreeChess Coach] HINT DEBUG: Best move analysis - move:", bestMove.move, "isCapture:", isCapture, "destinationPiece:", destinationPiece, "movingPiece:", movingPiece, "hint:", hint);
@@ -864,11 +854,7 @@
               const hintLabels = {
                 'capture': 'Capture',
                 'push': 'Push',
-                'N': 'Knight',
-                'B': 'Bishop', 
-                'R': 'Rook',
-                'Q': 'Queen',
-                'K': 'King'
+                'piece': 'Piece'
               };
               const hintLabel = hintLabels[hint] || hint;
               
