@@ -91,16 +91,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "OPEN_CHESSDA") {
     console.log("[Background] OPEN_CHESSDA request received:", request);
     
-    // Close the original game tab
-    chrome.tabs.query({ url: request.originalGameUrl }, (tabs) => {
-      if (tabs.length > 0) {
-        const gameTab = tabs[0];
-        console.log("[Background] Closing original game tab:", gameTab.id);
-        chrome.tabs.remove(gameTab.id);
-      }
-    });
-    
-    // Open chessda.com analysis page in new tab
+    // Open chessda.com analysis page in new tab (keep original game tab open)
     const chessdaUrl = "https://chessda.com/analysis";
     chrome.tabs.create({ url: chessdaUrl }, (tab) => {
       console.log("[Background] Opened chessda.com tab:", tab.id);

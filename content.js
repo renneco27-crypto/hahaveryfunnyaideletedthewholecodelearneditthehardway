@@ -1041,8 +1041,7 @@
             if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
               chrome.runtime.sendMessage({
                 action: 'OPEN_CHESSDA',
-                fen: fen,
-                originalGameUrl: originalGameUrl
+                fen: fen
               });
             }
           } else {
@@ -1067,8 +1066,7 @@
             if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
               chrome.runtime.sendMessage({
                 action: 'OPEN_CHESSDA',
-                fen: fen,
-                originalGameUrl: originalGameUrl
+                fen: fen
               });
             }
           }
@@ -1079,7 +1077,7 @@
     }, 2000); // Wait 2 seconds for page to load
   }
 
-  // 15. Chessda.com Automation
+  // 15. Chessda.com Automation (triggered by user clicking Edit Board)
   function setupChessdaAutomation() {
     console.log("[FreeChess Coach] setupChessdaAutomation called");
     console.log("[FreeChess Coach] Hostname:", window.location.hostname);
@@ -1094,29 +1092,18 @@
       return;
     }
 
-    console.log("[FreeChess Coach] ✅ Chessda.com analysis page detected - starting automation");
+    console.log("[FreeChess Coach] ✅ Chessda.com analysis page detected - waiting for Edit Board click");
     console.log("[FreeChess Coach] Page URL:", window.location.href);
     console.log("[FreeChess Coach] SessionStorage FEN:", sessionStorage.getItem('chessCoachExtractedFen'));
 
-    // Cascading timer approach as requested
-    // Step 1: Wait 2 seconds for page to fully load
-    console.log("[FreeChess Coach] ⏱️ Starting 2-second timer for page load");
-    setTimeout(() => {
-      console.log("[FreeChess Coach] ⏱️ 2-second timer elapsed - Step 1: Looking for Edit Board button");
-      
-      const editButton = Array.from(document.querySelectorAll('button')).find(btn => 
-        btn.textContent.includes('Edit Board')
-      );
-      
-      if (editButton) {
-        console.log("[FreeChess Coach] ✅ Edit Board button found - clicking it");
-        editButton.click();
+    // Add click listener for Edit Board button
+    document.addEventListener('click', (event) => {
+      const editButton = event.target.closest('button');
+      if (editButton && editButton.textContent.includes('Edit Board')) {
+        console.log("[FreeChess Coach] Edit Board button clicked by user - starting automation");
         
-        // Step 2: Wait 1 second for FEN input to appear
-        console.log("[FreeChess Coach] ⏱️ Starting 1-second timer for FEN input");
+        // Wait for FEN input to appear
         setTimeout(() => {
-          console.log("[FreeChess Coach] ⏱️ 1-second timer elapsed - Step 2: Looking for FEN input");
-          
           const fenInput = document.getElementById('editor-fen');
           console.log("[FreeChess Coach] FEN input element:", fenInput);
           
@@ -1130,11 +1117,8 @@
               const inputEvent = new Event('input', { bubbles: true });
               fenInput.dispatchEvent(inputEvent);
               
-              // Step 3: Wait 1 second for start button to be ready
-              console.log("[FreeChess Coach] ⏱️ Starting 1-second timer for Start Analysis button");
+              // Wait for start button to be ready
               setTimeout(() => {
-                console.log("[FreeChess Coach] ⏱️ 1-second timer elapsed - Step 3: Looking for Start Analysis button");
-                
                 const startButton = Array.from(document.querySelectorAll('button')).find(btn => 
                   btn.textContent.includes('Start Analysis')
                 );
@@ -1152,19 +1136,16 @@
                   console.log("[FreeChess Coach] ❌ Start Analysis button not found");
                   console.log("[FreeChess Coach] Available buttons:", Array.from(document.querySelectorAll('button')).map(b => b.textContent));
                 }
-              }, 1000);
+              }, 500);
             } else {
               console.error("[FreeChess Coach] ❌ No FEN found in sessionStorage");
             }
           } else {
             console.log("[FreeChess Coach] ❌ FEN input not found after Edit Board click");
           }
-        }, 1000);
-      } else {
-        console.log("[FreeChess Coach] ❌ Edit Board button not found");
-        console.log("[FreeChess Coach] Available buttons:", Array.from(document.querySelectorAll('button')).map(b => b.textContent));
+        }, 500);
       }
-    }, 2000);
+    }, true);
   }
 
   // Run initialization
