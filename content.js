@@ -944,10 +944,150 @@
     observer.observe(document.body, { childList: true, subtree: true, attributes: true });
   }
 
+  // 13. Game Review Automation
+  function setupGameReviewAutomation() {
+    // Only run on chess.com game pages
+    if (!window.location.hostname.includes('chess.com') || !window.location.pathname.includes('/game/')) {
+      return;
+    }
+
+    console.log("[FreeChess Coach] Setting up game review automation on chess.com");
+
+    // Watch for game review button clicks
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('a[href*="/analysis/game/"]');
+      if (button) {
+        console.log("[FreeChess Coach] Game Review button clicked");
+        
+        // Extract game ID from current URL
+        const currentUrl = window.location.href;
+        const gameIdMatch = currentUrl.match(/\/game\/(\d+)/);
+        if (gameIdMatch) {
+          const gameId = gameIdMatch[1];
+          console.log("[FreeChess Coach] Extracted game ID:", gameId);
+          
+          // Store game ID for later use
+          sessionStorage.setItem('chessCoachGameId', gameId);
+          sessionStorage.setItem('chessCoachAutomatingReview', 'true');
+        }
+      }
+    }, true);
+  }
+
+  // 14. Chess.com Analysis Page FEN Extraction
+  function setupChessComAnalysisExtraction() {
+    // Only run on chess.com analysis pages
+    if (!window.location.hostname.includes('chess.com') || !window.location.pathname.includes('/analysis/game/')) {
+      return;
+    }
+
+    console.log("[FreeChess Coach] Setting up FEN extraction on chess.com analysis page");
+
+    // Check if we're in automation mode
+    if (sessionStorage.getItem('chessCoachAutomatingReview') !== 'true') {
+      return;
+    }
+
+    // Wait for the FEN copy button to appear
+    const checkForFenButton = setInterval(() => {
+      const fenButton = document.querySelector('button[aria-label="Copy to Clipboard!"]');
+      if (fenButton) {
+        clearInterval(checkForFenButton);
+        console.log("[FreeChess Coach] FEN copy button found, extracting FEN");
+        
+        // Click the copy button to copy FEN to clipboard
+        fenButton.click();
+        
+        // Wait a moment for clipboard to update, then read it
+        setTimeout(() => {
+          navigator.clipboard.readText().then(fen => {
+            console.log("[FreeChess Coach] Extracted FEN:", fen);
+            sessionStorage.setItem('chessCoachExtractedFen', fen);
+            
+            // Get the original game tab ID
+            const gameId = sessionStorage.getItem('chessCoachGameId');
+            const originalGameUrl = `https://www.chess.com/game/${gameId}`;
+            
+            // Send message to background script to handle tab management
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+              chrome.runtime.sendMessage({
+                action: 'OPEN_CHESSDA',
+                fen: fen,
+                originalGameUrl: originalGameUrl
+              });
+            }
+          }).catch(err => {
+            console.error("[FreeChess Coach] Failed to read clipboard:", err);
+          });
+        }, 500);
+      }
+    }, 500);
+
+    // Timeout after 10 seconds
+    setTimeout(() => {
+      clearInterval(checkForFenButton);
+    }, 10000);
+  }
+
+  // 15. Chessda.com Automation
+  function setupChessdaAutomation() {
+    // Only run on chessda.com analysis page
+    if (!window.location.hostname.includes('chessda.com') || !window.location.pathname.includes('/analysis')) {
+      return;
+    }
+
+    console.log("[FreeChess Coach] Setting up automation on chessda.com");
+
+    // Wait for FEN input to be available
+    const checkForFenInput = setInterval(() => {
+      const fenInput = document.getElementById('editor-fen');
+      const startButton = document.querySelector('button');
+      
+      if (fenInput && startButton) {
+        clearInterval(checkForFenInput);
+        console.log("[FreeChess Coach] FEN input and start button found");
+        
+        // Get FEN from sessionStorage
+        const fen = sessionStorage.getItem('chessCoachExtractedFen');
+        if (fen) {
+          console.log("[FreeChess Coach] Pasting FEN:", fen);
+          
+          // Set FEN value
+          fenInput.value = fen;
+          
+          // Trigger input event to ensure the field recognizes the change
+          const inputEvent = new Event('input', { bubbles: true });
+          fenInput.dispatchEvent(inputEvent);
+          
+          // Wait a moment then click start button
+          setTimeout(() => {
+            console.log("[FreeChess Coach] Clicking start button");
+            startButton.click();
+            
+            // Clear automation flags
+            sessionStorage.removeItem('chessCoachAutomatingReview');
+            sessionStorage.removeItem('chessCoachGameId');
+            sessionStorage.removeItem('chessCoachExtractedFen');
+          }, 500);
+        } else {
+          console.error("[FreeChess Coach] No FEN found in sessionStorage");
+        }
+      }
+    }, 500);
+
+    // Timeout after 10 seconds
+    setTimeout(() => {
+      clearInterval(checkForFenInput);
+    }, 10000);
+  }
+
   // Run initialization
   initEngine();
   attachListeners();
   observeGameMutations();
+  setupGameReviewAutomation();
+  setupChessComAnalysisExtraction();
+  setupChessdaAutomation();
 })();
 
 

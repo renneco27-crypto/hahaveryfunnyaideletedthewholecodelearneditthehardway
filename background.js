@@ -86,3 +86,29 @@ chrome.runtime.onConnect.addListener((port) => {
   }
 });
 
+// Handle automation messages from content scripts
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "OPEN_CHESSDA") {
+    console.log("[Background] OPEN_CHESSDA request received:", request);
+    
+    // Find and close the original game tab
+    chrome.tabs.query({ url: request.originalGameUrl }, (tabs) => {
+      if (tabs.length > 0) {
+        const gameTab = tabs[0];
+        console.log("[Background] Closing original game tab:", gameTab.id);
+        chrome.tabs.remove(gameTab.id);
+      }
+    });
+    
+    // Open chessda.com analysis page
+    const chessdaUrl = "https://chessda.com/analysis";
+    chrome.tabs.create({ url: chessdaUrl }, (tab) => {
+      console.log("[Background] Opened chessda.com tab:", tab.id);
+    });
+    
+    sendResponse({ success: true });
+  }
+  
+  return true; // Keep message channel open for async response
+});
+

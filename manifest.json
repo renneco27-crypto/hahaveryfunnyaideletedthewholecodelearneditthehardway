@@ -5,7 +5,13 @@
   "description": "Evaluates candidate moves on your chess website, providing shake and border flash feedback for blunders, inaccuracies, and brilliant moves before finalizing.",
   "permissions": [
     "activeTab",
-    "offscreen"
+    "offscreen",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.chess.com/*",
+    "https://chessda.com/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
