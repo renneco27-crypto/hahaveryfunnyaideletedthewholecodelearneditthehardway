@@ -959,13 +959,12 @@
       if (button) {
         console.log("[FreeChess Coach] Game Review button clicked");
         
-        // Prevent default navigation
-        event.preventDefault();
-        event.stopPropagation();
-        
         // Extract game ID from current URL
         const currentUrl = window.location.href;
         const gameIdMatch = currentUrl.match(/\/game\/(\d+)/);
+        console.log("[FreeChess Coach] Current URL:", currentUrl);
+        console.log("[FreeChess Coach] Game ID match:", gameIdMatch);
+        
         if (gameIdMatch) {
           const gameId = gameIdMatch[1];
           console.log("[FreeChess Coach] Extracted game ID:", gameId);
@@ -978,10 +977,14 @@
           const analysisUrl = button.getAttribute('href');
           const fullAnalysisUrl = analysisUrl.startsWith('http') ? analysisUrl : `https://www.chess.com${analysisUrl}`;
           
-          console.log("[FreeChess Coach] Navigating to analysis page:", fullAnalysisUrl);
+          console.log("[FreeChess Coach] Analysis URL from button:", analysisUrl);
+          console.log("[FreeChess Coach] Full analysis URL:", fullAnalysisUrl);
           
-          // Navigate to analysis page
-          window.location.href = fullAnalysisUrl;
+          // Use setTimeout to allow the event to complete first
+          setTimeout(() => {
+            console.log("[FreeChess Coach] Executing navigation to:", fullAnalysisUrl);
+            window.location.href = fullAnalysisUrl;
+          }, 100);
         }
       }
     }, true);
