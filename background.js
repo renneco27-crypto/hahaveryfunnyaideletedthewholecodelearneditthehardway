@@ -98,6 +98,78 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     
     sendResponse({ success: true });
+  } else if (request.action === "INJECT_CHESSDA_SCRIPT") {
+    console.log("[Background] INJECT_CHESSDA_SCRIPT request received:", request);
+    
+    // Inject automation script into the current tab
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length > 0) {
+        const tab = tabs[0];
+        console.log("[Background] Injecting script into tab:", tab.id);
+        
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (fen) => {
+            console.log("[Chessda Automation] Script injected successfully");
+            console.log("[Chessda Automation] FEN to paste:", fen);
+            
+            // Wait for Edit Board button and add click listener
+            const checkForEditButton = setInterval(() => {
+              const editButton = Array.from(document.querySelectorAll('button')).find(btn => 
+                btn.textContent.includes('Edit Board')
+              );
+              
+              if (editButton) {
+                clearInterval(checkForEditButton);
+                console.log("[Chessda Automation] Edit Board button found, adding click listener");
+                
+                editButton.addEventListener('click', () => {
+                  console.log("[Chessda Automation] Edit Board clicked - starting automation");
+                  
+                  setTimeout(() => {
+                    const fenInput = document.getElementById('editor-fen');
+                    if (fenInput) {
+                      console.log("[Chessda Automation] FEN input found, pasting FEN");
+                      fenInput.value = fen;
+                      
+                      const inputEvent = new Event('input', { bubbles: true });
+                      fenInput.dispatchEvent(inputEvent);
+                      
+                      setTimeout(() => {
+                        const startButton = Array.from(document.querySelectorAll('button')).find(btn => 
+                          btn.textContent.includes('Start Analysis')
+                        );
+                        
+                        if (startButton) {
+                          console.log("[Chessda Automation] Start Analysis button found, clicking it");
+                          startButton.click();
+                          console.log("[Chessda Automation] Automation complete!");
+                        } else {
+                          console.log("[Chessda Automation] Start Analysis button not found");
+                        }
+                      }, 500);
+                    } else {
+                      console.log("[Chessda Automation] FEN input not found");
+                    }
+                  }, 500);
+                });
+              }
+            }, 500);
+            
+            setTimeout(() => clearInterval(checkForEditButton), 10000);
+          },
+          args: [request.fen]
+        }, (results) => {
+          if (chrome.runtime.lastError) {
+            console.error("[Background] Script injection failed:", chrome.runtime.lastError);
+          } else {
+            console.log("[Background] Script injection successful");
+          }
+        });
+      }
+    });
+    
+    sendResponse({ success: true });
   }
   
   return true; // Keep message channel open for async response

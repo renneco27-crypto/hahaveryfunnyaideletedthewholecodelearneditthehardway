@@ -1077,7 +1077,7 @@
     }, 2000); // Wait 2 seconds for page to load
   }
 
-  // 15. Chessda.com Automation (triggered by user clicking Edit Board)
+  // 15. Chessda.com Automation (using scripting API to bypass content script blocking)
   function setupChessdaAutomation() {
     console.log("[FreeChess Coach] setupChessdaAutomation called");
     console.log("[FreeChess Coach] Hostname:", window.location.hostname);
@@ -1092,60 +1092,17 @@
       return;
     }
 
-    console.log("[FreeChess Coach] ✅ Chessda.com analysis page detected - waiting for Edit Board click");
+    console.log("[FreeChess Coach] ✅ Chessda.com analysis page detected - using scripting API approach");
     console.log("[FreeChess Coach] Page URL:", window.location.href);
     console.log("[FreeChess Coach] SessionStorage FEN:", sessionStorage.getItem('chessCoachExtractedFen'));
 
-    // Add click listener for Edit Board button
-    document.addEventListener('click', (event) => {
-      const editButton = event.target.closest('button');
-      if (editButton && editButton.textContent.includes('Edit Board')) {
-        console.log("[FreeChess Coach] Edit Board button clicked by user - starting automation");
-        
-        // Wait for FEN input to appear
-        setTimeout(() => {
-          const fenInput = document.getElementById('editor-fen');
-          console.log("[FreeChess Coach] FEN input element:", fenInput);
-          
-          if (fenInput) {
-            const fen = sessionStorage.getItem('chessCoachExtractedFen');
-            if (fen) {
-              console.log("[FreeChess Coach] ✅ FEN input found - pasting FEN:", fen);
-              fenInput.value = fen;
-              
-              // Trigger input event
-              const inputEvent = new Event('input', { bubbles: true });
-              fenInput.dispatchEvent(inputEvent);
-              
-              // Wait for start button to be ready
-              setTimeout(() => {
-                const startButton = Array.from(document.querySelectorAll('button')).find(btn => 
-                  btn.textContent.includes('Start Analysis')
-                );
-                
-                if (startButton) {
-                  console.log("[FreeChess Coach] ✅ Start Analysis button found - clicking it");
-                  startButton.click();
-                  
-                  // Clear automation flags
-                  sessionStorage.removeItem('chessCoachAutomatingReview');
-                  sessionStorage.removeItem('chessCoachGameId');
-                  sessionStorage.removeItem('chessCoachExtractedFen');
-                  console.log("[FreeChess Coach] 🎉 AUTOMATION COMPLETE!");
-                } else {
-                  console.log("[FreeChess Coach] ❌ Start Analysis button not found");
-                  console.log("[FreeChess Coach] Available buttons:", Array.from(document.querySelectorAll('button')).map(b => b.textContent));
-                }
-              }, 500);
-            } else {
-              console.error("[FreeChess Coach] ❌ No FEN found in sessionStorage");
-            }
-          } else {
-            console.log("[FreeChess Coach] ❌ FEN input not found after Edit Board click");
-          }
-        }, 500);
-      }
-    }, true);
+    // Request background script to inject automation script
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+      chrome.runtime.sendMessage({
+        action: 'INJECT_CHESSDA_SCRIPT',
+        fen: sessionStorage.getItem('chessCoachExtractedFen')
+      });
+    }
   }
 
   // Run initialization
