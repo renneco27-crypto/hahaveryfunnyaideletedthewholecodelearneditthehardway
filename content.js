@@ -961,7 +961,7 @@
         
         // Extract game ID from current URL
         const currentUrl = window.location.href;
-        const gameIdMatch = currentUrl.match(/\/game\/(\d+)/);
+        const gameIdMatch = currentUrl.match(/\/game\/[^\/]+\/(\d+)/);
         console.log("[FreeChess Coach] Current URL:", currentUrl);
         console.log("[FreeChess Coach] Game ID match:", gameIdMatch);
         
@@ -973,109 +973,48 @@
           sessionStorage.setItem('chessCoachGameId', gameId);
           sessionStorage.setItem('chessCoachAutomatingReview', 'true');
           
-          // Extract the analysis URL from the button
-          const analysisUrl = button.getAttribute('href');
-          const fullAnalysisUrl = analysisUrl.startsWith('http') ? analysisUrl : `https://www.chess.com${analysisUrl}`;
-          
-          console.log("[FreeChess Coach] Analysis URL from button:", analysisUrl);
-          console.log("[FreeChess Coach] Full analysis URL:", fullAnalysisUrl);
-          
-          // Use setTimeout to allow the event to complete first
+          // Find and click the "Share Game" button instead
           setTimeout(() => {
-            console.log("[FreeChess Coach] Executing navigation to:", fullAnalysisUrl);
-            window.location.href = fullAnalysisUrl;
-          }, 100);
+            const shareButton = Array.from(document.querySelectorAll('span')).find(el => 
+              el.textContent.includes('Share Game') && el.classList.contains('cc-aside-item-label')
+            );
+            
+            if (shareButton) {
+              console.log("[FreeChess Coach] Found Share Game button, clicking it");
+              shareButton.click();
+              
+              // Wait for the share dialog to appear and extract FEN
+              setTimeout(() => {
+                const fenInput = document.getElementById('share-fen');
+                if (fenInput) {
+                  const fen = fenInput.value;
+                  console.log("[FreeChess Coach] Extracted FEN from share dialog:", fen);
+                  sessionStorage.setItem('chessCoachExtractedFen', fen);
+                  
+                  // Close the share dialog and proceed to chessda.com
+                  const originalGameUrl = window.location.href;
+                  
+                  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                    chrome.runtime.sendMessage({
+                      action: 'OPEN_CHESSDA',
+                      fen: fen,
+                      originalGameUrl: originalGameUrl
+                    });
+                  }
+                } else {
+                  console.log("[FreeChess Coach] FEN input not found in share dialog");
+                }
+              }, 1000);
+            } else {
+              console.log("[FreeChess Coach] Share Game button not found");
+            }
+          }, 500);
         }
       }
     }, true);
   }
 
-  // 14. Chess.com Analysis Page FEN Extraction
-  function setupChessComAnalysisExtraction() {
-    // Only run on chess.com analysis pages
-    if (!window.location.hostname.includes('chess.com') || !window.location.pathname.includes('/analysis/game/')) {
-      return;
-    }
-
-    console.log("[FreeChess Coach] Setting up FEN extraction on chess.com analysis page");
-
-    // Check if we're in automation mode
-    if (sessionStorage.getItem('chessCoachAutomatingReview') !== 'true') {
-      return;
-    }
-
-    // Wait for the FEN copy button to appear
-    const checkForFenButton = setInterval(() => {
-      const fenButton = document.querySelector('button[aria-label="Copy to Clipboard!"]');
-      if (fenButton) {
-        clearInterval(checkForFenButton);
-        console.log("[FreeChess Coach] FEN copy button found, extracting FEN");
-        
-        // Click the copy button to copy FEN to clipboard
-        fenButton.click();
-        
-        // Wait a moment for clipboard to update, then read it
-        setTimeout(() => {
-          navigator.clipboard.readText().then(fen => {
-            console.log("[FreeChess Coach] Extracted FEN:", fen);
-            sessionStorage.setItem('chessCoachExtractedFen', fen);
-            
-            // Get the original game tab ID
-            const gameId = sessionStorage.getItem('chessCoachGameId');
-            const originalGameUrl = `https://www.chess.com/game/${gameId}`;
-            
-            // Send message to background script to handle tab management
-            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-              chrome.runtime.sendMessage({
-                action: 'OPEN_CHESSDA',
-                fen: fen,
-                originalGameUrl: originalGameUrl
-              });
-            }
-          }).catch(err => {
-            console.error("[FreeChess Coach] Failed to read clipboard:", err);
-          });
-        }, 500);
-      } else {
-        console.log("[FreeChess Coach] FEN button not found yet, checking for paywall...");
-        // Check if there's a paywall or different structure
-        const paywallElements = document.querySelectorAll('[class*="premium"], [class*="upgrade"], [class*="member"]');
-        if (paywallElements.length > 0) {
-          console.log("[FreeChess Coach] Paywall detected, trying alternative FEN extraction");
-          clearInterval(checkForFenButton);
-          
-          // Try to extract FEN from the game board directly
-          try {
-            const board = findBoard();
-            if (board) {
-              const fen = scanBoardToFen(board);
-              console.log("[FreeChess Coach] Extracted FEN from board:", fen);
-              sessionStorage.setItem('chessCoachExtractedFen', fen);
-              
-              const gameId = sessionStorage.getItem('chessCoachGameId');
-              const originalGameUrl = `https://www.chess.com/game/${gameId}`;
-              
-              if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-                chrome.runtime.sendMessage({
-                  action: 'OPEN_CHESSDA',
-                  fen: fen,
-                  originalGameUrl: originalGameUrl
-                });
-              }
-            }
-          } catch (err) {
-            console.error("[FreeChess Coach] Alternative FEN extraction failed:", err);
-          }
-        }
-      }
-    }, 500);
-
-    // Timeout after 10 seconds
-    setTimeout(() => {
-      clearInterval(checkForFenButton);
-      console.log("[FreeChess Coach] FEN extraction timeout");
-    }, 10000);
-  }
+  // 14. Chess.com Analysis Page FEN Extraction (removed - using Share Game approach)
 
   // 15. Chessda.com Automation
   function setupChessdaAutomation() {
@@ -1134,7 +1073,6 @@
   attachListeners();
   observeGameMutations();
   setupGameReviewAutomation();
-  setupChessComAnalysisExtraction();
   setupChessdaAutomation();
 })();
 
