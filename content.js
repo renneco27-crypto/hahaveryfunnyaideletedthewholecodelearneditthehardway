@@ -1076,65 +1076,73 @@
     }
 
     console.log("[FreeChess Coach] Setting up automation on chessda.com");
+    console.log("[FreeChess Coach] Page URL:", window.location.href);
+    console.log("[FreeChess Coach] SessionStorage FEN:", sessionStorage.getItem('chessCoachExtractedFen'));
 
-    // Wait for the Edit Board button to be available
-    const checkForEditButton = setInterval(() => {
+    // Cascading timer approach as requested
+    // Step 1: Wait 2 seconds for page to fully load
+    setTimeout(() => {
+      console.log("[FreeChess Coach] Step 1: Looking for Edit Board button");
+      
       const editButton = Array.from(document.querySelectorAll('button')).find(btn => 
         btn.textContent.includes('Edit Board')
       );
       
       if (editButton) {
-        clearInterval(checkForEditButton);
         console.log("[FreeChess Coach] Edit Board button found, clicking it");
         editButton.click();
         
-        // Wait for the FEN input to appear after clicking Edit Board
+        // Step 2: Wait 1 second for FEN input to appear
         setTimeout(() => {
-          const fenInput = document.getElementById('editor-fen');
-          const startButton = Array.from(document.querySelectorAll('button')).find(btn => 
-            btn.textContent.includes('Start Analysis')
-          );
+          console.log("[FreeChess Coach] Step 2: Looking for FEN input");
           
-          if (fenInput && startButton) {
-            console.log("[FreeChess Coach] FEN input and start button found");
-            
-            // Get FEN from sessionStorage
+          const fenInput = document.getElementById('editor-fen');
+          console.log("[FreeChess Coach] FEN input element:", fenInput);
+          
+          if (fenInput) {
             const fen = sessionStorage.getItem('chessCoachExtractedFen');
             if (fen) {
               console.log("[FreeChess Coach] Pasting FEN:", fen);
-              
-              // Set FEN value
               fenInput.value = fen;
               
-              // Trigger input event to ensure the field recognizes the change
+              // Trigger input event
               const inputEvent = new Event('input', { bubbles: true });
               fenInput.dispatchEvent(inputEvent);
               
-              // Wait a moment then click start button
+              // Step 3: Wait 1 second for start button to be ready
               setTimeout(() => {
-                console.log("[FreeChess Coach] Clicking start button");
-                startButton.click();
+                console.log("[FreeChess Coach] Step 3: Looking for Start Analysis button");
                 
-                // Clear automation flags
-                sessionStorage.removeItem('chessCoachAutomatingReview');
-                sessionStorage.removeItem('chessCoachGameId');
-                sessionStorage.removeItem('chessCoachExtractedFen');
-              }, 500);
+                const startButton = Array.from(document.querySelectorAll('button')).find(btn => 
+                  btn.textContent.includes('Start Analysis')
+                );
+                
+                if (startButton) {
+                  console.log("[FreeChess Coach] Start Analysis button found, clicking it");
+                  startButton.click();
+                  
+                  // Clear automation flags
+                  sessionStorage.removeItem('chessCoachAutomatingReview');
+                  sessionStorage.removeItem('chessCoachGameId');
+                  sessionStorage.removeItem('chessCoachExtractedFen');
+                  console.log("[FreeChess Coach] Automation complete!");
+                } else {
+                  console.log("[FreeChess Coach] Start Analysis button not found");
+                  console.log("[FreeChess Coach] Available buttons:", Array.from(document.querySelectorAll('button')).map(b => b.textContent));
+                }
+              }, 1000);
             } else {
               console.error("[FreeChess Coach] No FEN found in sessionStorage");
             }
           } else {
-            console.log("[FreeChess Coach] FEN input or start button not found after Edit Board click");
+            console.log("[FreeChess Coach] FEN input not found after Edit Board click");
           }
         }, 1000);
+      } else {
+        console.log("[FreeChess Coach] Edit Board button not found");
+        console.log("[FreeChess Coach] Available buttons:", Array.from(document.querySelectorAll('button')).map(b => b.textContent));
       }
-    }, 500);
-
-    // Timeout after 10 seconds
-    setTimeout(() => {
-      clearInterval(checkForEditButton);
-      console.log("[FreeChess Coach] Edit Board button timeout");
-    }, 10000);
+    }, 2000);
   }
 
   // Run initialization
