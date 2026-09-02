@@ -34,6 +34,28 @@
       stockfish = new StockfishEngine();
       console.log("[FreeChess Coach] Stockfish engine initialized and warming up...");
       
+      // Show initial pill immediately to indicate extension is loaded
+      setTimeout(() => {
+        const board = findBoard();
+        if (board) {
+          attachStatusPill(board, "Coach Loading · Stockfish Warming Up", "normal", true);
+        } else {
+          // Create pill even without board to show extension is active
+          let pill = document.getElementById("freechess-connected-pill");
+          if (!pill) {
+            pill = document.createElement("div");
+            pill.id = "freechess-connected-pill";
+            pill.className = "";
+            pill.innerHTML = `<span class="dot"></span> Coach Loading · Stockfish Warming Up`;
+            pill.style.opacity = "1";
+            pill.style.top = "20px";
+            pill.style.left = "50%";
+            pill.style.transform = "translateX(-50%)";
+            document.body.appendChild(pill);
+          }
+        }
+      }, 100);
+      
       // Warm up Stockfish with a simple position to ensure it's ready
       setTimeout(async () => {
         try {
@@ -41,16 +63,28 @@
           console.log("[FreeChess Coach] Stockfish warmup complete:", warmupResult ? "ready" : "failed");
           stockfishAwake = warmupResult && warmupResult.length > 0;
           
-          // Show initial status pill when Stockfish is ready
-          if (stockfishAwake) {
-            const board = findBoard();
-            if (board) {
-              attachStatusPill(board, "Coach Active · Stockfish Ready", "normal", true);
+          // Update status pill when Stockfish is ready
+          const board = findBoard();
+          if (board) {
+            const statusText = stockfishAwake ? "Stockfish Ready" : "Stockfish Failed";
+            attachStatusPill(board, `Coach Active · ${statusText}`, "normal", true);
+          } else {
+            // Update pill even without board
+            let pill = document.getElementById("freechess-connected-pill");
+            if (pill) {
+              const statusText = stockfishAwake ? "Stockfish Ready" : "Stockfish Failed";
+              pill.innerHTML = `<span class="dot"></span> Coach Active · ${statusText}`;
             }
           }
         } catch (e) {
           console.error("[FreeChess Coach] Stockfish warmup failed:", e);
           stockfishAwake = false;
+          
+          // Update pill to show failure
+          let pill = document.getElementById("freechess-connected-pill");
+          if (pill) {
+            pill.innerHTML = `<span class="dot"></span> Coach Active · Stockfish Failed`;
+          }
         }
       }, 500);
     } catch (e) {
@@ -208,10 +242,21 @@
     if (type.includes('-')) {
       const parts = type.split('-');
       const mainType = parts[0]; // inaccuracy, mistake, blunder
-      const hintType = parts[1]; // capture, push
+      const hintType = parts[1]; // capture, push, N, B, R, Q, K
       
       const label = mainType === 'blunder' ? 'Blunder!!' : mainType === 'mistake' ? 'Mistake?' : 'Inaccuracy?!';
-      const hintLabel = hintType === 'capture' ? 'Capture' : 'Push';
+      
+      // Map hint types to display labels
+      const hintLabels = {
+        'capture': 'Capture',
+        'push': 'Push',
+        'N': 'Knight',
+        'B': 'Bishop', 
+        'R': 'Rook',
+        'Q': 'Queen',
+        'K': 'King'
+      };
+      const hintLabel = hintLabels[hintType] || hintType;
       
       attachStatusPill(board, `🔴 ${label} - ${hintLabel}`, "blunder");
       console.log(`%c[FreeChess Coach] 🔴 RED GLOW (${mainType.toUpperCase()}) - ${hintLabel}`, "color: #ef4444; font-weight: bold; font-size: 13px;");
@@ -792,14 +837,44 @@
             // It's a capture if there's an opponent piece at the destination
             const isCapture = destinationPiece !== null && movingPiece && destinationPiece.color !== movingPiece.color;
             
-            const hint = isCapture ? "capture" : "push";
+            let hint;
+            if (isCapture) {
+              hint = "capture";
+            } else if (movingPiece && movingPiece.type === 'p') {
+              hint = "push";
+            } else if (movingPiece) {
+              // For non-pawn, non-capture moves, show the piece type
+              const pieceSymbols = {
+                'n': 'N',  // Knight
+                'b': 'B',  // Bishop
+                'r': 'R',  // Rook
+                'q': 'Q',  // Queen
+                'k': 'K'   // King
+              };
+              hint = pieceSymbols[movingPiece.type] || 'piece';
+            } else {
+              hint = "push";
+            }
             
             console.log("[FreeChess Coach] HINT DEBUG: Best move analysis - move:", bestMove.move, "isCapture:", isCapture, "destinationPiece:", destinationPiece, "movingPiece:", movingPiece, "hint:", hint);
             
             // Show hint as accuracy-prompt format
             if (board) {
-              attachStatusPill(board, `🔴 ${cls}-${hint}`, "blunder", false);
-              console.log(`%c[FreeChess Coach] 🔴 ${cls}-${hint} (best: ${bestMove.move})`, "color: #f59e0b; font-weight: bold; font-size: 13px;");
+              // Map hint types to display labels
+              const hintLabels = {
+                'capture': 'Capture',
+                'push': 'Push',
+                'N': 'Knight',
+                'B': 'Bishop', 
+                'R': 'Rook',
+                'Q': 'Queen',
+                'K': 'King'
+              };
+              const hintLabel = hintLabels[hint] || hint;
+              
+              const label = cls === 'blunder' ? 'Blunder!!' : cls === 'mistake' ? 'Mistake?' : 'Inaccuracy?!';
+              attachStatusPill(board, `🔴 ${label} - ${hintLabel}`, "blunder", false);
+              console.log(`%c[FreeChess Coach] 🔴 ${label} - ${hintLabel} (best: ${bestMove.move})`, "color: #f59e0b; font-weight: bold; font-size: 13px;");
             }
           } else {
             console.log("[FreeChess Coach] HINT DEBUG: No best move found");
