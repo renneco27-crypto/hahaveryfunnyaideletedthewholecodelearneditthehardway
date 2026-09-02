@@ -973,48 +973,100 @@
           sessionStorage.setItem('chessCoachGameId', gameId);
           sessionStorage.setItem('chessCoachAutomatingReview', 'true');
           
-          // Find and click the "Share Game" button instead
+          // Extract the analysis URL from the button
+          const analysisUrl = button.getAttribute('href');
+          const fullAnalysisUrl = analysisUrl.startsWith('http') ? analysisUrl : `https://www.chess.com${analysisUrl}`;
+          
+          console.log("[FreeChess Coach] Analysis URL from button:", analysisUrl);
+          console.log("[FreeChess Coach] Full analysis URL:", fullAnalysisUrl);
+          
+          // Navigate to analysis page first
           setTimeout(() => {
-            const shareButton = Array.from(document.querySelectorAll('span')).find(el => 
-              el.textContent.includes('Share Game') && el.classList.contains('cc-aside-item-label')
-            );
-            
-            if (shareButton) {
-              console.log("[FreeChess Coach] Found Share Game button, clicking it");
-              shareButton.click();
-              
-              // Wait for the share dialog to appear and extract FEN
-              setTimeout(() => {
-                const fenInput = document.getElementById('share-fen');
-                if (fenInput) {
-                  const fen = fenInput.value;
-                  console.log("[FreeChess Coach] Extracted FEN from share dialog:", fen);
-                  sessionStorage.setItem('chessCoachExtractedFen', fen);
-                  
-                  // Close the share dialog and proceed to chessda.com
-                  const originalGameUrl = window.location.href;
-                  
-                  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-                    chrome.runtime.sendMessage({
-                      action: 'OPEN_CHESSDA',
-                      fen: fen,
-                      originalGameUrl: originalGameUrl
-                    });
-                  }
-                } else {
-                  console.log("[FreeChess Coach] FEN input not found in share dialog");
-                }
-              }, 1000);
-            } else {
-              console.log("[FreeChess Coach] Share Game button not found");
-            }
-          }, 500);
+            console.log("[FreeChess Coach] Navigating to analysis page:", fullAnalysisUrl);
+            window.location.href = fullAnalysisUrl;
+          }, 100);
         }
       }
     }, true);
   }
 
-  // 14. Chess.com Analysis Page FEN Extraction (removed - using Share Game approach)
+  // 14. Chess.com Analysis Page FEN Extraction
+  function setupChessComAnalysisExtraction() {
+    // Only run on chess.com analysis pages
+    if (!window.location.hostname.includes('chess.com') || !window.location.pathname.includes('/analysis/game/')) {
+      return;
+    }
+
+    console.log("[FreeChess Coach] Setting up FEN extraction on chess.com analysis page");
+
+    // Check if we're in automation mode
+    if (sessionStorage.getItem('chessCoachAutomatingReview') !== 'true') {
+      return;
+    }
+
+    // Wait for the page to load and then find the Share Game button
+    setTimeout(() => {
+      const shareButton = Array.from(document.querySelectorAll('span')).find(el => 
+        el.textContent.includes('Share Game') && el.classList.contains('cc-aside-item-label')
+      );
+      
+      if (shareButton) {
+        console.log("[FreeChess Coach] Found Share Game button, clicking it");
+        shareButton.click();
+        
+        // Wait for the share dialog to appear and extract FEN
+        setTimeout(() => {
+          const fenInput = document.getElementById('share-fen');
+          if (fenInput) {
+            const fen = fenInput.value;
+            console.log("[FreeChess Coach] Extracted FEN from share dialog:", fen);
+            sessionStorage.setItem('chessCoachExtractedFen', fen);
+            
+            // Proceed to chessda.com
+            const gameId = sessionStorage.getItem('chessCoachGameId');
+            const originalGameUrl = `https://www.chess.com/game/live/${gameId}`;
+            
+            console.log("[FreeChess Coach] Sending message to open chessda.com");
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+              chrome.runtime.sendMessage({
+                action: 'OPEN_CHESSDA',
+                fen: fen,
+                originalGameUrl: originalGameUrl
+              });
+            }
+          } else {
+            console.log("[FreeChess Coach] FEN input not found in share dialog");
+          }
+        }, 1000);
+      } else {
+        console.log("[FreeChess Coach] Share Game button not found, trying alternative methods");
+        
+        // Try to find FEN from the board directly
+        try {
+          const board = findBoard();
+          if (board) {
+            const fen = scanBoardToFen(board);
+            console.log("[FreeChess Coach] Extracted FEN from board:", fen);
+            sessionStorage.setItem('chessCoachExtractedFen', fen);
+            
+            const gameId = sessionStorage.getItem('chessCoachGameId');
+            const originalGameUrl = `https://www.chess.com/game/live/${gameId}`;
+            
+            console.log("[FreeChess Coach] Sending message to open chessda.com (board extraction)");
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+              chrome.runtime.sendMessage({
+                action: 'OPEN_CHESSDA',
+                fen: fen,
+                originalGameUrl: originalGameUrl
+              });
+            }
+          }
+        } catch (err) {
+          console.error("[FreeChess Coach] Alternative FEN extraction failed:", err);
+        }
+      }
+    }, 2000); // Wait 2 seconds for page to load
+  }
 
   // 15. Chessda.com Automation
   function setupChessdaAutomation() {
@@ -1073,6 +1125,7 @@
   attachListeners();
   observeGameMutations();
   setupGameReviewAutomation();
+  setupChessComAnalysisExtraction();
   setupChessdaAutomation();
 })();
 
